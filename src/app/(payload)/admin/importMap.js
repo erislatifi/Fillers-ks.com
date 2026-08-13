@@ -23,6 +23,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { Icon as Icon_078be3ac59220a397a1074e5597d364f } from '../../../components/admin/Logo'
 import { Logo as Logo_078be3ac59220a397a1074e5597d364f } from '../../../components/admin/Logo'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { Dashboard as Dashboard_f0f8d4a7080efd2cd25bb6be37c094c0 } from '../../../components/admin/Dashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -53,6 +54,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "./components/admin/Logo#Icon": Icon_078be3ac59220a397a1074e5597d364f,
   "./components/admin/Logo#Logo": Logo_078be3ac59220a397a1074e5597d364f,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "./components/admin/Dashboard#Dashboard": Dashboard_f0f8d4a7080efd2cd25bb6be37c094c0,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
