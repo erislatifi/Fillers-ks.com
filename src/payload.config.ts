@@ -26,6 +26,14 @@ const dirname = path.dirname(filename)
 // logs (only the "Failed query" wrapper shows). Log the raw connection
 // outcome so the underlying cause (auth, SSL, network, ...) is visible.
 if (process.env.POSTGRES_URI) {
+  try {
+    const u = new URL(process.env.POSTGRES_URI)
+    console.log(
+      `[db-check] Runtime POSTGRES_URI target -> user=${u.username} host=${u.hostname} port=${u.port} db=${u.pathname}`,
+    )
+  } catch (err) {
+    console.error('[db-check] Could not parse POSTGRES_URI:', err)
+  }
   void import('pg').then(async ({ Client }) => {
     const client = new Client({ connectionString: process.env.POSTGRES_URI })
     try {
