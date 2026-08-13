@@ -22,45 +22,6 @@ import { Homepage } from './globals/Homepage'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// TEMP diagnostic: Payload/Drizzle swallows the real driver error in prod
-// logs (only the "Failed query" wrapper shows). Log the raw connection
-// outcome so the underlying cause (auth, SSL, network, ...) is visible.
-if (process.env.POSTGRES_URI) {
-  try {
-    const u = new URL(process.env.POSTGRES_URI)
-    console.log(
-      `[db-check] Runtime POSTGRES_URI target -> user=${u.username} host=${u.hostname} port=${u.port} db=${u.pathname}`,
-    )
-  } catch (err) {
-    console.error('[db-check] Could not parse POSTGRES_URI:', err)
-  }
-  void import('pg').then(async ({ Client }) => {
-    const client = new Client({ connectionString: process.env.POSTGRES_URI })
-    try {
-      await client.connect()
-      const { rows } = await client.query(
-        `select table_name from information_schema.tables where table_schema = 'public' order by table_name`,
-      )
-      console.log(
-        '[db-check] Postgres connection OK. Tables in public schema:',
-        rows.map((r) => r.table_name).join(', ') || '(none)',
-      )
-      // Cross-environment identity test: write a marker row so we can check
-      // from elsewhere whether that read reaches the same physical database.
-      await client.query(
-        `create table if not exists db_check_marker (id serial primary key, note text, created_at timestamptz default now())`,
-      )
-      const mark = await client.query(
-        `insert into db_check_marker (note) values ('hostinger-runtime') returning id, created_at`,
-      )
-      console.log('[db-check] Wrote marker row:', JSON.stringify(mark.rows[0]))
-      await client.end()
-    } catch (err) {
-      console.error('[db-check] Postgres connection FAILED:', err)
-    }
-  })
-}
-
 // Local dev keeps using the local SQLite file (zero setup). In production
 // (Hostinger's managed Node.js hosting), local disk isn't guaranteed to
 // persist across deploys, so we switch to a real Postgres database whenever
