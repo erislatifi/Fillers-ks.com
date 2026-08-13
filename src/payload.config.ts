@@ -22,6 +22,23 @@ import { Homepage } from './globals/Homepage'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// TEMP diagnostic: Payload/Drizzle swallows the real driver error in prod
+// logs (only the "Failed query" wrapper shows). Log the raw connection
+// outcome so the underlying cause (auth, SSL, network, ...) is visible.
+if (process.env.POSTGRES_URI) {
+  void import('pg').then(async ({ Client }) => {
+    const client = new Client({ connectionString: process.env.POSTGRES_URI })
+    try {
+      await client.connect()
+      await client.query('select 1')
+      console.log('[db-check] Postgres connection OK')
+      await client.end()
+    } catch (err) {
+      console.error('[db-check] Postgres connection FAILED:', err)
+    }
+  })
+}
+
 // Local dev keeps using the local SQLite file (zero setup). In production
 // (Hostinger's managed Node.js hosting), local disk isn't guaranteed to
 // persist across deploys, so we switch to a real Postgres database whenever
