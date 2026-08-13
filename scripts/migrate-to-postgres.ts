@@ -65,21 +65,21 @@ const localization = { locales: ["sq", "en"], defaultLocale: "sq" satisfies Loca
 
 async function getSource(): Promise<Payload> {
   const config = buildConfig({
-    collections,
-    globals: globalsConfig,
+    collections: [...collections],
+    globals: [...globalsConfig],
     localization,
     editor: lexicalEditor(),
     secret: process.env.PAYLOAD_SECRET || "migration-tmp-secret",
     db: sqliteAdapter({ client: { url: "file:./payload.db" } }),
     sharp,
   });
-  return getPayload({ config });
+  return getPayload({ config, key: "migration-source-sqlite" });
 }
 
 async function getDest(): Promise<Payload> {
   const config = buildConfig({
-    collections,
-    globals: globalsConfig,
+    collections: [...collections],
+    globals: [...globalsConfig],
     localization,
     editor: lexicalEditor(),
     secret: process.env.PAYLOAD_SECRET || "migration-tmp-secret",
@@ -103,7 +103,7 @@ async function getDest(): Promise<Payload> {
       : [],
     sharp,
   });
-  return getPayload({ config });
+  return getPayload({ config, key: "migration-dest-postgres" });
 }
 
 type Slug = "categories" | "brands" | "products" | "testimonials" | "articles" | "promotions";
@@ -364,10 +364,17 @@ async function main() {
 
   console.log("\nDone. Log into the production admin panel and create your first user â€”");
   console.log("user accounts are intentionally NOT migrated for security.");
-  process.exit(0);
+
+  // Wait for the Postgres pool to fully close (all writes flushed/committed)
+  // before exiting — killing the process while it's still open risks losing
+  // work that hasn't actually been committed yet.
+  const destPool = (dest.db as unknown as { pool?: { end: () => Promise<void> } }).pool;
+  if (destPool) await destPool.end();
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
