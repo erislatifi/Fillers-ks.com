@@ -1,0 +1,71 @@
+/* Fillers Kosovo — admin panel polish.
+   Pure CSS on top of Payload's default nav (safe: no logic/markup changes).
+   Icons are applied via mask-image on the real #nav-{slug} link ids Payload renders. */
+
+@mixin nav-icon($svg) {
+  &::before {
+    content: "";
+    display: inline-block;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-inline-end: 10px;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,#{$svg}");
+    mask-image: url("data:image/svg+xml,#{$svg}");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+}
+
+$icon-cube: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z'/%3E%3Cpath d='M4.5 7.5L12 12l7.5-4.5M12 12v9'/%3E%3C/svg%3E";
+$icon-grid: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Crect x='3.5' y='3.5' width='7' height='7' rx='1.5'/%3E%3Crect x='13.5' y='3.5' width='7' height='7' rx='1.5'/%3E%3Crect x='3.5' y='13.5' width='7' height='7' rx='1.5'/%3E%3Crect x='13.5' y='13.5' width='7' height='7' rx='1.5'/%3E%3C/svg%3E";
+$icon-star: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000'%3E%3Cpath d='M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.6 6.1 20.6l1.2-6.5-4.8-4.6 6.6-.9L12 2.6z'/%3E%3C/svg%3E";
+$icon-quote: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000'%3E%3Cpath d='M4 8.5C4 6 6 4 9 4v2.4c-1.6.3-2.6 1.4-2.6 2.9H9V15H4V8.5zm10 0c0-2.5 2-4.5 5-4.5v2.4c-1.6.3-2.6 1.4-2.6 2.9H19V15h-5V8.5z'/%3E%3C/svg%3E";
+$icon-doc: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M6 3.5h8l4 4V19a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 014 19V5A1.5 1.5 0 016 3.5z'/%3E%3Cpath d='M14 3.5V8h4M8 12h8M8 16h5'/%3E%3C/svg%3E";
+$icon-tag: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M3.5 11.5L11.5 3.5H19a1.5 1.5 0 011.5 1.5v7.5l-8 8a1.5 1.5 0 01-2.1 0l-6.9-6.9a1.5 1.5 0 010-2.1z'/%3E%3Ccircle cx='15.5' cy='8.5' r='1.5'/%3E%3C/svg%3E";
+$icon-image: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Crect x='3.5' y='4.5' width='17' height='15' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.6'/%3E%3Cpath d='M4 17l5.5-5.5a2 2 0 012.8 0L20 19'/%3E%3C/svg%3E";
+$icon-user: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='12' cy='8' r='3.6'/%3E%3Cpath d='M4.5 20c1.6-3.6 4.4-5.4 7.5-5.4s5.9 1.8 7.5 5.4'/%3E%3C/svg%3E";
+$icon-gear: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 3v2.5M12 18.5V21M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M3 12h2.5M18.5 12H21M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8'/%3E%3C/svg%3E";
+$icon-home: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M4 11l8-7 8 7'/%3E%3Cpath d='M6 9.5V20a1 1 0 001 1h4v-6h2v6h4a1 1 0 001-1V9.5'/%3E%3C/svg%3E";
+$icon-receipt: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M6 3h12v18l-2.5-1.5L13 21l-2.5-1.5L8 21l-2-1.5V3z'/%3E%3Cpath d='M9 8h6M9 12h6M9 16h3'/%3E%3C/svg%3E";
+
+@layer payload-default {
+  #nav-products { @include nav-icon($icon-cube); }
+  #nav-categories { @include nav-icon($icon-grid); }
+  #nav-brands { @include nav-icon($icon-star); }
+  #nav-testimonials { @include nav-icon($icon-quote); }
+  #nav-articles { @include nav-icon($icon-doc); }
+  #nav-promotions { @include nav-icon($icon-tag); }
+  #nav-media { @include nav-icon($icon-image); }
+  #nav-users { @include nav-icon($icon-user); }
+  #nav-orders { @include nav-icon($icon-receipt); }
+  #nav-global-site-settings { @include nav-icon($icon-gear); }
+  #nav-global-homepage { @include nav-icon($icon-home); }
+
+  /* a touch more breathing room + rounder selected state, matching the site's premium feel */
+  .nav__link {
+    padding-block: 9px;
+    border-radius: 10px;
+  }
+
+  .nav__link--selected {
+    background: color-mix(in srgb, #e91e8c 16%, transparent);
+    color: #ff5cad;
+  }
+
+  a.nav__link:hover {
+    background: color-mix(in srgb, #e91e8c 9%, transparent);
+  }
+
+  .nav-group__toggle-button {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+}

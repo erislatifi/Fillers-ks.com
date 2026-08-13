@@ -1,0 +1,180 @@
+{
+  "nav": {
+    "utilityNotice": "Vetëm për profesionistë të licencuar mjekësorë dhe klinika të certifikuara të estetikës",
+    "shop": "Shop",
+    "brands": "Brendet",
+    "categories": "Kategoritë",
+    "newArrivals": "Të Reja",
+    "promotions": "Promocione",
+    "education": "Qendra Edukative",
+    "about": "Rreth Nesh",
+    "contact": "Kontakt",
+    "viewAllBrands": "Shiko të gjitha brendet",
+    "searchPlaceholder": "Kërko sipas produktit, brendit, kategorisë ose përbërësit…",
+    "account": "Llogaria",
+    "wishlist": "Të Preferuarat",
+    "menu": "Menyja"
+  },
+  "hero": {
+    "primaryCta": "Eksploro Katalogun",
+    "secondaryCta": "Bëhu Klinikë Partnere",
+    "statsProductsLabel": "Produkte në katalog",
+    "statsBrandsLabel": "Brende premium globale",
+    "statsClinicsLabel": "Klinika partnere",
+    "ratedBadge": "Vlerësuar nga 500+ klinika",
+    "authenticBadge": "100% Autentik, i Gjurmueshëm në Çdo Batch"
+  },
+  "brands": {
+    "eyebrow": "Portofoli Ynë",
+    "title": "Brendet më të besuara botërore të estetikës, në një vend.",
+    "description": "Shpërndajmë ekskluzivisht produkte origjinale, të siguruara direkt nga prodhuesit dhe kanalet e autorizuara — çdo batch plotësisht i gjurmueshëm.",
+    "viewAll": "Shiko të gjitha brendet",
+    "discover": "Zbulo",
+    "device": "PAJISJE"
+  },
+  "about": {
+    "eyebrow": "Kush Jemi Ne",
+    "statsProductsLabel": "Produkte në katalog",
+    "statsBrandsLabel": "Brende globale të përfaqësuara",
+    "statsCountriesLabel": "Vende të shërbyera — Kosovë & Shqipëri",
+    "statsClinicsLabel": "Klinika partnere"
+  },
+  "devices": {
+    "eyebrow": "Tani Duke Shpërndarë",
+    "title": "Duke sjellë brendet globale të pajisjeve në Kosovë dhe Shqipëri.",
+    "description": "Fillers Kosovo është distributori zyrtar i Jeisys dhe Clarius për Kosovë dhe Shqipëri — duke zgjeruar portofolin tonë përtej injektuesve, në pajisje me bazë energjie dhe imazhi diagnostikues.",
+    "explore": "Eksploro Lasera & Pajisje",
+    "partnerBadge": "PARTNER PAJISJESH",
+    "discover": "Zbulo"
+  },
+  "bestSellers": {
+    "eyebrow": "Më të Kërkuarat",
+    "title": "Produktet më të shitura që klinikat i riporositin çdo muaj.",
+    "description": "Formulimet të cilave profesionistët e estetikës në mbarë Kosovën u besojnë më shumë për rezultate të qëndrueshme dhe të parashikueshme.",
+    "badge": "MË I SHITURI",
+    "quickView": "Shiko Shpejt",
+    "browseAll": "Shiko të gjitha produktet më të shitura",
+    "requestQuote": "Kërko Ofertë",
+    "newBadge": "E RE"
+  },
+  "categories": {
+    "eyebrow": "Bli sipas Kategorisë",
+    "title": "Gjithçka që i duhet klinikës suaj, e organizuar sipas protokollit.",
+    "products": "produkte"
+  },
+  "why": {
+    "eyebrow": "Pse Fillers Kosovo",
+    "title": "Distributori rreth të cilit klinikat ndërtojnë protokollet e tyre.",
+    "originalTitle": "Produkte Origjinale",
+    "originalDesc": "Çdo njësi e siguruar direkt nga prodhuesit, me gjurmueshmëri të plotë të batch-it dhe dokumentacion.",
+    "certifiedTitle": "Distributor i Certifikuar",
+    "certifiedDesc": "Zyrtarisht i autorizuar për shpërndarje në gjithë Kosovën, në përputhje me standardet rajonale rregullatore.",
+    "deliveryTitle": "Dërgesë e Shpejtë",
+    "deliveryDesc": "Logjistikë me temperaturë të kontrolluar, me dërgesë në gjithë Kosovën brenda 24–48 orësh.",
+    "supportTitle": "Mbështetje Profesionale",
+    "supportDesc": "Një ekip i dedikuar specialistësh që ofron udhëzime protokolli dhe njohuri klinike për produktet.",
+    "trustedTitle": "Brende të Besuara",
+    "trustedDesc": "14 brende udhëheqëse globale, të përzgjedhura për efikasitet, siguri dhe rezultate klinike të qëndrueshme."
+  },
+  "newArrivals": {
+    "eyebrow": "Sapo Kanë Ardhur",
+    "title": "Produkte të reja, shtuar sapo në katalog.",
+    "description": "Formulimet dhe teknologjitë më të fundit tani të disponueshme për porosi.",
+    "viewAll": "Shiko të gjitha produktet e reja",
+    "badge": "PRODUKT I RI"
+  },
+  "education": {
+    "eyebrow": "Qendra Edukative",
+    "title": "Njohuri klinike për të mbështetur çdo protokoll.",
+    "description": "Udhëzues trajtimi, krahasime produktesh dhe edukim profesional të shkruara për praktikantët e estetikës.",
+    "visit": "Vizito Qendrën Edukative",
+    "readArticle": "Lexo artikullin",
+    "readSuffix": "lexim"
+  },
+  "promotions": {
+    "bundleBadge": "PAKETA KLINIKASH",
+    "bundleTitle": "Kurse deri në 15% në paketa shumë-kutish të brendeve",
+    "bundleDescription": "Furnizo protokollet e sezonit me çmime të shkallëzuara sipas volumit për Juvéderm, Teosyal dhe Profhilo.",
+    "bundleCta": "Eksploro paketat",
+    "offerBadge": "OFERTË E RE PARTNERITETI",
+    "offerTitle": "10% zbritje në porosinë e parë të klinikës suaj",
+    "offerDescription": "Regjistrohu si klinikë partnere e verifikuar dhe merr një zbritje mirëseardhjeje në blerjen tënde të parë.",
+    "offerCta": "Bëhu partner"
+  },
+  "testimonials": {
+    "eyebrow": "Të Besuar nga Klinikat",
+    "title": "Çka thonë klinikat tona partnere."
+  },
+  "instagram": {
+    "eyebrow": "Na Ndiq",
+    "viewOnInstagram": "Shiko në Instagram"
+  },
+  "newsletter": {
+    "eyebrow": "Qëndro i Informuar",
+    "title": "Produkte të reja, promocione dhe edukim klinik — direkt në email-in tënd.",
+    "description": "Vetëm për profesionistë të licencuar. Çabonohu kurdo.",
+    "placeholder": "emri.juaj@klinika.com",
+    "subscribe": "Abonohu"
+  },
+  "footer": {
+    "tagline": "Distributori i certifikuar i Kosovës për mjekësi estetike premium — duke shërbyer profesionistë të licencuar me produkte origjinale dhe mbështetje klinike që nga dita e parë.",
+    "brandsHeading": "Brendet",
+    "viewAllBrands": "Shiko të gjitha brendet",
+    "categoriesHeading": "Kategoritë",
+    "companyHeading": "Kompania",
+    "aboutUs": "Rreth Nesh",
+    "education": "Qendra Edukative",
+    "promotions": "Promocione",
+    "becomePartner": "Bëhu Partner",
+    "contact": "Kontakt",
+    "contactHeading": "Kontakt",
+    "hours": "Hën–Pre, 09:00–17:00",
+    "newsletterHeading": "Buletini",
+    "emailPlaceholder": "Adresa e email-it",
+    "join": "Bashkohu",
+    "noticeLabel": "Njoftim Profesional:",
+    "notice": "Të gjitha produktet e listuara në fillers-ks.com janë të destinuara ekskluzivisht për përdorim nga mjekë të licencuar, dermatologë dhe praktikantë të certifikuar të estetikës. Produktet nuk shiten për publikun e gjerë. Duke krijuar një llogari, konfirmoni se zotëroni licencë profesionale të vlefshme për të blerë dhe administruar këto produkte.",
+    "rights": "Të gjitha të drejtat e rezervuara.",
+    "privacy": "Politika e Privatësisë",
+    "terms": "Kushtet e Shërbimit",
+    "shipping": "Politika e Dërgesës"
+  },
+  "cart": {
+    "title": "Shporta",
+    "emptyTitle": "Shporta jote është bosh",
+    "emptyDescription": "Shto produkte nga katalogu për t'i porositur.",
+    "browseCatalog": "Shiko Katalogun",
+    "decrease": "Zvogëlo sasinë",
+    "increase": "Shto sasinë",
+    "remove": "Hiq nga shporta",
+    "orderSummary": "Përmbledhja e Porosisë",
+    "subtotal": "Nëntotali",
+    "shippingNote": "Dërgesa dhe data e saktë e mbërritjes konfirmohen nga ekipi ynë pas porosisë.",
+    "proceedToCheckout": "Vazhdo te Përfundimi i Porosisë",
+    "addToCart": "Shto në Shportë",
+    "added": "U shtua!"
+  },
+  "checkout": {
+    "title": "Përfundo Porosinë",
+    "description": "Plotëso të dhënat e klinikës — ekipi ynë do t'ju kontaktojë për të konfirmuar porosinë dhe datën e dërgesës.",
+    "clinicName": "Emri i klinikës",
+    "contactName": "Personi kontaktues",
+    "email": "Email",
+    "phone": "Telefoni",
+    "address": "Adresa e dërgesës",
+    "deliveryDate": "Data e dëshiruar e dërgesës",
+    "notes": "Shënime (opsionale)",
+    "notesPlaceholder": "P.sh. orare preferuara dërgese, udhëzime aksesi…",
+    "orderSummary": "Përmbledhja e Porosisë",
+    "submit": "Dërgo Porosinë",
+    "submitting": "Duke dërguar…",
+    "successTitle": "Porosia u pranua!",
+    "successDescription": "Faleminderit! Ekipi ynë do t'ju kontaktojë brenda 1 dite pune për të konfirmuar porosinë dhe datën e dërgesës.",
+    "orderNumber": "Numri i porosisë",
+    "backToHome": "Kthehu në Ballinë",
+    "professionalNotice": "Vetëm për profesionistë të licencuar mjekësorë dhe klinika të certifikuara. Ekipi ynë mund të kërkojë verifikim të licencës para konfirmimit final.",
+    "required": "Kjo fushë është e detyrueshme",
+    "errorTitle": "Diçka shkoi keq",
+    "errorDescription": "S'arritëm ta dërgojmë porosinë. Provo përsëri ose na kontakto direkt."
+  }
+}

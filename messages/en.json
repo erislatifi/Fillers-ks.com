@@ -1,0 +1,180 @@
+{
+  "nav": {
+    "utilityNotice": "For licensed medical professionals & certified aesthetic clinics only",
+    "shop": "Shop",
+    "brands": "Brands",
+    "categories": "Categories",
+    "newArrivals": "New Arrivals",
+    "promotions": "Promotions",
+    "education": "Educational Center",
+    "about": "About Us",
+    "contact": "Contact",
+    "viewAllBrands": "View all brands",
+    "searchPlaceholder": "Search by product, brand, category or ingredient…",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "menu": "Menu"
+  },
+  "hero": {
+    "primaryCta": "Explore the Catalog",
+    "secondaryCta": "Become a Partner Clinic",
+    "statsProductsLabel": "Products in catalog",
+    "statsBrandsLabel": "Premium global brands",
+    "statsClinicsLabel": "Partner clinics",
+    "ratedBadge": "Rated by 500+ clinics",
+    "authenticBadge": "100% Authentic, Traceable Batches"
+  },
+  "brands": {
+    "eyebrow": "Our Portfolio",
+    "title": "The world's most trusted aesthetic brands, in one place.",
+    "description": "We distribute exclusively original products, sourced directly from manufacturers and authorized channels — every batch fully traceable.",
+    "viewAll": "View all brands",
+    "discover": "Discover",
+    "device": "DEVICE"
+  },
+  "about": {
+    "eyebrow": "Who We Are",
+    "statsProductsLabel": "Products in catalog",
+    "statsBrandsLabel": "Global brands represented",
+    "statsCountriesLabel": "Countries served — Kosovo & Albania",
+    "statsClinicsLabel": "Partner clinics"
+  },
+  "devices": {
+    "eyebrow": "Now Distributing",
+    "title": "Bringing global device brands to Kosovo and Albania.",
+    "description": "Fillers Kosovo is the official distributor of Jeisys and Clarius for Kosovo and Albania — extending our portfolio beyond injectables into energy-based devices and diagnostic imaging.",
+    "explore": "Explore Lasers & Devices",
+    "partnerBadge": "DEVICE PARTNER",
+    "discover": "Discover"
+  },
+  "bestSellers": {
+    "eyebrow": "Most Requested",
+    "title": "Best sellers clinics reorder every month.",
+    "description": "The formulations aesthetic professionals across Kosovo trust most for consistent, predictable results.",
+    "badge": "BEST SELLER",
+    "quickView": "Quick View",
+    "browseAll": "Browse all best sellers",
+    "requestQuote": "Request a Quote",
+    "newBadge": "NEW"
+  },
+  "categories": {
+    "eyebrow": "Shop by Category",
+    "title": "Everything your clinic needs, organized by protocol.",
+    "products": "products"
+  },
+  "why": {
+    "eyebrow": "Why Fillers Kosovo",
+    "title": "The distributor clinics build their protocols around.",
+    "originalTitle": "Original Products",
+    "originalDesc": "Every unit sourced directly from manufacturers, with full batch traceability and documentation.",
+    "certifiedTitle": "Certified Distributor",
+    "certifiedDesc": "Officially authorized to distribute across Kosovo, meeting regional regulatory standards.",
+    "deliveryTitle": "Fast Delivery",
+    "deliveryDesc": "Temperature-controlled logistics with delivery across Kosovo in as little as 24–48 hours.",
+    "supportTitle": "Professional Support",
+    "supportDesc": "A dedicated team of specialists offering protocol guidance and clinical product knowledge.",
+    "trustedTitle": "Trusted Brands",
+    "trustedDesc": "14 leading global brands, curated for efficacy, safety and consistent clinical outcomes."
+  },
+  "newArrivals": {
+    "eyebrow": "Just Landed",
+    "title": "New arrivals, freshly added to the catalog.",
+    "description": "The latest formulations and technologies now available for order.",
+    "viewAll": "View all new arrivals",
+    "badge": "NEW ARRIVAL"
+  },
+  "education": {
+    "eyebrow": "Educational Center",
+    "title": "Clinical knowledge to support every protocol.",
+    "description": "Treatment guides, product comparisons and professional education written for aesthetic practitioners.",
+    "visit": "Visit the Educational Center",
+    "readArticle": "Read article",
+    "readSuffix": "read"
+  },
+  "promotions": {
+    "bundleBadge": "CLINIC BUNDLES",
+    "bundleTitle": "Save up to 15% on multi-box brand bundles",
+    "bundleDescription": "Stock your protocols for the season with tiered volume pricing across Juvéderm, Teosyal and Profhilo.",
+    "bundleCta": "Explore bundles",
+    "offerBadge": "NEW PARTNER OFFER",
+    "offerTitle": "10% off your clinic's first order",
+    "offerDescription": "Register as a verified partner clinic and receive a welcome discount on your first purchase.",
+    "offerCta": "Become a partner"
+  },
+  "testimonials": {
+    "eyebrow": "Trusted by Clinics",
+    "title": "What our partner clinics say."
+  },
+  "instagram": {
+    "eyebrow": "Follow Along",
+    "viewOnInstagram": "View on Instagram"
+  },
+  "newsletter": {
+    "eyebrow": "Stay Informed",
+    "title": "New products, promotions and clinical education — straight to your inbox.",
+    "description": "For licensed professionals only. Unsubscribe anytime.",
+    "placeholder": "your.name@clinic.com",
+    "subscribe": "Subscribe"
+  },
+  "footer": {
+    "tagline": "Kosovo's certified distributor of premium aesthetic medicine — serving licensed professionals with original products and clinical support since day one.",
+    "brandsHeading": "Brands",
+    "viewAllBrands": "View all brands",
+    "categoriesHeading": "Categories",
+    "companyHeading": "Company",
+    "aboutUs": "About Us",
+    "education": "Educational Center",
+    "promotions": "Promotions",
+    "becomePartner": "Become a Partner",
+    "contact": "Contact",
+    "contactHeading": "Contact",
+    "hours": "Mon–Fri, 09:00–17:00",
+    "newsletterHeading": "Newsletter",
+    "emailPlaceholder": "Email address",
+    "join": "Join",
+    "noticeLabel": "Professional Notice:",
+    "notice": "All products listed on fillers-ks.com are intended exclusively for use by licensed medical doctors, dermatologists and certified aesthetic practitioners. Products are not sold to the general public. By creating an account, you confirm you hold a valid professional license to purchase and administer these products.",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "shipping": "Shipping Policy"
+  },
+  "cart": {
+    "title": "Cart",
+    "emptyTitle": "Your cart is empty",
+    "emptyDescription": "Add products from the catalog to place an order.",
+    "browseCatalog": "Browse Catalog",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "remove": "Remove from cart",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shippingNote": "Shipping and the exact delivery date are confirmed by our team after you order.",
+    "proceedToCheckout": "Proceed to Checkout",
+    "addToCart": "Add to Cart",
+    "added": "Added!"
+  },
+  "checkout": {
+    "title": "Complete Your Order",
+    "description": "Fill in your clinic's details — our team will contact you to confirm the order and delivery date.",
+    "clinicName": "Clinic name",
+    "contactName": "Contact person",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Delivery address",
+    "deliveryDate": "Requested delivery date",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "E.g. preferred delivery hours, access instructions…",
+    "orderSummary": "Order Summary",
+    "submit": "Submit Order",
+    "submitting": "Submitting…",
+    "successTitle": "Order received!",
+    "successDescription": "Thank you! Our team will contact you within 1 business day to confirm your order and delivery date.",
+    "orderNumber": "Order number",
+    "backToHome": "Back to Home",
+    "professionalNotice": "For licensed medical professionals and certified clinics only. Our team may request license verification before final confirmation.",
+    "required": "This field is required",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "We couldn't submit your order. Please try again or contact us directly."
+  }
+}

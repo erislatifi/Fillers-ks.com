@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #ffffff;
+  --mist: #f7f6f6;
+  --mist-2: #f0eef0;
+  --ink: #14121a;
+  --ink-soft: #5c5860;
+  --ink-faint: #8b8790;
+  --line: #e6e2e6;
+  --line-soft: #edeaed;
+
+  /* brand marque gradient, sampled from the Fillers Kosovo logo */
+  --brand-gold: #f2c879;
+  --brand-pink: #e91e8c;
+  --brand-purple: #6c3f9e;
+  --brand-teal: #155e75;
+  --brand-gradient: linear-gradient(
+    120deg,
+    var(--brand-gold) 0%,
+    var(--brand-pink) 38%,
+    var(--brand-purple) 66%,
+    var(--brand-teal) 100%
+  );
+
+  /* accent = primary UI accent derived from the brand mark (magenta/pink stop) */
+  --accent: #e91e8c;
+  --accent-light: #f2c879;
+  --accent-pale: #fdeaf4;
+  --accent-deep: #9c1668;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-mist: var(--mist);
+  --color-mist-2: var(--mist-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-pale: var(--accent-pale);
+  --color-accent-deep: var(--accent-deep);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-teal: var(--brand-teal);
+
+  --font-display: var(--font-manrope);
+  --font-sans: var(--font-inter);
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--accent-pale);
+  color: var(--accent-deep);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.brand-gradient-text {
+  background-image: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.prose-fk p {
+  margin-bottom: 1.25em;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+.prose-fk h2 {
+  font-family: var(--font-display);
+  font-size: 1.4em;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  color: var(--ink);
+}
+.prose-fk a {
+  color: var(--accent-deep);
+  text-decoration: underline;
+}
+.prose-fk ul,
+.prose-fk ol {
+  margin: 1em 0 1.25em 1.25em;
+  color: var(--ink-soft);
+}
+
+/* thin, elegant scrollbars for horizontal rails */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.rail {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.rail > * {
+  scroll-snap-align: start;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.bg-noise {
+  background-image: radial-gradient(circle at 1px 1px, rgba(20, 18, 26, 0.035) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.input::placeholder {
+  color: var(--ink-faint);
+}
+.input:focus {
+  border-color: var(--accent);
+}
