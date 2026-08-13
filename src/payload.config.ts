@@ -45,6 +45,15 @@ if (process.env.POSTGRES_URI) {
         '[db-check] Postgres connection OK. Tables in public schema:',
         rows.map((r) => r.table_name).join(', ') || '(none)',
       )
+      // Cross-environment identity test: write a marker row so we can check
+      // from elsewhere whether that read reaches the same physical database.
+      await client.query(
+        `create table if not exists db_check_marker (id serial primary key, note text, created_at timestamptz default now())`,
+      )
+      const mark = await client.query(
+        `insert into db_check_marker (note) values ('hostinger-runtime') returning id, created_at`,
+      )
+      console.log('[db-check] Wrote marker row:', JSON.stringify(mark.rows[0]))
       await client.end()
     } catch (err) {
       console.error('[db-check] Postgres connection FAILED:', err)
