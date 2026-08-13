@@ -30,8 +30,13 @@ if (process.env.POSTGRES_URI) {
     const client = new Client({ connectionString: process.env.POSTGRES_URI })
     try {
       await client.connect()
-      await client.query('select 1')
-      console.log('[db-check] Postgres connection OK')
+      const { rows } = await client.query(
+        `select table_name from information_schema.tables where table_schema = 'public' order by table_name`,
+      )
+      console.log(
+        '[db-check] Postgres connection OK. Tables in public schema:',
+        rows.map((r) => r.table_name).join(', ') || '(none)',
+      )
       await client.end()
     } catch (err) {
       console.error('[db-check] Postgres connection FAILED:', err)
