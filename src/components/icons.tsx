@@ -144,6 +144,45 @@ export function BadgeCheckIcon({ className }: IconProps) {
   );
 }
 
+export function CreditCardIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="6" width="18" height="13" rx="2.2" />
+      <path d="M3 10.5h18" />
+      <path d="M7 15h4" />
+    </svg>
+  );
+}
+
+export function BuildingIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 21V5.5a1 1 0 011-1h6a1 1 0 011 1V21" />
+      <path d="M13 10.5h5a1 1 0 011 1V21" />
+      <path d="M3 21h18" />
+      <path d="M8 8.5h.01M8 12h.01M8 15.5h.01" />
+    </svg>
+  );
+}
+
+export function MapPinIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s7-6.5 7-11.5A7 7 0 105 9.5C5 14.5 12 21 12 21z" />
+      <circle cx="12" cy="9.5" r="2.4" />
+    </svg>
+  );
+}
+
+export function LockIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} stroke="currentColor" strokeWidth={base} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V7.5a4 4 0 118 0V11" />
+    </svg>
+  );
+}
+
 /* category icons */
 
 export function DropIcon({ className }: IconProps) {

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { Product } from "@/payload-types";
 import { MediaFrame, VialGlyph, DeviceGlyph, UploadedImage, mediaUrl, hueFromSlug } from "@/components/media";
 import { HeartIcon, BagIcon } from "@/components/icons";
+import { Badge } from "@/components/Badge";
 import { useCart } from "@/contexts/CartContext";
 
 type Props = {
@@ -50,16 +51,8 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
           )}
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {product.bestSeller && (
-              <span className="rounded-full bg-ink text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1">
-                {t("badge")}
-              </span>
-            )}
-            {product.newArrival && (
-              <span className="rounded-full bg-accent text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1">
-                {t("newBadge")}
-              </span>
-            )}
+            {product.bestSeller && <Badge variant="dark">{t("badge")}</Badge>}
+            {product.newArrival && <Badge variant="accent">{t("newBadge")}</Badge>}
           </div>
 
           <button

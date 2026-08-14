@@ -14,7 +14,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'orderNumber',
     group: 'Sales',
-    defaultColumns: ['orderNumber', 'clinicName', 'status', 'requestedDeliveryDate', 'subtotal', 'createdAt'],
+    defaultColumns: ['orderNumber', 'clinicName', 'status', 'paymentMethod', 'requestedDeliveryDate', 'subtotal', 'createdAt'],
   },
   access: {
     // Checkout submits orders without being logged in.
@@ -49,6 +49,16 @@ export const Orders: CollectionConfig = {
     { name: 'deliveryAddress', type: 'textarea', required: true },
     { name: 'requestedDeliveryDate', type: 'date', required: true },
     { name: 'notes', type: 'textarea' },
+    {
+      name: 'paymentMethod',
+      type: 'select',
+      required: true,
+      defaultValue: 'pickup',
+      options: [
+        { label: 'Pick up at our office', value: 'pickup' },
+        { label: 'Bank transfer', value: 'bank_transfer' },
+      ],
+    },
     {
       name: 'items',
       type: 'array',

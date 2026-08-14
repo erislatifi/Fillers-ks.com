@@ -175,6 +175,27 @@
     "professionalNotice": "Vetëm për profesionistë të licencuar mjekësorë dhe klinika të certifikuara. Ekipi ynë mund të kërkojë verifikim të licencës para konfirmimit final.",
     "required": "Kjo fushë është e detyrueshme",
     "errorTitle": "Diçka shkoi keq",
-    "errorDescription": "S'arritëm ta dërgojmë porosinë. Provo përsëri ose na kontakto direkt."
+    "errorDescription": "S'arritëm ta dërgojmë porosinë. Provo përsëri ose na kontakto direkt.",
+    "payment": {
+      "heading": "Mënyra e Pagesës",
+      "pickupLabel": "Merr në zyrën tonë",
+      "pickupDescription": "Pa dërgesë — merret në lokacionin tonë",
+      "bankLabel": "Transfer Bankar",
+      "bankDescription": "Paguaj përmes bankës, konfirmohet nga ekipi ynë",
+      "cardLabel": "Pagesë me Kartelë",
+      "cardDescription": "Paguaj online me kartelë",
+      "comingSoon": "Së shpejti",
+      "bankName": "Banka",
+      "accountHolder": "Mbajtësi i llogarisë",
+      "iban": "IBAN",
+      "swift": "SWIFT/BIC",
+      "secureCheckout": "Checkout i Sigurt — të dhënat tuaja janë të enkriptuara dhe të mbrojtura",
+      "trustNote": "Biznes i regjistruar — Nr. Regj. {regNumber}",
+      "privacyLink": "Lexo Politikën e Privatësisë",
+      "trustedByClinics": "I besuar nga 500+ klinika partnere në Kosovë"
+    }
+  },
+  "productPage": {
+    "deliveryEstimate": "Dërgesë brenda 1-2 ditësh pune"
   }
 }

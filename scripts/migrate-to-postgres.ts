@@ -337,6 +337,7 @@ async function main() {
         phone: order.phone,
         deliveryAddress: order.deliveryAddress,
         requestedDeliveryDate: order.requestedDeliveryDate,
+        paymentMethod: order.paymentMethod ?? "pickup",
         notes: order.notes,
         items: order.items,
         subtotal: order.subtotal,

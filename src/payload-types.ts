@@ -333,6 +333,7 @@ export interface Order {
   deliveryAddress: string;
   requestedDeliveryDate: string;
   notes?: string | null;
+  paymentMethod: 'pickup' | 'bank_transfer';
   items: {
     product?: (number | null) | Product;
     name: string;
@@ -627,6 +628,7 @@ export interface OrdersSelect<T extends boolean = true> {
   deliveryAddress?: T;
   requestedDeliveryDate?: T;
   notes?: T;
+  paymentMethod?: T;
   items?:
     | T
     | {
@@ -691,6 +693,13 @@ export interface SiteSetting {
   contactPhone?: string | null;
   contactEmail?: string | null;
   address?: string | null;
+  businessRegistrationNumber?: string | null;
+  bankDetails?: {
+    bankName?: string | null;
+    accountHolder?: string | null;
+    iban?: string | null;
+    swift?: string | null;
+  };
   socialLinks?:
     | {
         platform?: ('instagram' | 'facebook' | 'linkedin') | null;
@@ -740,6 +749,15 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   contactPhone?: T;
   contactEmail?: T;
   address?: T;
+  businessRegistrationNumber?: T;
+  bankDetails?:
+    | T
+    | {
+        bankName?: T;
+        accountHolder?: T;
+        iban?: T;
+        swift?: T;
+      };
   socialLinks?:
     | T
     | {

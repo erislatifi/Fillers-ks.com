@@ -11,6 +11,8 @@ type CheckoutItem = {
   quantity: number;
 };
 
+type PaymentMethod = "pickup" | "bank_transfer";
+
 type CheckoutInput = {
   clinicName: string;
   contactName: string;
@@ -19,6 +21,7 @@ type CheckoutInput = {
   deliveryAddress: string;
   requestedDeliveryDate: string;
   notes?: string;
+  paymentMethod: PaymentMethod;
   items: CheckoutItem[];
 };
 
@@ -38,6 +41,9 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
     !input.deliveryAddress?.trim() ||
     !input.requestedDeliveryDate
   ) {
+    return { success: false, error: "missing-fields" };
+  }
+  if (input.paymentMethod !== "pickup" && input.paymentMethod !== "bank_transfer") {
     return { success: false, error: "missing-fields" };
   }
 
@@ -74,6 +80,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         deliveryAddress: input.deliveryAddress,
         requestedDeliveryDate: input.requestedDeliveryDate,
         notes: input.notes,
+        paymentMethod: input.paymentMethod,
         items,
         subtotal,
       },

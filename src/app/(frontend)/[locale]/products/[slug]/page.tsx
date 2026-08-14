@@ -6,7 +6,8 @@ import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductCard } from "@/components/ProductCard";
 import { Rail } from "@/components/Rail";
 import { MediaFrame, VialGlyph, DeviceGlyph, UploadedImage, mediaUrl, hueFromSlug } from "@/components/media";
-import { ArrowRightIcon, ShieldCheckIcon } from "@/components/icons";
+import { ArrowRightIcon, ShieldCheckIcon, TruckIcon } from "@/components/icons";
+import { Badge } from "@/components/Badge";
 import { getProductBySlug, getProductsByBrand } from "@/lib/payload";
 import type { AppLocale } from "@/i18n/routing";
 
@@ -33,6 +34,7 @@ export default async function ProductPage({ params }: Props) {
   const brand = typeof product.brand === "object" ? product.brand : null;
   const category = typeof product.category === "object" ? product.category : null;
   const t = await getTranslations("bestSellers");
+  const tp = await getTranslations("productPage");
   const Glyph = category?.slug === "lasers-devices" ? DeviceGlyph : VialGlyph;
   const images = (product.images ?? []).filter((img) => mediaUrl(img));
 
@@ -64,14 +66,14 @@ export default async function ProductPage({ params }: Props) {
                   <Glyph className="absolute inset-0 h-full w-full p-16 text-ink/55" />
                 )}
                 {product.bestSeller && (
-                  <span className="absolute top-4 left-4 rounded-full bg-ink text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1">
+                  <Badge variant="dark" className="absolute top-4 left-4">
                     {t("badge")}
-                  </span>
+                  </Badge>
                 )}
                 {product.newArrival && (
-                  <span className="absolute top-4 right-4 rounded-full bg-accent text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1">
+                  <Badge variant="accent" className="absolute top-4 right-4">
                     {t("newBadge")}
-                  </span>
+                  </Badge>
                 )}
               </MediaFrame>
 
@@ -125,6 +127,11 @@ export default async function ProductPage({ params }: Props) {
                   </Button>
                 )}
               </div>
+
+              <p className="mt-3 flex items-center gap-1.5 text-[12.5px] text-ink-faint">
+                <TruckIcon className="h-4 w-4 text-accent-deep" />
+                {tp("deliveryEstimate")}
+              </p>
 
               <div className="mt-10 rounded-2xl border border-line bg-mist p-5 flex items-start gap-3">
                 <ShieldCheckIcon className="h-5 w-5 text-accent-deep shrink-0 mt-0.5" />

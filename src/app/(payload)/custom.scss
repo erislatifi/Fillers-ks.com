@@ -34,7 +34,57 @@ $icon-gear: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill=
 $icon-home: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M4 11l8-7 8 7'/%3E%3Cpath d='M6 9.5V20a1 1 0 001 1h4v-6h2v6h4a1 1 0 001-1V9.5'/%3E%3C/svg%3E";
 $icon-receipt: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Cpath d='M6 3h12v18l-2.5-1.5L13 21l-2.5-1.5L8 21l-2-1.5V3z'/%3E%3Cpath d='M9 8h6M9 12h6M9 16h3'/%3E%3C/svg%3E";
 
+:root {
+  /* Softer, rounder corners across the whole admin — matches the storefront's premium feel. */
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 16px;
+  /* Warm off-white instead of flat gray, matching the storefront's --mist token. */
+  --theme-elevation-50: #f7f6f6;
+}
+
 @layer payload-default {
+  /* Login screen: centered card on a soft brand-gradient backdrop instead of a bare form. */
+  .template-minimal {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 0%, rgba(242, 200, 121, 0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 85% 100%, rgba(233, 30, 140, 0.12) 0%, transparent 60%),
+      #f7f6f6;
+    padding: 24px;
+  }
+
+  .template-minimal__wrap {
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 40px;
+    box-shadow: 0 24px 60px -24px rgba(20, 18, 26, 0.18);
+    border: 1px solid #e6e2e6;
+  }
+
+  .login__brand svg {
+    width: 40px;
+    height: auto;
+  }
+
+  .login__brand span {
+    font-size: 24px !important;
+  }
+
+  /* Primary buttons in the brand accent, matching the storefront's Button component. */
+  .btn.btn--style-primary:not(.btn--disabled) {
+    background: #e91e8c;
+    border-color: #e91e8c;
+  }
+
+  .btn.btn--style-primary:not(.btn--disabled):hover {
+    background: #9c1668;
+    border-color: #9c1668;
+  }
+
   #nav-products { @include nav-icon($icon-cube); }
   #nav-categories { @include nav-icon($icon-grid); }
   #nav-brands { @include nav-icon($icon-star); }

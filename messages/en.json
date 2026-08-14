@@ -175,6 +175,27 @@
     "professionalNotice": "For licensed medical professionals and certified clinics only. Our team may request license verification before final confirmation.",
     "required": "This field is required",
     "errorTitle": "Something went wrong",
-    "errorDescription": "We couldn't submit your order. Please try again or contact us directly."
+    "errorDescription": "We couldn't submit your order. Please try again or contact us directly.",
+    "payment": {
+      "heading": "Payment Method",
+      "pickupLabel": "Pick up at our office",
+      "pickupDescription": "No shipping — collect at our location",
+      "bankLabel": "Bank transfer",
+      "bankDescription": "Pay via bank, confirmed by our team",
+      "cardLabel": "Card payment",
+      "cardDescription": "Pay online with a card",
+      "comingSoon": "Coming soon",
+      "bankName": "Bank",
+      "accountHolder": "Account holder",
+      "iban": "IBAN",
+      "swift": "SWIFT/BIC",
+      "secureCheckout": "Secure Checkout — your information is encrypted and protected",
+      "trustNote": "Registered business — Reg. No. {regNumber}",
+      "privacyLink": "Read our Privacy Policy",
+      "trustedByClinics": "Trusted by 500+ partner clinics across Kosovo"
+    }
+  },
+  "productPage": {
+    "deliveryEstimate": "Delivery within 1-2 business days"
   }
 }
