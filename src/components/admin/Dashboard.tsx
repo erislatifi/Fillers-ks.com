@@ -18,7 +18,7 @@ export async function Dashboard({ payload }: { payload: Payload }) {
     totalTestimonials,
     totalArticles,
     totalPromotions,
-    pendingOrders,
+    allOrders,
     recentOrders,
   ] = await Promise.all([
     statCard(payload, "products"),
@@ -31,21 +31,49 @@ export async function Dashboard({ payload }: { payload: Payload }) {
     statCard(payload, "testimonials"),
     statCard(payload, "articles"),
     statCard(payload, "promotions"),
-    statCard(payload, "orders", { status: { equals: "pending" } }),
+    payload.find({ collection: "orders", limit: 1000, depth: 0 }),
     payload.find({ collection: "orders", limit: 6, sort: "-createdAt", depth: 0 }),
   ]);
 
-  const allPending = await payload.find({
-    collection: "orders",
-    where: { status: { equals: "pending" } },
-    limit: 1000,
-    depth: 0,
-  });
-  const pendingValue = allPending.docs.reduce((sum, o) => sum + (o.subtotal ?? 0), 0);
+  const totalOrders = allOrders.totalDocs;
+  const pendingOrderDocs = allOrders.docs.filter((o) => o.status === "pending");
+  const pendingOrders = pendingOrderDocs.length;
+  const pendingValue = pendingOrderDocs.reduce((sum, o) => sum + (o.subtotal ?? 0), 0);
 
   const missingImages = allProducts.docs.filter(
     (p) => !p.images || p.images.length === 0,
   ).length;
+
+  function topN(entries: Map<string, number>, n: number) {
+    return Array.from(entries.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([name, value]) => ({ name, value }));
+  }
+
+  const productQuantities = new Map<string, number>();
+  for (const order of allOrders.docs) {
+    for (const item of order.items ?? []) {
+      productQuantities.set(item.name, (productQuantities.get(item.name) ?? 0) + item.quantity);
+    }
+  }
+  const topProducts = topN(productQuantities, 5);
+  const maxProductQty = Math.max(1, ...topProducts.map((p) => p.value));
+
+  const clinicRevenue = new Map<string, number>();
+  for (const order of allOrders.docs) {
+    clinicRevenue.set(order.clinicName, (clinicRevenue.get(order.clinicName) ?? 0) + (order.subtotal ?? 0));
+  }
+  const topClinics = topN(clinicRevenue, 5);
+  const maxClinicRevenue = Math.max(1, ...topClinics.map((c) => c.value));
+
+  const cityRevenue = new Map<string, number>();
+  for (const order of allOrders.docs) {
+    if (!order.city) continue;
+    cityRevenue.set(order.city, (cityRevenue.get(order.city) ?? 0) + (order.subtotal ?? 0));
+  }
+  const topCities = topN(cityRevenue, 5);
+  const maxCityRevenue = Math.max(1, ...topCities.map((c) => c.value));
 
   const categories = await payload.find({ collection: "categories", limit: 50 });
   const categoryBreakdown = await Promise.all(
@@ -57,6 +85,7 @@ export async function Dashboard({ payload }: { payload: Payload }) {
   const maxCount = Math.max(1, ...categoryBreakdown.map((c) => c.count));
 
   const cards: { label: string; value: number | string; hint?: string }[] = [
+    { label: "Total Orders", value: totalOrders },
     { label: "Pending Orders", value: pendingOrders, hint: pendingOrders > 0 ? "needs review" : "all clear" },
     { label: "Pending Order Value", value: `€${pendingValue.toFixed(0)}` },
     { label: "Products", value: totalProducts },
@@ -106,7 +135,7 @@ export async function Dashboard({ payload }: { payload: Payload }) {
         {categoryBreakdown.map((c) => (
           <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <span style={{ width: 150, fontSize: 13, opacity: 0.8 }}>{c.name}</span>
-            <div style={{ flex: 1, background: "rgba(255,255,255,0.06)", borderRadius: 4, height: 10, overflow: "hidden" }}>
+            <div style={{ flex: 1, background: "var(--theme-elevation-100)", borderRadius: 4, height: 10, overflow: "hidden" }}>
               <div
                 style={{
                   width: `${(c.count / maxCount) * 100}%`,
@@ -118,6 +147,65 @@ export async function Dashboard({ payload }: { payload: Payload }) {
             <span style={{ width: 24, fontSize: 13, textAlign: "right", opacity: 0.8 }}>{c.count}</span>
           </div>
         ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, marginBottom: 40 }}>
+        <div>
+          <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Top-selling products</h2>
+          {topProducts.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {topProducts.map((p) => (
+                <div key={p.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 130, fontSize: 13, opacity: 0.8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</span>
+                  <div style={{ flex: 1, background: "var(--theme-elevation-100)", borderRadius: 4, height: 10, overflow: "hidden" }}>
+                    <div style={{ width: `${(p.value / maxProductQty) * 100}%`, background: "linear-gradient(90deg, #f2c879, #e91e8c)", height: "100%" }} />
+                  </div>
+                  <span style={{ width: 30, fontSize: 13, textAlign: "right", opacity: 0.8 }}>{p.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, opacity: 0.6 }}>No orders yet.</p>
+          )}
+        </div>
+
+        <div>
+          <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Top clinics by revenue</h2>
+          {topClinics.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {topClinics.map((c) => (
+                <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 130, fontSize: 13, opacity: 0.8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</span>
+                  <div style={{ flex: 1, background: "var(--theme-elevation-100)", borderRadius: 4, height: 10, overflow: "hidden" }}>
+                    <div style={{ width: `${(c.value / maxClinicRevenue) * 100}%`, background: "linear-gradient(90deg, #f2c879, #e91e8c)", height: "100%" }} />
+                  </div>
+                  <span style={{ width: 50, fontSize: 13, textAlign: "right", opacity: 0.8 }}>€{c.value.toFixed(0)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, opacity: 0.6 }}>No orders yet.</p>
+          )}
+        </div>
+
+        <div>
+          <h2 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Top cities by revenue</h2>
+          {topCities.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {topCities.map((c) => (
+                <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 130, fontSize: 13, opacity: 0.8, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</span>
+                  <div style={{ flex: 1, background: "var(--theme-elevation-100)", borderRadius: 4, height: 10, overflow: "hidden" }}>
+                    <div style={{ width: `${(c.value / maxCityRevenue) * 100}%`, background: "linear-gradient(90deg, #f2c879, #e91e8c)", height: "100%" }} />
+                  </div>
+                  <span style={{ width: 50, fontSize: 13, textAlign: "right", opacity: 0.8 }}>€{c.value.toFixed(0)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, opacity: 0.6 }}>No orders with a city yet.</p>
+          )}
+        </div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>

@@ -47,6 +47,7 @@ export const Orders: CollectionConfig = {
     { name: 'email', type: 'email', required: true },
     { name: 'phone', type: 'text', required: true },
     { name: 'deliveryAddress', type: 'textarea', required: true },
+    { name: 'city', type: 'text', required: true },
     { name: 'requestedDeliveryDate', type: 'date', required: true },
     { name: 'notes', type: 'textarea' },
     {

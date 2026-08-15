@@ -162,6 +162,7 @@
     "email": "Email",
     "phone": "Phone",
     "address": "Delivery address",
+    "city": "City",
     "deliveryDate": "Requested delivery date",
     "notes": "Notes (optional)",
     "notesPlaceholder": "E.g. preferred delivery hours, access instructions…",

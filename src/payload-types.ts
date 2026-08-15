@@ -331,6 +331,7 @@ export interface Order {
   email: string;
   phone: string;
   deliveryAddress: string;
+  city: string;
   requestedDeliveryDate: string;
   notes?: string | null;
   paymentMethod: 'pickup' | 'bank_transfer';
@@ -626,6 +627,7 @@ export interface OrdersSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   deliveryAddress?: T;
+  city?: T;
   requestedDeliveryDate?: T;
   notes?: T;
   paymentMethod?: T;

@@ -162,6 +162,7 @@
     "email": "Email",
     "phone": "Telefoni",
     "address": "Adresa e dërgesës",
+    "city": "Qyteti",
     "deliveryDate": "Data e dëshiruar e dërgesës",
     "notes": "Shënime (opsionale)",
     "notesPlaceholder": "P.sh. orare preferuara dërgese, udhëzime aksesi…",

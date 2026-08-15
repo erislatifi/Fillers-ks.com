@@ -74,15 +74,43 @@ $icon-receipt: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fi
     font-size: 24px !important;
   }
 
-  /* Primary buttons in the brand accent, matching the storefront's Button component. */
-  .btn.btn--style-primary:not(.btn--disabled) {
+  /* Primary + pill buttons (Save, Publish, Create New) in the brand accent. */
+  .btn.btn--style-primary:not(.btn--disabled),
+  .btn.btn--style-pill:not(.btn--disabled) {
+    --bg-color: #e91e8c;
+    --hover-bg: #9c1668;
+    --btn-border: #e91e8c;
+    --hover-btn-border: #9c1668;
     background: #e91e8c;
     border-color: #e91e8c;
   }
 
-  .btn.btn--style-primary:not(.btn--disabled):hover {
+  .btn.btn--style-primary:not(.btn--disabled):hover,
+  .btn.btn--style-pill:not(.btn--disabled):hover {
     background: #9c1668;
     border-color: #9c1668;
+  }
+
+  /* List views: softer table borders + a branded current-page indicator. */
+  .table thead th {
+    color: var(--theme-elevation-400);
+    font-weight: 600;
+  }
+
+  .search-bar {
+    --search-bg: var(--theme-elevation-50);
+    border-radius: var(--style-radius-m);
+  }
+
+  .paginator__page--is-current {
+    color: #e91e8c;
+    font-weight: 600;
+  }
+
+  /* Edit/detail view toolbar (Save/Publish bar) — same warm surface as the rest of the panel. */
+  .doc-controls {
+    background: var(--theme-elevation-50);
+    border-color: var(--theme-elevation-100);
   }
 
   #nav-products { @include nav-icon($icon-cube); }

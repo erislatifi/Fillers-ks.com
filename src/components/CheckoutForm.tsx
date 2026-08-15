@@ -42,6 +42,7 @@ export function CheckoutForm({ siteSettings }: { siteSettings: SiteSetting }) {
       email: String(form.get("email") || ""),
       phone: String(form.get("phone") || ""),
       deliveryAddress: String(form.get("deliveryAddress") || ""),
+      city: String(form.get("city") || ""),
       requestedDeliveryDate: String(form.get("deliveryDate") || ""),
       notes: String(form.get("notes") || ""),
       paymentMethod,
@@ -139,6 +140,10 @@ export function CheckoutForm({ siteSettings }: { siteSettings: SiteSetting }) {
                 min={todayIso()}
                 className="input mt-2"
               />
+            </div>
+            <div>
+              <label className="text-[13px] font-medium text-ink">{t("city")}</label>
+              <input name="city" required className="input mt-2" />
             </div>
             <div className="sm:col-span-2">
               <label className="text-[13px] font-medium text-ink">{t("address")}</label>

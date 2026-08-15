@@ -19,6 +19,7 @@ type CheckoutInput = {
   email: string;
   phone: string;
   deliveryAddress: string;
+  city: string;
   requestedDeliveryDate: string;
   notes?: string;
   paymentMethod: PaymentMethod;
@@ -39,6 +40,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
     !input.email?.trim() ||
     !input.phone?.trim() ||
     !input.deliveryAddress?.trim() ||
+    !input.city?.trim() ||
     !input.requestedDeliveryDate
   ) {
     return { success: false, error: "missing-fields" };
@@ -78,6 +80,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         email: input.email,
         phone: input.phone,
         deliveryAddress: input.deliveryAddress,
+        city: input.city,
         requestedDeliveryDate: input.requestedDeliveryDate,
         notes: input.notes,
         paymentMethod: input.paymentMethod,
