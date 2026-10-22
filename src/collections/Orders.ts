@@ -9,12 +9,16 @@ function generateOrderNumber() {
   return `FK-${y}${m}${d}-${rand}`
 }
 
+// NOTE: only labels / layout / descriptions are customised — field names, types and
+// `required` flags are untouched, so the database schema is unchanged.
 export const Orders: CollectionConfig = {
   slug: 'orders',
+  labels: { singular: 'Porosi', plural: 'Porositë' },
   admin: {
     useAsTitle: 'orderNumber',
-    group: 'Sales',
+    group: 'Shitjet',
     defaultColumns: ['orderNumber', 'clinicName', 'status', 'paymentMethod', 'requestedDeliveryDate', 'subtotal', 'createdAt'],
+    description: 'Kërkesat që dërgojnë klinikat nga shporta. Hapi një porosi për ta konfirmuar dhe për të ndryshuar statusin.',
   },
   access: {
     // Checkout submits orders without being logged in.
@@ -29,7 +33,8 @@ export const Orders: CollectionConfig = {
       name: 'orderNumber',
       type: 'text',
       unique: true,
-      admin: { readOnly: true },
+      label: 'Numri i porosisë',
+      admin: { readOnly: true, position: 'sidebar' },
       hooks: {
         beforeValidate: [
           ({ value }) => value || generateOrderNumber(),
@@ -40,39 +45,95 @@ export const Orders: CollectionConfig = {
       name: 'status',
       type: 'select',
       defaultValue: 'pending',
-      options: ['pending', 'confirmed', 'fulfilled', 'cancelled'],
+      label: 'Statusi',
+      admin: { position: 'sidebar', description: 'Ndryshoje sapo ta konfirmosh ose ta dorëzosh porosinë.' },
+      options: [
+        { label: 'Në pritje', value: 'pending' },
+        { label: 'Konfirmuar', value: 'confirmed' },
+        { label: 'Dorëzuar', value: 'fulfilled' },
+        { label: 'Anuluar', value: 'cancelled' },
+      ],
     },
-    { name: 'clinicName', type: 'text', required: true },
-    { name: 'contactName', type: 'text', required: true },
-    { name: 'email', type: 'email', required: true },
-    { name: 'phone', type: 'text', required: true },
-    { name: 'deliveryAddress', type: 'textarea', required: true },
-    { name: 'city', type: 'text', required: true },
-    { name: 'requestedDeliveryDate', type: 'date', required: true },
-    { name: 'notes', type: 'textarea' },
     {
       name: 'paymentMethod',
       type: 'select',
       required: true,
       defaultValue: 'pickup',
+      label: 'Mënyra e pagesës',
+      admin: { position: 'sidebar' },
       options: [
-        { label: 'Pick up at our office', value: 'pickup' },
-        { label: 'Bank transfer', value: 'bank_transfer' },
+        { label: 'Marrje në zyrën tonë', value: 'pickup' },
+        { label: 'Transfer bankar', value: 'bank_transfer' },
+      ],
+    },
+    {
+      name: 'subtotal',
+      type: 'number',
+      required: true,
+      label: 'Totali (€)',
+      admin: { position: 'sidebar' },
+    },
+    {
+      type: 'collapsible',
+      label: 'Klinika dhe kontakti',
+      admin: { initCollapsed: false },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'clinicName', type: 'text', required: true, label: 'Klinika' },
+            { name: 'contactName', type: 'text', required: true, label: 'Personi kontaktues' },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'email', type: 'email', required: true, label: 'Email' },
+            { name: 'phone', type: 'text', required: true, label: 'Telefoni' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Dorëzimi',
+      admin: { initCollapsed: false },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'city', type: 'text', required: true, label: 'Qyteti' },
+            { name: 'requestedDeliveryDate', type: 'date', required: true, label: 'Data e kërkuar e dorëzimit' },
+          ],
+        },
+        { name: 'deliveryAddress', type: 'textarea', required: true, label: 'Adresa e dorëzimit' },
+        { name: 'notes', type: 'textarea', label: 'Shënime nga klienti' },
       ],
     },
     {
       name: 'items',
       type: 'array',
       required: true,
+      label: 'Artikujt e porosisë',
+      labels: { singular: 'Artikull', plural: 'Artikujt' },
       fields: [
-        { name: 'product', type: 'relationship', relationTo: 'products' },
-        { name: 'name', type: 'text', required: true },
-        { name: 'brandName', type: 'text' },
-        { name: 'size', type: 'text' },
-        { name: 'price', type: 'number', required: true },
-        { name: 'quantity', type: 'number', required: true, min: 1 },
+        { name: 'product', type: 'relationship', relationTo: 'products', label: 'Produkti (lidhja)' },
+        {
+          type: 'row',
+          fields: [
+            { name: 'name', type: 'text', required: true, label: 'Emri' },
+            { name: 'brandName', type: 'text', label: 'Brendi' },
+            { name: 'size', type: 'text', label: 'Madhësia' },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            { name: 'price', type: 'number', required: true, label: 'Çmimi (€)' },
+            { name: 'quantity', type: 'number', required: true, min: 1, label: 'Sasia' },
+          ],
+        },
       ],
     },
-    { name: 'subtotal', type: 'number', required: true },
   ],
 }

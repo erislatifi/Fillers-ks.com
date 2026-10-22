@@ -18,6 +18,7 @@ import { Promotions } from './collections/Promotions'
 import { Orders } from './collections/Orders'
 import { SiteSettings } from './globals/SiteSettings'
 import { Homepage } from './globals/Homepage'
+import { adminTranslationsSq } from './i18n/adminTranslations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -64,10 +65,15 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     theme: 'light',
+    meta: {
+      titleSuffix: ' · Fillers Kosovo',
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
     components: {
+      beforeNavLinks: ['./components/admin/NavTop#NavTop'],
+      beforeLogin: ['./components/admin/LoginPanel#LoginPanel'],
       views: {
         dashboard: {
           Component: './components/admin/Dashboard#Dashboard',
@@ -79,13 +85,17 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Brands, Categories, Products, Testimonials, Articles, Promotions, Orders],
-  globals: [SiteSettings, Homepage],
+  collections: [Orders, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Users],
+  globals: [Homepage, SiteSettings],
   localization: {
     locales: ['sq', 'en'],
     defaultLocale: 'sq',
   },
   editor: lexicalEditor(),
+  i18n: {
+    // No Albanian pack exists in Payload, so we re-word the English one in Albanian.
+    translations: { en: adminTranslationsSq },
+  },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

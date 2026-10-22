@@ -67,15 +67,15 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
-    media: Media;
+    orders: Order;
+    products: Product;
     brands: Brand;
     categories: Category;
-    products: Product;
+    media: Media;
     testimonials: Testimonial;
     articles: Article;
     promotions: Promotion;
-    orders: Order;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,15 +83,15 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    products: ProductsSelect<false> | ProductsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
-    orders: OrdersSelect<false> | OrdersSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -102,12 +102,12 @@ export interface Config {
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('sq' | 'en') | ('sq' | 'en')[];
   globals: {
-    'site-settings': SiteSetting;
     homepage: Homepage;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: 'sq' | 'en';
   widgets: {
@@ -138,37 +138,153 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Kërkesat që dërgojnë klinikat nga shporta. Hapi një porosi për ta konfirmuar dhe për të ndryshuar statusin.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "orders".
  */
-export interface User {
+export interface Order {
   id: number;
-  roles?: ('admin' | 'editor')[] | null;
+  orderNumber?: string | null;
+  /**
+   * Ndryshoje sapo ta konfirmosh ose ta dorëzosh porosinë.
+   */
+  status?: ('pending' | 'confirmed' | 'fulfilled' | 'cancelled') | null;
+  paymentMethod: 'pickup' | 'bank_transfer';
+  subtotal: number;
+  clinicName: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  city: string;
+  requestedDeliveryDate: string;
+  deliveryAddress: string;
+  notes?: string | null;
+  items: {
+    product?: (number | null) | Product;
+    name: string;
+    brandName?: string | null;
+    size?: string | null;
+    price: number;
+    quantity: number;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
 }
 /**
+ * Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  /**
+   * Pjesa e lidhjes, p.sh. juvederm-voluma. Vetëm shkronja të vogla, numra dhe viza — pa hapësira.
+   */
+  slug: string;
+  brand: number | Brand;
+  category: number | Category;
+  /**
+   * P.sh. 1 ml, 2 × 1.1 ml, 50 gjilpëra.
+   */
+  size?: string | null;
+  /**
+   * Lëre 0 nëse produkti shitet vetëm me ofertë.
+   */
+  price?: number | null;
+  /**
+   * Shkruaje veç për shqip dhe veç për anglisht (ndërro gjuhën lart djathtas).
+   */
+  description: string;
+  /**
+   * Foto e parë është ajo kryesore. Ngarko foto të qarta, me sfond të pastër.
+   */
+  images?: (number | Media)[] | null;
+  /**
+   * Në vend të çmimit, klientët shohin “Kërko ofertë”.
+   */
+  quoteOnly?: boolean | null;
+  /**
+   * Shfaqet në seksionin “Më të shiturat” të Ballinës.
+   */
+  bestSeller?: boolean | null;
+  /**
+   * Shfaqet në seksionin “Të rejat” të Ballinës.
+   */
+  newArrival?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Brendet që shpërndan — shfaqen në Ballinë, në faqen e brendeve dhe në filtrat e katalogut.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  name: string;
+  /**
+   * P.sh. juvederm. Vetëm shkronja të vogla, numra dhe viza.
+   */
+  slug: string;
+  /**
+   * P.sh. ITALY, SOUTH KOREA, FRANCE.
+   */
+  origin: string;
+  type?: ('injectable' | 'device') | null;
+  /**
+   * Shfaqet nën emrin e brendit në kartë.
+   */
+  tagline: string;
+  description: string;
+  /**
+   * P.sh. “Distributor zyrtar për Kosovë dhe Shqipëri”. Lëre bosh nëse nuk vlen.
+   */
+  distribution?: string | null;
+  category?: (number | null) | Category;
+  /**
+   * Mundësisht PNG me sfond transparent.
+   */
+  logo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Grupet e produkteve (p.sh. Filerë dermik, Biostimulues). Përdoren si filtra në katalog.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * Vetëm shkronja të vogla, numra dhe viza.
+   */
+  slug: string;
+  description?: string | null;
+  /**
+   * Shfaqet te karta e kategorisë në Ballinë.
+   */
+  icon: 'drop' | 'sparkle' | 'hair' | 'cell' | 'cannula' | 'needle' | 'meso' | 'shield' | 'laser';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Biblioteka e fotove — ngarko këtu një herë, pastaj zgjidhi te produktet, brendet dhe artikujt.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Shkruaj shkurt çfarë shihet në foto — ndihmon Google-in dhe përdoruesit me lexues ekrani.
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -209,57 +325,8 @@ export interface Media {
   };
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brands".
- */
-export interface Brand {
-  id: number;
-  name: string;
-  slug: string;
-  origin: string;
-  tagline: string;
-  description: string;
-  category?: (number | null) | Category;
-  type?: ('injectable' | 'device') | null;
-  distribution?: string | null;
-  logo?: (number | null) | Media;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string | null;
-  icon: 'drop' | 'sparkle' | 'hair' | 'cell' | 'cannula' | 'needle' | 'meso' | 'shield' | 'laser';
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
- */
-export interface Product {
-  id: number;
-  name: string;
-  slug: string;
-  brand: number | Brand;
-  category: number | Category;
-  size?: string | null;
-  price?: number | null;
-  quoteOnly?: boolean | null;
-  bestSeller?: boolean | null;
-  newArrival?: boolean | null;
-  description: string;
-  images?: (number | Media)[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Fjalët e klinikave partnere që shfaqen në Ballinë.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials".
  */
@@ -267,23 +334,31 @@ export interface Testimonial {
   id: number;
   clinic: string;
   city: string;
+  /**
+   * P.sh. Drejtor mjekësor, Dermatologe.
+   */
   role: string;
   quote: string;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Artikujt e seksionit mësimor për profesionistët.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "articles".
  */
 export interface Article {
   id: number;
   title: string;
+  /**
+   * Vetëm shkronja të vogla, numra dhe viza.
+   */
   slug: string;
+  /**
+   * Dy-tri fjali që shfaqen te lista e artikujve.
+   */
   excerpt: string;
-  tag: 'Treatment Guide' | 'Comparison' | 'Education';
-  readTime?: string | null;
-  coverImage?: (number | null) | Media;
   content?: {
     root: {
       type: string;
@@ -299,54 +374,69 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
+  tag: 'Treatment Guide' | 'Comparison' | 'Education';
+  /**
+   * P.sh. 6 min.
+   */
+  readTime?: string | null;
+  coverImage?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Ofertat dhe paketat që shfaqen në Ballinë dhe te faqja “Promocione”.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "promotions".
  */
 export interface Promotion {
   id: number;
   title: string;
+  /**
+   * Vetëm shkronja të vogla, numra dhe viza.
+   */
   slug: string;
+  /**
+   * Teksti i shkurtër mbi kartë, p.sh. “-15%” ose “Ofertë e re”.
+   */
   badge?: string | null;
   description?: string | null;
   ctaLabel?: string | null;
+  /**
+   * P.sh. /catalog ose /brands/juvederm.
+   */
   ctaHref?: string | null;
   theme?: ('light' | 'dark') | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Njerëzit që kanë qasje në këtë panel.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders".
+ * via the `definition` "users".
  */
-export interface Order {
+export interface User {
   id: number;
-  orderNumber?: string | null;
-  status?: ('pending' | 'confirmed' | 'fulfilled' | 'cancelled') | null;
-  clinicName: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  deliveryAddress: string;
-  city: string;
-  requestedDeliveryDate: string;
-  notes?: string | null;
-  paymentMethod: 'pickup' | 'bank_transfer';
-  items: {
-    product?: (number | null) | Product;
-    name: string;
-    brandName?: string | null;
-    size?: string | null;
-    price: number;
-    quantity: number;
-    id?: string | null;
-  }[];
-  subtotal: number;
+  roles?: ('admin' | 'editor')[] | null;
   updatedAt: string;
   createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -373,12 +463,12 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'orders';
+        value: number | Order;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'products';
+        value: number | Product;
       } | null)
     | ({
         relationTo: 'brands';
@@ -389,8 +479,8 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'products';
-        value: number | Product;
+        relationTo: 'media';
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'testimonials';
@@ -405,8 +495,8 @@ export interface PayloadLockedDocument {
         value: number | Promotion;
       } | null)
     | ({
-        relationTo: 'orders';
-        value: number | Order;
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -452,26 +542,82 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "orders_select".
  */
-export interface UsersSelect<T extends boolean = true> {
-  roles?: T;
-  updatedAt?: T;
-  createdAt?: T;
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  status?: T;
+  paymentMethod?: T;
+  subtotal?: T;
+  clinicName?: T;
+  contactName?: T;
   email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
+  phone?: T;
+  city?: T;
+  requestedDeliveryDate?: T;
+  deliveryAddress?: T;
+  notes?: T;
+  items?:
     | T
     | {
+        product?: T;
+        name?: T;
+        brandName?: T;
+        size?: T;
+        price?: T;
+        quantity?: T;
         id?: T;
-        createdAt?: T;
-        expiresAt?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  brand?: T;
+  category?: T;
+  size?: T;
+  price?: T;
+  description?: T;
+  images?: T;
+  quoteOnly?: T;
+  bestSeller?: T;
+  newArrival?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  origin?: T;
+  type?: T;
+  tagline?: T;
+  description?: T;
+  distribution?: T;
+  category?: T;
+  logo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  icon?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -527,54 +673,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "brands_select".
- */
-export interface BrandsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  origin?: T;
-  tagline?: T;
-  description?: T;
-  category?: T;
-  type?: T;
-  distribution?: T;
-  logo?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  icon?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products_select".
- */
-export interface ProductsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  brand?: T;
-  category?: T;
-  size?: T;
-  price?: T;
-  quoteOnly?: T;
-  bestSeller?: T;
-  newArrival?: T;
-  description?: T;
-  images?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
@@ -593,10 +691,10 @@ export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   excerpt?: T;
+  content?: T;
   tag?: T;
   readTime?: T;
   coverImage?: T;
-  content?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -617,34 +715,26 @@ export interface PromotionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders_select".
+ * via the `definition` "users_select".
  */
-export interface OrdersSelect<T extends boolean = true> {
-  orderNumber?: T;
-  status?: T;
-  clinicName?: T;
-  contactName?: T;
-  email?: T;
-  phone?: T;
-  deliveryAddress?: T;
-  city?: T;
-  requestedDeliveryDate?: T;
-  notes?: T;
-  paymentMethod?: T;
-  items?:
-    | T
-    | {
-        product?: T;
-        name?: T;
-        brandName?: T;
-        size?: T;
-        price?: T;
-        quantity?: T;
-        id?: T;
-      };
-  subtotal?: T;
+export interface UsersSelect<T extends boolean = true> {
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -687,6 +777,63 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Tekstet kryesore të faqes ballore. Ndryshimet shfaqen në faqe sapo i ruan.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero?: {
+    /**
+     * P.sh. “Distributori i Certifikuar …”.
+     */
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    primaryCtaLabel?: string | null;
+    /**
+     * P.sh. /catalog
+     */
+    primaryCtaHref?: string | null;
+    secondaryCtaLabel?: string | null;
+    /**
+     * P.sh. /account/register
+     */
+    secondaryCtaHref?: string | null;
+    /**
+     * P.sh. 100+
+     */
+    statsProducts?: string | null;
+    /**
+     * P.sh. 14
+     */
+    statsBrands?: string | null;
+    /**
+     * P.sh. 500+
+     */
+    statsClinics?: string | null;
+    /**
+     * Foto e madhe e seksionit të parë.
+     */
+    image?: (number | null) | Media;
+  };
+  about?: {
+    title?: string | null;
+    paragraph1?: string | null;
+    paragraph2?: string | null;
+    quote?: string | null;
+    /**
+     * P.sh. për Jeisys dhe Clarius — Kosovë dhe Shqipëri.
+     */
+    distributionNote?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Të dhënat e kontaktit, bankës, rrjeteve sociale dhe SEO që përdoren në të gjithë faqen.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
@@ -695,6 +842,9 @@ export interface SiteSetting {
   contactPhone?: string | null;
   contactEmail?: string | null;
   address?: string | null;
+  /**
+   * Shfaqet në fund të faqes dhe te checkout si sinjal besimi.
+   */
   businessRegistrationNumber?: string | null;
   bankDetails?: {
     bankName?: string | null;
@@ -713,65 +863,6 @@ export interface SiteSetting {
   seoDefaultDescription?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "homepage".
- */
-export interface Homepage {
-  id: number;
-  hero?: {
-    eyebrow?: string | null;
-    title?: string | null;
-    subtitle?: string | null;
-    primaryCtaLabel?: string | null;
-    primaryCtaHref?: string | null;
-    secondaryCtaLabel?: string | null;
-    secondaryCtaHref?: string | null;
-    statsProducts?: string | null;
-    statsBrands?: string | null;
-    statsClinics?: string | null;
-    image?: (number | null) | Media;
-  };
-  about?: {
-    title?: string | null;
-    paragraph1?: string | null;
-    paragraph2?: string | null;
-    quote?: string | null;
-    distributionNote?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
- */
-export interface SiteSettingsSelect<T extends boolean = true> {
-  contactPhone?: T;
-  contactEmail?: T;
-  address?: T;
-  businessRegistrationNumber?: T;
-  bankDetails?:
-    | T
-    | {
-        bankName?: T;
-        accountHolder?: T;
-        iban?: T;
-        swift?: T;
-      };
-  socialLinks?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
-  seoDefaultTitle?: T;
-  seoDefaultDescription?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -802,6 +893,36 @@ export interface HomepageSelect<T extends boolean = true> {
         quote?: T;
         distributionNote?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  contactPhone?: T;
+  contactEmail?: T;
+  address?: T;
+  businessRegistrationNumber?: T;
+  bankDetails?:
+    | T
+    | {
+        bankName?: T;
+        accountHolder?: T;
+        iban?: T;
+        swift?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  seoDefaultTitle?: T;
+  seoDefaultDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

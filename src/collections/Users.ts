@@ -2,8 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: { singular: 'Përdorues', plural: 'Përdoruesit' },
   admin: {
     useAsTitle: 'email',
+    group: 'Administrimi',
+    description: 'Njerëzit që kanë qasje në këtë panel.',
   },
   auth: true,
   fields: [
@@ -12,9 +15,10 @@ export const Users: CollectionConfig = {
       type: 'select',
       hasMany: true,
       defaultValue: ['admin'],
+      label: 'Rolet',
       options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
+        { label: 'Administrator', value: 'admin' },
+        { label: 'Redaktor', value: 'editor' },
       ],
     },
   ],

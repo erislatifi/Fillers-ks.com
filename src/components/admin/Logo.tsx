@@ -1,10 +1,10 @@
 import React from "react";
 
-function AdminBrandMark({ size = 30 }: { size?: number }) {
+export function Mark({ size = 30, id = "fk-mark-grad" }: { size?: number; id?: string }) {
   return (
     <svg viewBox="0 0 100 140" width={size} height={(size * 140) / 100} aria-hidden>
       <defs>
-        <linearGradient id="fk-admin-mark-grad" x1="10%" y1="0%" x2="70%" y2="100%">
+        <linearGradient id={id} x1="10%" y1="0%" x2="70%" y2="100%">
           <stop offset="0%" stopColor="#f2c879" />
           <stop offset="38%" stopColor="#e91e8c" />
           <stop offset="66%" stopColor="#6c3f9e" />
@@ -12,7 +12,7 @@ function AdminBrandMark({ size = 30 }: { size?: number }) {
         </linearGradient>
       </defs>
       <path
-        fill="url(#fk-admin-mark-grad)"
+        fill={`url(#${id})`}
         d="M72 6
            C40 6 14 34 14 70
            C14 106 40 134 72 134
@@ -28,15 +28,19 @@ function AdminBrandMark({ size = 30 }: { size?: number }) {
   );
 }
 
+/** Wordmark shown above the login form (and anywhere Payload renders the full logo). */
 export function Logo() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "center" }}>
-      <AdminBrandMark size={30} />
-      <span style={{ fontSize: 20, fontWeight: 600, letterSpacing: "0.01em" }}>Fillers</span>
+    <div className="fk-logo">
+      <Mark size={30} id="fk-mark-grad-logo" />
+      <span className="fk-logo__word">
+        Fillers <small>Kosovo</small>
+      </span>
     </div>
   );
 }
 
+/** Compact mark used in the nav header and collapsed spaces. */
 export function Icon() {
-  return <AdminBrandMark size={22} />;
+  return <Mark size={22} id="fk-mark-grad-icon" />;
 }
