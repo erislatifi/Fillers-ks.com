@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap");
 
 /* Fillers Kosovo — admin panel theme.
    Layered on top of Payload's own markup (no core overrides): design tokens, a dark sidebar,
@@ -69,7 +68,7 @@ $icon-external: "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' f
   --fk-radius: 18px;
   --fk-shadow: 0 1px 2px rgba(20, 18, 26, 0.04), 0 10px 28px -14px rgba(20, 18, 26, 0.12);
 
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --nav-width: 268px;
 
   --style-radius-s: 8px;
@@ -94,7 +93,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Manrope", var(--font-body);
+  font-family: "Manrope Variable", "Manrope", var(--font-body);
   letter-spacing: -0.02em;
 }
 
@@ -151,7 +150,7 @@ h4 {
   padding: 18px 10px 20px;
   color: #fff;
   text-decoration: none;
-  font-family: "Manrope", var(--font-body);
+  font-family: "Manrope Variable", "Manrope", var(--font-body);
   font-size: 19px;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -433,7 +432,7 @@ a.nav__link:hover {
 .render-title,
 .collection-list__header .list-header__title,
 .doc-header__title {
-  font-family: "Manrope", var(--font-body);
+  font-family: "Manrope Variable", "Manrope", var(--font-body);
   font-weight: 800;
   letter-spacing: -0.03em;
 }
@@ -579,7 +578,7 @@ a.nav__link:hover {
 
 .fk-kpi__value {
   margin-top: 10px !important;
-  font-family: "Manrope", var(--font-body);
+  font-family: "Manrope Variable", "Manrope", var(--font-body);
   font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -780,7 +779,7 @@ a.nav__link:hover {
   background: #fff;
 
   strong {
-    font-family: "Manrope", var(--font-body);
+    font-family: "Manrope Variable", "Manrope", var(--font-body);
     font-size: 26px;
     font-weight: 800;
     line-height: 1;
@@ -1059,7 +1058,7 @@ a.nav__link:hover {
   background: #fff;
 
   strong {
-    font-family: "Manrope", var(--font-body);
+    font-family: "Manrope Variable", "Manrope", var(--font-body);
     font-size: 24px;
     font-weight: 800;
     line-height: 1;
@@ -1219,7 +1218,7 @@ a.nav__link:hover {
 }
 
 .fk-logo__word {
-  font-family: "Manrope", var(--font-body);
+  font-family: "Manrope Variable", "Manrope", var(--font-body);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -1321,7 +1320,7 @@ a.nav__link:hover {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-family: "Manrope", var(--font-body);
+    font-family: "Manrope Variable", "Manrope", var(--font-body);
     font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.02em;
