@@ -8,6 +8,7 @@ import { Button } from "@/components/Button";
 import { Link } from "@/i18n/navigation";
 import { MediaFrame, hueFromSlug } from "@/components/media";
 import type { SiteSetting } from "@/payload-types";
+import type { CustomerProfile } from "@/lib/customerSession";
 import {
   ArrowRightIcon,
   CheckCircleIcon,
@@ -22,7 +23,7 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
 
 type PaymentMethod = "pickup" | "bank_transfer";
 
-export function CheckoutForm({ siteSettings }: { siteSettings: SiteSetting }) {
+export function CheckoutForm({ siteSettings, customer }: { siteSettings: SiteSetting; customer: CustomerProfile | null }) {
   const t = useTranslations("checkout");
   const { items, subtotal, clear } = useCart();
   const [submitting, setSubmitting] = useState(false);
@@ -117,19 +118,19 @@ export function CheckoutForm({ siteSettings }: { siteSettings: SiteSetting }) {
           <div className="grid sm:grid-cols-2 gap-5">
             <div className="sm:col-span-2">
               <label className="text-[13px] font-medium text-ink">{t("clinicName")}</label>
-              <input name="clinicName" required className="input mt-2" />
+              <input name="clinicName" required defaultValue={customer?.clinicName ?? ""} className="input mt-2" />
             </div>
             <div>
               <label className="text-[13px] font-medium text-ink">{t("contactName")}</label>
-              <input name="contactName" required className="input mt-2" />
+              <input name="contactName" required defaultValue={customer?.fullName ?? ""} className="input mt-2" />
             </div>
             <div>
               <label className="text-[13px] font-medium text-ink">{t("email")}</label>
-              <input name="email" type="email" required className="input mt-2" />
+              <input name="email" type="email" required defaultValue={customer?.email ?? ""} className="input mt-2" />
             </div>
             <div>
               <label className="text-[13px] font-medium text-ink">{t("phone")}</label>
-              <input name="phone" type="tel" required className="input mt-2" />
+              <input name="phone" type="tel" required defaultValue={customer?.phone ?? ""} className="input mt-2" />
             </div>
             <div>
               <label className="text-[13px] font-medium text-ink">{t("deliveryDate")}</label>
@@ -143,11 +144,11 @@ export function CheckoutForm({ siteSettings }: { siteSettings: SiteSetting }) {
             </div>
             <div>
               <label className="text-[13px] font-medium text-ink">{t("city")}</label>
-              <input name="city" required className="input mt-2" />
+              <input name="city" required defaultValue={customer?.city ?? ""} className="input mt-2" />
             </div>
             <div className="sm:col-span-2">
               <label className="text-[13px] font-medium text-ink">{t("address")}</label>
-              <textarea name="deliveryAddress" required rows={3} className="input mt-2 resize-none" />
+              <textarea name="deliveryAddress" required rows={3} defaultValue={customer?.address ?? ""} className="input mt-2 resize-none" />
             </div>
             <div className="sm:col-span-2">
               <label className="text-[13px] font-medium text-ink">{t("notes")}</label>

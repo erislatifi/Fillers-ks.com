@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publicReadAdminWrite } from '../access/isAdmin'
 
 // NOTE: only labels / layout / descriptions are customised below — field names, types and
 // `required` flags are untouched, so the database schema (and production Postgres) is unchanged.
@@ -11,9 +12,7 @@ export const Products: CollectionConfig = {
     defaultColumns: ['name', 'brand', 'category', 'price', 'bestSeller', 'newArrival'],
     description: 'Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.',
   },
-  access: {
-    read: () => true,
-  },
+  access: publicReadAdminWrite,
   fields: [
     { name: 'name', type: 'text', required: true, label: 'Emri i produktit' },
     {

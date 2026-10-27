@@ -1,6 +1,7 @@
 "use server";
 
 import { getPayloadClient } from "@/lib/payload";
+import { getCurrentCustomer } from "@/lib/customerSession";
 
 type CheckoutItem = {
   slug: string;
@@ -71,6 +72,9 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
     );
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    // Taken from the session cookie, never from the form, so an order can't be filed under
+    // someone else's account.
+    const customer = await getCurrentCustomer();
 
     const order = await payload.create({
       collection: "orders",
@@ -86,6 +90,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         paymentMethod: input.paymentMethod,
         items,
         subtotal,
+        customer: customer?.id,
       },
     });
 

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publicReadAdminWrite } from '../access/isAdmin'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -7,9 +8,7 @@ export const Media: CollectionConfig = {
     group: 'Media',
     description: 'Biblioteka e fotove — ngarko këtu një herë, pastaj zgjidhi te produktet, brendet dhe artikujt.',
   },
-  access: {
-    read: () => true,
-  },
+  access: publicReadAdminWrite,
   fields: [
     {
       name: 'alt',

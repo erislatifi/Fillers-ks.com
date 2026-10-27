@@ -16,6 +16,7 @@ import { Testimonials } from './collections/Testimonials'
 import { Articles } from './collections/Articles'
 import { Promotions } from './collections/Promotions'
 import { Orders } from './collections/Orders'
+import { Customers } from './collections/Customers'
 import { SiteSettings } from './globals/SiteSettings'
 import { Homepage } from './globals/Homepage'
 import { adminTranslationsSq } from './i18n/adminTranslations'
@@ -85,7 +86,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Orders, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Users],
+  collections: [Orders, Customers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Users],
   globals: [Homepage, SiteSettings],
   localization: {
     locales: ['sq', 'en'],

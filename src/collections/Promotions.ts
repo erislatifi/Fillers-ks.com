@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publicReadAdminWrite } from '../access/isAdmin'
 
 export const Promotions: CollectionConfig = {
   slug: 'promotions',
@@ -8,9 +9,7 @@ export const Promotions: CollectionConfig = {
     group: 'Përmbajtja',
     description: 'Ofertat dhe paketat që shfaqen në Ballinë dhe te faqja “Promocione”.',
   },
-  access: {
-    read: () => true,
-  },
+  access: publicReadAdminWrite,
   fields: [
     {
       type: 'row',

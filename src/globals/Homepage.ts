@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { isAdmin } from '../access/isAdmin'
 
 // Layout + labels only: the data shape (hero.*, about.*) is unchanged, so no migration is needed.
 export const Homepage: GlobalConfig = {
@@ -10,6 +11,7 @@ export const Homepage: GlobalConfig = {
   },
   access: {
     read: () => true,
+    update: isAdmin,
   },
   fields: [
     {

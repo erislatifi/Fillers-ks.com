@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { isAdmin, isAdminUser } from '../access/isAdmin'
 
 function generateOrderNumber() {
   const now = new Date()
@@ -9,8 +10,6 @@ function generateOrderNumber() {
   return `FK-${y}${m}${d}-${rand}`
 }
 
-// NOTE: only labels / layout / descriptions are customised — field names, types and
-// `required` flags are untouched, so the database schema is unchanged.
 export const Orders: CollectionConfig = {
   slug: 'orders',
   labels: { singular: 'Porosi', plural: 'Porositë' },
@@ -23,10 +22,14 @@ export const Orders: CollectionConfig = {
   access: {
     // Checkout submits orders without being logged in.
     create: () => true,
-    // Order contents include clinic contact details — restrict to logged-in admins.
-    read: ({ req }) => Boolean(req.user),
-    update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => Boolean(req.user),
+    // Order contents include clinic contact details — staff see all, a customer only their own.
+    read: ({ req }) => {
+      if (isAdminUser(req)) return true
+      if (req.user?.collection === 'customers') return { customer: { equals: req.user.id } }
+      return false
+    },
+    update: isAdmin,
+    delete: isAdmin,
   },
   fields: [
     {
@@ -72,6 +75,14 @@ export const Orders: CollectionConfig = {
       required: true,
       label: 'Totali (€)',
       admin: { position: 'sidebar' },
+    },
+    {
+      // Set server-side at checkout when the clinic is logged in; empty for guest orders.
+      name: 'customer',
+      type: 'relationship',
+      relationTo: 'customers',
+      label: 'Llogaria e klientit',
+      admin: { position: 'sidebar', description: 'Bosh nëse porosia u bë pa llogari.' },
     },
     {
       type: 'collapsible',

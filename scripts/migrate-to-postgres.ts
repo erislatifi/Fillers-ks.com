@@ -33,6 +33,7 @@ import { Testimonials } from "../src/collections/Testimonials";
 import { Articles } from "../src/collections/Articles";
 import { Promotions } from "../src/collections/Promotions";
 import { Orders } from "../src/collections/Orders";
+import { Customers } from "../src/collections/Customers";
 import { SiteSettings } from "../src/globals/SiteSettings";
 import { Homepage } from "../src/globals/Homepage";
 
@@ -58,7 +59,9 @@ if (!process.env.POSTGRES_URI) {
   process.exit(1);
 }
 
-const collections = [Users, Media, Brands, Categories, Products, Testimonials, Articles, Promotions, Orders];
+// Customers are listed so the destination schema gets their table (orders reference it);
+// their data is not copied — clinic accounts are created fresh in production, like Users.
+const collections = [Users, Customers, Media, Brands, Categories, Products, Testimonials, Articles, Promotions, Orders];
 const globalsConfig = [SiteSettings, Homepage];
 type Locale = "sq" | "en";
 const localization = { locales: ["sq", "en"], defaultLocale: "sq" satisfies Locale };

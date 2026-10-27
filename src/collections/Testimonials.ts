@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publicReadAdminWrite } from '../access/isAdmin'
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
@@ -8,9 +9,7 @@ export const Testimonials: CollectionConfig = {
     group: 'Përmbajtja',
     description: 'Fjalët e klinikave partnere që shfaqen në Ballinë.',
   },
-  access: {
-    read: () => true,
-  },
+  access: publicReadAdminWrite,
   fields: [
     {
       type: 'row',

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { publicReadAdminWrite } from '../access/isAdmin'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 export const Articles: CollectionConfig = {
@@ -9,9 +10,7 @@ export const Articles: CollectionConfig = {
     group: 'Përmbajtja',
     description: 'Artikujt e seksionit mësimor për profesionistët.',
   },
-  access: {
-    read: () => true,
-  },
+  access: publicReadAdminWrite,
   fields: [
     {
       type: 'row',

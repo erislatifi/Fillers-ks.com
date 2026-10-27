@@ -63,11 +63,13 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
+    customers: CustomerAuthOperations;
     users: UserAuthOperations;
   };
   blocks: {};
   collections: {
     orders: Order;
+    customers: Customer;
     products: Product;
     brands: Brand;
     categories: Category;
@@ -84,6 +86,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -113,10 +116,28 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Customer | User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
+  };
+}
+export interface CustomerAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface UserAuthOperations {
@@ -152,6 +173,10 @@ export interface Order {
   status?: ('pending' | 'confirmed' | 'fulfilled' | 'cancelled') | null;
   paymentMethod: 'pickup' | 'bank_transfer';
   subtotal: number;
+  /**
+   * Bosh nëse porosia u bë pa llogari.
+   */
+  customer?: (number | null) | Customer;
   clinicName: string;
   contactName: string;
   email: string;
@@ -171,6 +196,42 @@ export interface Order {
   }[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Klinikat që janë regjistruar vetë në faqe. Porositë e tyre lidhen me llogarinë.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  clinicName: string;
+  fullName: string;
+  phone: string;
+  city?: string | null;
+  address?: string | null;
+  /**
+   * Opsionale — e plotëson klinika gjatë regjistrimit.
+   */
+  licenseNumber?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'customers';
 }
 /**
  * Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.
@@ -467,6 +528,10 @@ export interface PayloadLockedDocument {
         value: number | Order;
       } | null)
     | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -499,10 +564,15 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -512,10 +582,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
+      };
   key?: string | null;
   value?:
     | {
@@ -549,6 +624,7 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   paymentMethod?: T;
   subtotal?: T;
+  customer?: T;
   clinicName?: T;
   contactName?: T;
   email?: T;
@@ -570,6 +646,34 @@ export interface OrdersSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  clinicName?: T;
+  fullName?: T;
+  phone?: T;
+  city?: T;
+  address?: T;
+  licenseNumber?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

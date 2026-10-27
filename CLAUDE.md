@@ -16,9 +16,9 @@ Komunikimi me klientin/pronarin (Eris Latifi) bëhet **në shqip** (dialekt gheg
 
 ## Struktura
 
-- `src/app/(frontend)/[locale]/…` — faqet publike: ballina, brands, category, catalog (filtër kategori+brend), products, cart, checkout (+ server action), education, promotions, about, contact, privacy/terms/shipping, account/wishlist (shells)
+- `src/app/(frontend)/[locale]/…` — faqet publike: ballina, brands, category, catalog (filtër kategori+brend), products, cart, checkout (+ server action), education, promotions, about, contact, privacy/terms/shipping, account (login/profil/porositë) + account/register, wishlist (shell)
 - `src/app/(payload)/` — admin në `/admin`, `custom.scss` (stilimi i degëzuar + ikonat e sidebar-it)
-- `src/collections/` — Users, Media, Brands, Categories, Products, Testimonials, Articles, Promotions, Orders
+- `src/collections/` — Users (stafi i admin-it), Customers (klinikat nga faqja), Media, Brands, Categories, Products, Testimonials, Articles, Promotions, Orders
 - `src/globals/` — SiteSettings, Homepage
 - `src/components/admin/` — Dashboard (analitikë shitjesh) dhe Logo/Icon të personalizuara
 - `src/contexts/CartContext.tsx` — shporta në localStorage
@@ -41,12 +41,16 @@ Komunikimi me klientin/pronarin (Eris Latifi) bëhet **në shqip** (dialekt gheg
 3. **Admin user në prodhim**: `Users` nuk migrohet; konfirmo që ekziston një admin real në `/admin` të prodhimit.
 4. **Pagesa me kartë**: nuk ka gateway (klienti s'ka zgjedhur ofrues). Checkout mbledh kërkesa që ekipi i konfirmon manualisht.
 5. **Email**: SMTP/`ORDER_EMAIL_TO` nuk janë konfiguruar — porositë ruhen vetëm në admin; forma e kontaktit është statike pa backend.
-6. **`/account` dhe `/wishlist`** janë shells "Coming Soon", pa login/regjistrim funksional.
+6. **Llogaritë e klinikave** (branch `account`, 2026-10-27): regjistrim pa aprovim, login/logout, profil + ndërrim fjalëkalimi, historiku i porosive, checkout i parambushur që e lidh porosinë me llogarinë. U testua lokalisht (SQLite). **Para merge në `main`**: prodhimi (Postgres) ka nevojë për tabelën `customers` dhe kolonën `orders.customer` — ekzekuto `npm run migrate:postgres` me env vars të prodhimit inline, pastaj merge. Mbeten: "kam harruar fjalëkalimin" (kërkon SMTP — tani klienti kontakton ekipin), `/wishlist` ende shell.
 7. **Përmbajtja**: ~15 produkte të seed-uara (synimi 100+; disa kategori kanë 0 produkte) — klienti i shton nga admin. Fakte "Rreth Nesh" dhe teksti Jeisys/Clarius janë draft nga info publike, duhen miratuar. Faqet ligjore (privacy/terms/shipping) janë placeholder dhe duhet t'i shohë jurist.
 8. **Logoja**: `src/components/BrandMark.tsx` është rikrijim SVG i përafërt; zëvendëso me skedarin real kur klienti ta dërgojë.
 9. **Supabase falas**: projektet në plan falas pauzohen pas ~1 jave pa aktivitet — verifiko/konsidero plan me pagesë para lansimit real.
 
 ## Gotchas
+
+- **Dy lloje përdoruesish të kyçur**: `users` (admin) dhe `customers` (klinika). Mos përdor kurrë `Boolean(req.user)` si kontroll aksesi — një klinikë e kyçur do kalonte. Përdor `isAdmin` / `publicReadAdminWrite` nga `src/access/isAdmin.ts` për çdo koleksion/global të ri (pa `access`, Payload lejon shkrim për çdo përdorues të kyçur).
+- Sesioni i klientit ruhet në cookie `fk-customer` (`src/lib/customerSession.ts`), jo në `payload-token`, që mos ta nxjerrë adminin jashtë në të njëjtin browser. Komponentëve klient u jepet vetëm `toProfile(customer)`.
+- `src/app/api/orders/route.ts` (route i vjetër me nodemailer) e mbulon `GET/PATCH /api/orders` të Payload-it — REST për porositë kthen 405; `/api/orders/:id` punon.
 
 - **Mos vendos `POSTGRES_URI`/`S3_*` në `.env.local`**: kjo e kalon edhe dev-in lokal në databazën e prodhimit. Për migrim, ekzekuto skriptin me env vars inline në atë komandë (`$env:POSTGRES_URI=…; npm run migrate:postgres`). `.env.production.example` tregon çfarë vlerash duhen; **kurrë mos commit-o vlera reale**.
 - Databaza Postgres e re duhet të ketë skemën para deploy-it të parë: ekzekuto `npm run migrate:postgres` lokalisht (aty Payload sinkronizon skemën) dhe mos mbështet te push automatik në prodhim. Gjithashtu, fotot nga Supabase kërkojnë `images.remotePatterns` te `next.config.ts` (tashmë i shtuar) — pa të, `next/image` hedh gabim.

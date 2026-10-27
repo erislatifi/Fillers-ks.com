@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { isAdmin } from '../access/isAdmin'
 
 // Layout + labels only: field names/shape are unchanged, so no migration is needed.
 export const SiteSettings: GlobalConfig = {
@@ -10,6 +11,7 @@ export const SiteSettings: GlobalConfig = {
   },
   access: {
     read: () => true,
+    update: isAdmin,
   },
   fields: [
     {
