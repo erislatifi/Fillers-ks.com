@@ -58,6 +58,20 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
+      name: 'deliveryMethod',
+      type: 'select',
+      required: true,
+      defaultValue: 'pickup',
+      label: 'Mënyra e marrjes',
+      admin: { position: 'sidebar' },
+      options: [
+        { label: 'Merret në zyrën tonë', value: 'pickup' },
+        { label: 'Dërgesë me korrier', value: 'courier' },
+      ],
+    },
+    {
+      // `pickup` predates deliveryMethod and now means "paid at our office"; the value
+      // is kept so older orders stay valid.
       name: 'paymentMethod',
       type: 'select',
       required: true,
@@ -65,8 +79,9 @@ export const Orders: CollectionConfig = {
       label: 'Mënyra e pagesës',
       admin: { position: 'sidebar' },
       options: [
-        { label: 'Marrje në zyrën tonë', value: 'pickup' },
+        { label: 'Pagesë në zyrë', value: 'pickup' },
         { label: 'Transfer bankar', value: 'bank_transfer' },
+        { label: 'Cash te korrieri', value: 'cash_on_delivery' },
       ],
     },
     {
@@ -110,15 +125,52 @@ export const Orders: CollectionConfig = {
       label: 'Dorëzimi',
       admin: { initCollapsed: false },
       fields: [
+        // City and address are only required for courier delivery — checked at checkout.
         {
           type: 'row',
           fields: [
-            { name: 'city', type: 'text', required: true, label: 'Qyteti' },
-            { name: 'requestedDeliveryDate', type: 'date', required: true, label: 'Data e kërkuar e dorëzimit' },
+            { name: 'city', type: 'text', label: 'Qyteti' },
+            {
+              name: 'requestedDeliveryDate',
+              type: 'date',
+              label: 'Data e kërkuar e dorëzimit',
+              admin: { description: 'Bosh = sa më shpejt.' },
+            },
           ],
         },
-        { name: 'deliveryAddress', type: 'textarea', required: true, label: 'Adresa e dorëzimit' },
+        { name: 'deliveryAddress', type: 'textarea', label: 'Adresa e dorëzimit' },
         { name: 'notes', type: 'textarea', label: 'Shënime nga klienti' },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Faturimi për biznes',
+      admin: { initCollapsed: false },
+      fields: [
+        { name: 'needsInvoice', type: 'checkbox', defaultValue: false, label: 'Kërkon faturë për biznes' },
+        {
+          name: 'invoice',
+          type: 'group',
+          label: false,
+          admin: { condition: (data) => Boolean(data?.needsInvoice) },
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                { name: 'companyName', type: 'text', label: 'Emri i biznesit' },
+                { name: 'nui', type: 'text', label: 'NUI' },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                { name: 'fiscalNumber', type: 'text', label: 'Numri fiskal' },
+                { name: 'vatNumber', type: 'text', label: 'Numri i TVSH-së' },
+              ],
+            },
+            { name: 'address', type: 'textarea', label: 'Adresa e faturimit' },
+          ],
+        },
       ],
     },
     {

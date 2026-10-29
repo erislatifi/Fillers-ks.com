@@ -217,7 +217,7 @@
   },
   "checkout": {
     "title": "Complete Your Order",
-    "description": "Fill in your clinic's details — our team will contact you to confirm the order and delivery date.",
+    "description": "Fill in your details and choose how you'd like to receive the order — our team will contact you to confirm.",
     "clinicName": "Clinic name",
     "contactName": "Contact person",
     "email": "Email",
@@ -231,7 +231,7 @@
     "submit": "Submit Order",
     "submitting": "Submitting…",
     "successTitle": "Order received!",
-    "successDescription": "Thank you! Our team will contact you within 1 business day to confirm your order and delivery date.",
+    "successDescription": "Thank you! Our team will contact you within 1 business day to confirm your order.",
     "orderNumber": "Order number",
     "backToHome": "Back to Home",
     "professionalNotice": "For licensed medical professionals and certified clinics only. Our team may request license verification before final confirmation.",
@@ -254,8 +254,51 @@
       "secureCheckout": "Secure Checkout — your information is encrypted and protected",
       "trustNote": "Registered business — Reg. No. {regNumber}",
       "privacyLink": "Read our Privacy Policy",
-      "trustedByClinics": "Trusted by 500+ partner clinics across Kosovo"
-    }
+      "trustedByClinics": "Trusted by 500+ partner clinics across Kosovo",
+      "officeLabel": "Pay at our office",
+      "officeDescription": "Cash or card when you collect the order",
+      "codLabel": "Cash on delivery",
+      "codDescription": "Pay the courier when you receive the parcel",
+      "codNote": "Please have {total} ready (+ shipping, if any). The courier may not carry change."
+    },
+    "optional": "optional",
+    "steps": {
+      "contact": "Clinic details",
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "invoice": "Invoicing",
+      "notes": "Notes"
+    },
+    "delivery": {
+      "pickupLabel": "Pick up at our office",
+      "pickupDescription": "No delivery cost — collect it when it's ready",
+      "courierLabel": "Courier delivery",
+      "courierDescription": "To your address, anywhere in Kosovo",
+      "pickupAddress": "Pickup address",
+      "scheduleToggle": "I want to receive it on a specific date",
+      "scheduleHint": "Otherwise we prepare and ship it as soon as possible."
+    },
+    "invoice": {
+      "toggle": "I need a business invoice",
+      "hint": "The invoice is issued to your business, with its NUI.",
+      "companyName": "Business name",
+      "nui": "NUI (Unique Identification Number)",
+      "fiscalNumber": "Fiscal number",
+      "vatNumber": "VAT number",
+      "address": "Billing address",
+      "addressPlaceholder": "Leave empty if it's the same as the delivery address"
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "shippingFree": "Free",
+      "shippingTbd": "Confirmed by our team",
+      "total": "Total",
+      "editCart": "Edit cart"
+    },
+    "acceptTerms": "I agree to the <terms>terms of sale</terms> and the <privacy>privacy policy</privacy>.",
+    "successCod": "You pay the courier in cash when you receive the order.",
+    "successBank": "Bank details are below — use the order number as the payment reference."
   },
   "productPage": {
     "deliveryEstimate": "Delivery within 1-2 business days"

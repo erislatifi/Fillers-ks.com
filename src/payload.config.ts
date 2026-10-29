@@ -42,25 +42,25 @@ const db = process.env.POSTGRES_URI
 
 // Same idea for uploaded media: local disk locally, S3-compatible cloud
 // storage (e.g. Supabase Storage / Cloudflare R2) in production whenever the
-// bucket credentials are configured.
-const plugins: Plugin[] = []
-if (process.env.S3_BUCKET) {
-  plugins.push(
-    s3Storage({
-      collections: { media: true },
-      bucket: process.env.S3_BUCKET,
-      config: {
-        endpoint: process.env.S3_ENDPOINT,
-        region: process.env.S3_REGION || 'auto',
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
-        },
-        forcePathStyle: true,
+// bucket credentials are configured. The plugin is always registered (just
+// disabled locally) so the generated admin importMap is identical in dev and
+// prod — without its S3ClientUploadHandler, production /admin renders blank.
+const plugins: Plugin[] = [
+  s3Storage({
+    enabled: Boolean(process.env.S3_BUCKET),
+    collections: { media: true },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      endpoint: process.env.S3_ENDPOINT,
+      region: process.env.S3_REGION || 'auto',
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || '',
       },
-    }),
-  )
-}
+      forcePathStyle: true,
+    },
+  }),
+]
 
 export default buildConfig({
   admin: {

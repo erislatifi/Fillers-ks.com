@@ -217,7 +217,7 @@
   },
   "checkout": {
     "title": "Përfundo Porosinë",
-    "description": "Plotëso të dhënat e klinikës — ekipi ynë do t'ju kontaktojë për të konfirmuar porosinë dhe datën e dërgesës.",
+    "description": "Plotëso të dhënat dhe zgjidh si do ta marrësh porosinë — ekipi ynë ju kontakton për konfirmim.",
     "clinicName": "Emri i klinikës",
     "contactName": "Personi kontaktues",
     "email": "Email",
@@ -231,7 +231,7 @@
     "submit": "Dërgo Porosinë",
     "submitting": "Duke dërguar…",
     "successTitle": "Porosia u pranua!",
-    "successDescription": "Faleminderit! Ekipi ynë do t'ju kontaktojë brenda 1 dite pune për të konfirmuar porosinë dhe datën e dërgesës.",
+    "successDescription": "Faleminderit! Ekipi ynë do t'ju kontaktojë brenda 1 dite pune për ta konfirmuar porosinë.",
     "orderNumber": "Numri i porosisë",
     "backToHome": "Kthehu në Ballinë",
     "professionalNotice": "Vetëm për profesionistë të licencuar mjekësorë dhe klinika të certifikuara. Ekipi ynë mund të kërkojë verifikim të licencës para konfirmimit final.",
@@ -254,8 +254,51 @@
       "secureCheckout": "Checkout i Sigurt — të dhënat tuaja janë të enkriptuara dhe të mbrojtura",
       "trustNote": "Biznes i regjistruar — Nr. Regj. {regNumber}",
       "privacyLink": "Lexo Politikën e Privatësisë",
-      "trustedByClinics": "I besuar nga 500+ klinika partnere në Kosovë"
-    }
+      "trustedByClinics": "I besuar nga 500+ klinika partnere në Kosovë",
+      "officeLabel": "Paguaj në zyrë",
+      "officeDescription": "Cash ose kartelë kur e merrni porosinë",
+      "codLabel": "Cash te korrieri",
+      "codDescription": "Paguani korrierit kur e pranoni pakon",
+      "codNote": "Përgatitni {total} (+ transportin, nëse aplikohet). Korrieri mund të mos ketë kusur."
+    },
+    "optional": "opsionale",
+    "steps": {
+      "contact": "Të dhënat e klinikës",
+      "delivery": "Marrja e porosisë",
+      "payment": "Pagesa",
+      "invoice": "Faturimi",
+      "notes": "Shënime"
+    },
+    "delivery": {
+      "pickupLabel": "Merr në zyrën tonë",
+      "pickupDescription": "Pa kosto dërgese — e merrni kur të jetë gati",
+      "courierLabel": "Dërgesë me korrier",
+      "courierDescription": "Në adresën tuaj, kudo në Kosovë",
+      "pickupAddress": "Adresa për marrje",
+      "scheduleToggle": "Dua ta pranoj në një datë të caktuar",
+      "scheduleHint": "Përndryshe e përgatisim dhe e dërgojmë sa më shpejt."
+    },
+    "invoice": {
+      "toggle": "Më duhet faturë për biznes",
+      "hint": "Fatura lëshohet në emër të biznesit tuaj, me NUI.",
+      "companyName": "Emri i biznesit",
+      "nui": "NUI (Numri Unik Identifikues)",
+      "fiscalNumber": "Numri fiskal",
+      "vatNumber": "Numri i TVSH-së",
+      "address": "Adresa e faturimit",
+      "addressPlaceholder": "Lëre bosh nëse është e njëjtë me adresën e dërgesës"
+    },
+    "summary": {
+      "subtotal": "Nëntotali",
+      "shipping": "Transporti",
+      "shippingFree": "Falas",
+      "shippingTbd": "Konfirmohet nga ekipi",
+      "total": "Totali",
+      "editCart": "Ndrysho shportën"
+    },
+    "acceptTerms": "Pajtohem me <terms>kushtet e shitjes</terms> dhe <privacy>politikën e privatësisë</privacy>.",
+    "successCod": "Pagesa bëhet cash te korrieri kur e pranoni porosinë.",
+    "successBank": "Të dhënat bankare i keni më poshtë — përdorni numrin e porosisë si përshkrim të pagesës."
   },
   "productPage": {
     "deliveryEstimate": "Dërgesë brenda 1-2 ditësh pune"

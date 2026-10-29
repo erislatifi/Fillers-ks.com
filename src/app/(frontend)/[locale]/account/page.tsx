@@ -111,7 +111,9 @@ async function OrdersList({ customer, locale }: { customer: Customer; locale: Ap
                     {t("orderDate")}: {date.format(new Date(order.createdAt))}
                   </span>
                   <span>{t("orderItems", { count: itemCount })}</span>
-                  <span>{t("deliveryOn", { date: date.format(new Date(order.requestedDeliveryDate)) })}</span>
+                  {order.requestedDeliveryDate && (
+                    <span>{t("deliveryOn", { date: date.format(new Date(order.requestedDeliveryDate)) })}</span>
+                  )}
                 </div>
                 <ul className="mt-3 space-y-1 text-[13px] text-ink-faint">
                   {order.items.map((item, idx) => (

@@ -171,7 +171,8 @@ export interface Order {
    * Ndryshoje sapo ta konfirmosh ose ta dorëzosh porosinë.
    */
   status?: ('pending' | 'confirmed' | 'fulfilled' | 'cancelled') | null;
-  paymentMethod: 'pickup' | 'bank_transfer';
+  deliveryMethod: 'pickup' | 'courier';
+  paymentMethod: 'pickup' | 'bank_transfer' | 'cash_on_delivery';
   subtotal: number;
   /**
    * Bosh nëse porosia u bë pa llogari.
@@ -181,10 +182,21 @@ export interface Order {
   contactName: string;
   email: string;
   phone: string;
-  city: string;
-  requestedDeliveryDate: string;
-  deliveryAddress: string;
+  city?: string | null;
+  /**
+   * Bosh = sa më shpejt.
+   */
+  requestedDeliveryDate?: string | null;
+  deliveryAddress?: string | null;
   notes?: string | null;
+  needsInvoice?: boolean | null;
+  invoice?: {
+    companyName?: string | null;
+    nui?: string | null;
+    fiscalNumber?: string | null;
+    vatNumber?: string | null;
+    address?: string | null;
+  };
   items: {
     product?: (number | null) | Product;
     name: string;
@@ -622,6 +634,7 @@ export interface PayloadMigration {
 export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
   status?: T;
+  deliveryMethod?: T;
   paymentMethod?: T;
   subtotal?: T;
   customer?: T;
@@ -633,6 +646,16 @@ export interface OrdersSelect<T extends boolean = true> {
   requestedDeliveryDate?: T;
   deliveryAddress?: T;
   notes?: T;
+  needsInvoice?: T;
+  invoice?:
+    | T
+    | {
+        companyName?: T;
+        nui?: T;
+        fiscalNumber?: T;
+        vatNumber?: T;
+        address?: T;
+      };
   items?:
     | T
     | {

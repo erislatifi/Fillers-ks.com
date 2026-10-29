@@ -401,9 +401,11 @@ export async function Dashboard({ payload }: { payload: Payload }) {
                         </td>
                         <td>
                           <span className="fk-cell-main">{o.clinicName}</span>
-                          <span className="fk-cell-sub">{o.city}</span>
+                          <span className="fk-cell-sub">
+                            {o.deliveryMethod === "courier" ? `Korrier · ${o.city ?? ""}` : "Merr në zyrë"}
+                          </span>
                         </td>
-                        <td>{o.requestedDeliveryDate ? shortDate(new Date(o.requestedDeliveryDate)) : "—"}</td>
+                        <td>{o.requestedDeliveryDate ? shortDate(new Date(o.requestedDeliveryDate)) : "Sa më shpejt"}</td>
                         <td>
                           <span className={`fk-pill fk-pill--${st.tone}`}>{st.label}</span>
                         </td>

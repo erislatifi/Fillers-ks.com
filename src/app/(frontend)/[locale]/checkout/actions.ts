@@ -2,6 +2,7 @@
 
 import { getPayloadClient } from "@/lib/payload";
 import { getCurrentCustomer } from "@/lib/customerSession";
+import { paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
 
 type CheckoutItem = {
   slug: string;
@@ -12,18 +13,25 @@ type CheckoutItem = {
   quantity: number;
 };
 
-type PaymentMethod = "pickup" | "bank_transfer";
-
 type CheckoutInput = {
   clinicName: string;
   contactName: string;
   email: string;
   phone: string;
-  deliveryAddress: string;
-  city: string;
-  requestedDeliveryDate: string;
+  deliveryMethod: DeliveryMethod;
+  deliveryAddress?: string;
+  city?: string;
+  requestedDeliveryDate?: string;
   notes?: string;
   paymentMethod: PaymentMethod;
+  invoice?: {
+    companyName: string;
+    nui: string;
+    fiscalNumber?: string;
+    vatNumber?: string;
+    address?: string;
+  };
+  acceptedTerms: boolean;
   items: CheckoutItem[];
 };
 
@@ -31,22 +39,33 @@ type CheckoutResult =
   | { success: true; orderNumber: string }
   | { success: false; error: string };
 
+const filled = (v?: string) => Boolean(v?.trim());
+
 export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult> {
   if (!input.items || input.items.length === 0) {
     return { success: false, error: "empty-cart" };
   }
   if (
-    !input.clinicName?.trim() ||
-    !input.contactName?.trim() ||
-    !input.email?.trim() ||
-    !input.phone?.trim() ||
-    !input.deliveryAddress?.trim() ||
-    !input.city?.trim() ||
-    !input.requestedDeliveryDate
+    !filled(input.clinicName) ||
+    !filled(input.contactName) ||
+    !filled(input.email) ||
+    !filled(input.phone) ||
+    !input.acceptedTerms
   ) {
     return { success: false, error: "missing-fields" };
   }
-  if (input.paymentMethod !== "pickup" && input.paymentMethod !== "bank_transfer") {
+  const allowedPayments = paymentsFor[input.deliveryMethod];
+  if (!allowedPayments || !allowedPayments.includes(input.paymentMethod)) {
+    return { success: false, error: "missing-fields" };
+  }
+  const courier = input.deliveryMethod === "courier";
+  if (courier && (!filled(input.deliveryAddress) || !filled(input.city))) {
+    return { success: false, error: "missing-fields" };
+  }
+  if (input.invoice && (!filled(input.invoice.companyName) || !filled(input.invoice.nui))) {
+    return { success: false, error: "missing-fields" };
+  }
+  if (input.requestedDeliveryDate && input.requestedDeliveryDate < new Date().toISOString().slice(0, 10)) {
     return { success: false, error: "missing-fields" };
   }
 
@@ -83,11 +102,15 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         contactName: input.contactName,
         email: input.email,
         phone: input.phone,
-        deliveryAddress: input.deliveryAddress,
-        city: input.city,
-        requestedDeliveryDate: input.requestedDeliveryDate,
+        deliveryMethod: input.deliveryMethod,
+        // Address fields only mean something for courier delivery.
+        deliveryAddress: courier ? input.deliveryAddress : undefined,
+        city: courier ? input.city : input.city || undefined,
+        requestedDeliveryDate: input.requestedDeliveryDate || undefined,
         notes: input.notes,
         paymentMethod: input.paymentMethod,
+        needsInvoice: Boolean(input.invoice),
+        invoice: input.invoice,
         items,
         subtotal,
         customer: customer?.id,
