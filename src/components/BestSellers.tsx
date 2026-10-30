@@ -4,12 +4,14 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { ProductCard } from "@/components/ProductCard";
 import { Rail } from "@/components/Rail";
 import { Button } from "@/components/Button";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   products: Product[];
 };
 
-export async function BestSellers({ products }: Props) {
+export async function BestSellers({ products, heading }: Props) {
   const t = await getTranslations("bestSellers");
 
   return (
@@ -17,9 +19,9 @@ export async function BestSellers({ products }: Props) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <SectionHeading
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            description={t("description")}
+            eyebrow={(heading?.eyebrow || t("eyebrow"))}
+            title={(heading?.title || t("title"))}
+            description={(heading?.description || t("description"))}
           />
         </div>
 

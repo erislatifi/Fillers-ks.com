@@ -1,7 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import type { SectionText } from "@/lib/homepage";
 
-export async function Newsletter() {
+export async function Newsletter({ heading }: { heading?: SectionText } = {}) {
   const t = await getTranslations("newsletter");
 
   return (
@@ -17,13 +18,13 @@ export async function Newsletter() {
           />
           <div className="relative max-w-xl mx-auto">
             <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-deep">
-              {t("eyebrow")}
+              {(heading?.eyebrow || t("eyebrow"))}
             </span>
             <h2 className="mt-4 font-display text-2xl sm:text-3xl tracking-tight text-ink text-balance">
-              {t("title")}
+              {(heading?.title || t("title"))}
             </h2>
             <p className="mt-3 text-[14px] text-ink-soft">
-              {t("description")}
+              {(heading?.description || t("description"))}
             </p>
 
             <NewsletterForm variant="section" />

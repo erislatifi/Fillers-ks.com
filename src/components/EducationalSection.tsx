@@ -4,12 +4,14 @@ import type { Article } from "@/payload-types";
 import { SectionHeading } from "@/components/SectionHeading";
 import { MediaFrame, UploadedImage, mediaUrl, hueFromSlug } from "@/components/media";
 import { ArrowRightIcon } from "@/components/icons";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   articles: Article[];
 };
 
-export async function EducationalSection({ articles }: Props) {
+export async function EducationalSection({ articles, heading }: Props) {
   const t = await getTranslations("education");
 
   return (
@@ -17,9 +19,9 @@ export async function EducationalSection({ articles }: Props) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <SectionHeading
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            description={t("description")}
+            eyebrow={(heading?.eyebrow || t("eyebrow"))}
+            title={(heading?.title || t("title"))}
+            description={(heading?.description || t("description"))}
           />
           <Link
             href="/education"

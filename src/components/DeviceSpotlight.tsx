@@ -4,8 +4,10 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { MediaFrame, DeviceGlyph, UploadedImage, mediaUrl } from "@/components/media";
 import { ArrowRightIcon } from "@/components/icons";
 import type { Brand } from "@/payload-types";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   devices: Brand[];
 };
 
@@ -22,7 +24,7 @@ const factsBySlug: Record<string, { sq: string[]; en: string[] }> = {
 
 const huesBySlug: Record<string, number> = { jeisys: 40, clarius: 30 };
 
-export async function DeviceSpotlight({ devices }: Props) {
+export async function DeviceSpotlight({ devices, heading }: Props) {
   const t = await getTranslations("devices");
   const locale = (await getLocale()) as "sq" | "en";
 
@@ -31,9 +33,9 @@ export async function DeviceSpotlight({ devices }: Props) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <SectionHeading
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            description={t("description")}
+            eyebrow={(heading?.eyebrow || t("eyebrow"))}
+            title={(heading?.title || t("title"))}
+            description={(heading?.description || t("description"))}
           />
           <Link
             href="/category/lasers-devices"

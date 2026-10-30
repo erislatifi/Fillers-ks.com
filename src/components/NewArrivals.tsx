@@ -5,12 +5,14 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { MediaFrame, VialGlyph, DeviceGlyph, UploadedImage, hueFromSlug } from "@/components/media";
 import { Rail } from "@/components/Rail";
 import { ArrowRightIcon } from "@/components/icons";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   products: Product[];
 };
 
-export async function NewArrivals({ products }: Props) {
+export async function NewArrivals({ products, heading }: Props) {
   const t = await getTranslations("newArrivals");
 
   return (
@@ -18,9 +20,9 @@ export async function NewArrivals({ products }: Props) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <SectionHeading
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            description={t("description")}
+            eyebrow={(heading?.eyebrow || t("eyebrow"))}
+            title={(heading?.title || t("title"))}
+            description={(heading?.description || t("description"))}
           />
           <Link
             href="/new-arrivals"

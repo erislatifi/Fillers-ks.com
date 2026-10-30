@@ -2,20 +2,22 @@ import { getTranslations } from "next-intl/server";
 import type { Testimonial } from "@/payload-types";
 import { SectionHeading } from "@/components/SectionHeading";
 import { QuoteIcon, StarIcon } from "@/components/icons";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   testimonials: Testimonial[];
 };
 
-export async function Testimonials({ testimonials }: Props) {
+export async function Testimonials({ testimonials, heading }: Props) {
   const t = await getTranslations("testimonials");
 
   return (
     <section className="bg-mist py-20 sm:py-28">
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <SectionHeading
-          eyebrow={t("eyebrow")}
-          title={t("title")}
+          eyebrow={(heading?.eyebrow || t("eyebrow"))}
+          title={(heading?.title || t("title"))}
           align="center"
           className="mx-auto"
         />

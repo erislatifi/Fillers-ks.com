@@ -1,10 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import { MediaFrame } from "@/components/media";
 import { InstagramIcon } from "@/components/icons";
+import type { SectionText } from "@/lib/homepage";
 
 const hues = [40, 30, 48, 36, 44, 28];
 
-export async function InstagramFeed() {
+export async function InstagramFeed({ heading }: { heading?: SectionText } = {}) {
   const t = await getTranslations("instagram");
 
   return (
@@ -14,7 +15,7 @@ export async function InstagramFeed() {
           <div>
             <span className="mb-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-deep">
               <span className="h-px w-6 bg-accent-deep/60" />
-              {t("eyebrow")}
+              {(heading?.eyebrow || t("eyebrow"))}
             </span>
             <h2 className="font-display text-3xl sm:text-4xl tracking-tight text-ink">
               @fillers.kosovo

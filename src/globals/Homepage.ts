@@ -1,7 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 
-// Layout + labels only: the data shape (hero.*, about.*) is unchanged, so no migration is needed.
 export const Homepage: GlobalConfig = {
   slug: 'homepage',
   label: 'Ballina',
@@ -98,6 +97,84 @@ export const Homepage: GlobalConfig = {
                   label: 'Shënim për distribuimin',
                   admin: { description: 'P.sh. për Jeisys dhe Clarius — Kosovë dhe Shqipëri.' },
                 },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Seksionet',
+          description:
+            'Renditja e seksioneve pas pjesës kryesore. Zvarrit për t’i rirenditur, hiq tikun për t’i fshehur. Titujt bosh = teksti standard.',
+          fields: [
+            {
+              name: 'sections',
+              type: 'array',
+              label: 'Seksionet e ballinës',
+              labels: { singular: 'Seksion', plural: 'Seksionet' },
+              admin: {
+                initCollapsed: true,
+                components: { RowLabel: './components/admin/SectionRowLabel#SectionRowLabel' },
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'section',
+                      type: 'select',
+                      required: true,
+                      label: 'Seksioni',
+                      options: [
+                        { label: 'Brendet', value: 'brands' },
+                        { label: 'Rreth nesh', value: 'about' },
+                        { label: 'Pajisjet (Jeisys, Clarius…)', value: 'devices' },
+                        { label: 'Më të shiturat', value: 'bestSellers' },
+                        { label: 'Kategoritë', value: 'categories' },
+                        { label: 'Pse ne', value: 'why' },
+                        { label: 'Të rejat', value: 'newArrivals' },
+                        { label: 'Qendra edukative', value: 'education' },
+                        { label: 'Promocionet', value: 'promotions' },
+                        { label: 'Vlerësimet e klinikave', value: 'testimonials' },
+                        { label: 'Instagram', value: 'instagram' },
+                        { label: 'Newsletter', value: 'newsletter' },
+                      ],
+                    },
+                    { name: 'enabled', type: 'checkbox', defaultValue: true, label: 'Shfaqe' },
+                  ],
+                },
+                { name: 'eyebrow', type: 'text', localized: true, label: 'Teksti i vogël mbi titull' },
+                { name: 'title', type: 'text', localized: true, label: 'Titulli' },
+                { name: 'description', type: 'textarea', localized: true, label: 'Përshkrimi' },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Pse ne',
+          description: 'Kartat e seksionit "Pse ne". Bosh = 5 kartat standarde.',
+          fields: [
+            {
+              name: 'whyItems',
+              type: 'array',
+              label: 'Kartat',
+              labels: { singular: 'Kartë', plural: 'Kartat' },
+              maxRows: 8,
+              fields: [
+                {
+                  name: 'icon',
+                  type: 'select',
+                  defaultValue: 'original',
+                  label: 'Ikona',
+                  options: [
+                    { label: 'Origjinale (shenjë)', value: 'original' },
+                    { label: 'Certifikuar (mburojë)', value: 'certified' },
+                    { label: 'Dërgesë (kamion)', value: 'delivery' },
+                    { label: 'Mbështetje (kufje)', value: 'support' },
+                    { label: 'E besuar (medalje)', value: 'trusted' },
+                  ],
+                },
+                { name: 'title', type: 'text', required: true, localized: true, label: 'Titulli' },
+                { name: 'description', type: 'textarea', localized: true, label: 'Përshkrimi' },
               ],
             },
           ],

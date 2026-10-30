@@ -2,12 +2,14 @@ import { getTranslations } from "next-intl/server";
 import { SectionHeading } from "@/components/SectionHeading";
 import { BrandMark } from "@/components/BrandMark";
 import type { Homepage } from "@/payload-types";
+import type { SectionText } from "@/lib/homepage";
 
 type Props = {
+  heading?: SectionText;
   about?: Homepage["about"];
 };
 
-export async function AboutUs({ about }: Props) {
+export async function AboutUs({ about, heading }: Props) {
   const t = await getTranslations("about");
 
   const stats = [
@@ -22,7 +24,7 @@ export async function AboutUs({ about }: Props) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="grid lg:grid-cols-2 gap-14 items-center">
           <div>
-            <SectionHeading eyebrow={t("eyebrow")} title={about?.title || ""} />
+            <SectionHeading eyebrow={(heading?.eyebrow || t("eyebrow"))} title={about?.title || ""} />
             <p className="mt-6 text-[15px] sm:text-base leading-relaxed text-ink-soft">
               {about?.paragraph1}
             </p>

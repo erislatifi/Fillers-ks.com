@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import { Hero } from "@/components/Hero";
 import { FeaturedBrands } from "@/components/FeaturedBrands";
 import { AboutUs } from "@/components/AboutUs";
@@ -21,6 +22,7 @@ import {
   getPromotions,
   getHomepage,
 } from "@/lib/payload";
+import { resolveSections, type SectionKey, type SectionText } from "@/lib/homepage";
 import type { AppLocale } from "@/i18n/routing";
 
 type Props = {
@@ -51,21 +53,28 @@ export default async function Home({ params }: Props) {
     getHomepage(appLocale),
   ]);
 
+  // Order and visibility come from Ballina → Seksionet in the admin.
+  const render: Record<SectionKey, (heading: SectionText) => ReactNode> = {
+    brands: (h) => <FeaturedBrands brands={brands} heading={h} />,
+    about: (h) => <AboutUs about={homepage.about} heading={h} />,
+    devices: (h) => <DeviceSpotlight devices={brands.filter((b) => b.type === "device")} heading={h} />,
+    bestSellers: (h) => <BestSellers products={products.filter((p) => p.bestSeller)} heading={h} />,
+    categories: (h) => <ShopByCategory categories={categories} counts={categoryCounts} heading={h} />,
+    why: (h) => <WhyChooseUs heading={h} items={homepage.whyItems} />,
+    newArrivals: (h) => <NewArrivals products={products.filter((p) => p.newArrival)} heading={h} />,
+    education: (h) => <EducationalSection articles={articles} heading={h} />,
+    promotions: () => <Promotions promotions={promotions} />,
+    testimonials: (h) => <Testimonials testimonials={testimonials} heading={h} />,
+    instagram: (h) => <InstagramFeed heading={h} />,
+    newsletter: (h) => <Newsletter heading={h} />,
+  };
+
   return (
     <>
       <Hero hero={homepage.hero} />
-      <FeaturedBrands brands={brands} />
-      <AboutUs about={homepage.about} />
-      <DeviceSpotlight devices={brands.filter((b) => b.type === "device")} />
-      <BestSellers products={products.filter((p) => p.bestSeller)} />
-      <ShopByCategory categories={categories} counts={categoryCounts} />
-      <WhyChooseUs />
-      <NewArrivals products={products.filter((p) => p.newArrival)} />
-      <EducationalSection articles={articles} />
-      <Promotions promotions={promotions} />
-      <Testimonials testimonials={testimonials} />
-      <InstagramFeed />
-      <Newsletter />
+      {resolveSections(homepage).map(({ key, heading }) => (
+        <Fragment key={key}>{render[key](heading)}</Fragment>
+      ))}
     </>
   );
 }

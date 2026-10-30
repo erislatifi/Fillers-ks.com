@@ -1,3 +1,5 @@
+import type { SectionText } from "@/lib/homepage";
+import type { Homepage } from "@/payload-types";
 import { getTranslations } from "next-intl/server";
 import { SectionHeading } from "@/components/SectionHeading";
 import {
@@ -8,16 +10,33 @@ import {
   AwardIcon,
 } from "@/components/icons";
 
-export async function WhyChooseUs() {
+const ICONS = {
+  original: BadgeCheckIcon,
+  certified: ShieldCheckIcon,
+  delivery: TruckIcon,
+  support: HeadsetIcon,
+  trusted: AwardIcon,
+};
+
+type Props = { heading?: SectionText; items?: Homepage["whyItems"] };
+
+export async function WhyChooseUs({ heading, items }: Props = {}) {
   const t = await getTranslations("why");
 
-  const features = [
+  // Cards from Ballina → Pse ne; the built-in five when none are set.
+  const fromAdmin = (items ?? []).map((i) => ({
+    icon: ICONS[i.icon ?? "original"] ?? BadgeCheckIcon,
+    title: i.title,
+    description: i.description ?? "",
+  }));
+  const features = fromAdmin.length ? fromAdmin : [
     { icon: BadgeCheckIcon, title: t("originalTitle"), description: t("originalDesc") },
     { icon: ShieldCheckIcon, title: t("certifiedTitle"), description: t("certifiedDesc") },
     { icon: TruckIcon, title: t("deliveryTitle"), description: t("deliveryDesc") },
     { icon: HeadsetIcon, title: t("supportTitle"), description: t("supportDesc") },
     { icon: AwardIcon, title: t("trustedTitle"), description: t("trustedDesc") },
   ];
+  const cols = features.length >= 5 ? "lg:grid-cols-5" : features.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3";
 
   return (
     <section className="relative overflow-hidden bg-ink py-20 sm:py-28">
@@ -30,14 +49,14 @@ export async function WhyChooseUs() {
       />
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         <SectionHeading
-          eyebrow={t("eyebrow")}
-          title={t("title")}
+          eyebrow={(heading?.eyebrow || t("eyebrow"))}
+          title={(heading?.title || t("title"))}
           align="center"
           theme="dark"
           className="mx-auto"
         />
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className={`mt-14 grid sm:grid-cols-2 ${cols} gap-5`}>
           {features.map((f) => (
             <div
               key={f.title}

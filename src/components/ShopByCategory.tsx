@@ -1,3 +1,4 @@
+import type { SectionText } from "@/lib/homepage";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Category } from "@/payload-types";
@@ -28,19 +29,20 @@ const iconMap = {
 };
 
 type Props = {
+  heading?: SectionText;
   categories: Category[];
   counts: Record<string, number>;
 };
 
-export async function ShopByCategory({ categories, counts }: Props) {
+export async function ShopByCategory({ categories, counts, heading }: Props) {
   const t = await getTranslations("categories");
 
   return (
     <section className="bg-paper py-20 sm:py-28">
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <SectionHeading
-          eyebrow={t("eyebrow")}
-          title={t("title")}
+          eyebrow={(heading?.eyebrow || t("eyebrow"))}
+          title={(heading?.title || t("title"))}
           align="center"
           className="mx-auto"
         />

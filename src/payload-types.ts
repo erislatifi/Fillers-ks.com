@@ -1095,6 +1095,36 @@ export interface Homepage {
      */
     distributionNote?: string | null;
   };
+  sections?:
+    | {
+        section:
+          | 'brands'
+          | 'about'
+          | 'devices'
+          | 'bestSellers'
+          | 'categories'
+          | 'why'
+          | 'newArrivals'
+          | 'education'
+          | 'promotions'
+          | 'testimonials'
+          | 'instagram'
+          | 'newsletter';
+        enabled?: boolean | null;
+        eyebrow?: string | null;
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  whyItems?:
+    | {
+        icon?: ('original' | 'certified' | 'delivery' | 'support' | 'trusted') | null;
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1196,6 +1226,24 @@ export interface HomepageSelect<T extends boolean = true> {
         paragraph2?: T;
         quote?: T;
         distributionNote?: T;
+      };
+  sections?:
+    | T
+    | {
+        section?: T;
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  whyItems?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
