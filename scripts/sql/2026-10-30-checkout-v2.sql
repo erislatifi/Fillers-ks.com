@@ -13,7 +13,10 @@ END $$;
 
 ALTER TYPE "public"."enum_orders_payment_method" ADD VALUE IF NOT EXISTS 'cash_on_delivery';
 
+-- `city` was added to the code in August but never reached production (found with
+-- check-missing-columns.sql on 2026-10-30), so live checkout couldn't save orders.
 ALTER TABLE "orders"
+  ADD COLUMN IF NOT EXISTS "city" varchar,
   ADD COLUMN IF NOT EXISTS "delivery_method" "public"."enum_orders_delivery_method" DEFAULT 'pickup' NOT NULL,
   ADD COLUMN IF NOT EXISTS "needs_invoice" boolean DEFAULT false,
   ADD COLUMN IF NOT EXISTS "invoice_company_name" varchar,
