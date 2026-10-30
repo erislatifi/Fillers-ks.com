@@ -4,7 +4,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import type { Brand, Category } from "@/payload-types";
+import type { Brand, Category, SiteSetting } from "@/payload-types";
 import { BrandMark } from "@/components/BrandMark";
 import { BrandBadge } from "@/components/media";
 import { useCart } from "@/contexts/CartContext";
@@ -21,9 +21,11 @@ import {
 type Props = {
   brands: Brand[];
   categories: Category[];
+  // Only the bits the header shows — keeps the client payload small.
+  contact: Pick<SiteSetting, "contactPhone" | "contactEmail" | "tagline" | "topBarNotice">;
 };
 
-export function Header({ brands, categories }: Props) {
+export function Header({ brands, categories, contact }: Props) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const router = useRouter();
@@ -61,10 +63,18 @@ export function Header({ brands, categories }: Props) {
     <header className="sticky top-0 z-50">
       <div className="hidden md:block bg-ink text-paper/85">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 flex items-center justify-between h-9 text-[12px] tracking-wide">
-          <p>{t("utilityNotice")}</p>
+          <p>{contact.topBarNotice || t("utilityNotice")}</p>
           <div className="flex items-center gap-6">
-            <a href="tel:+38344000000" className="hover:text-accent-light transition-colors">+383 44 000 000</a>
-            <a href="mailto:orders@fillers-ks.com" className="hover:text-accent-light transition-colors">orders@fillers-ks.com</a>
+            {contact.contactPhone && (
+              <a href={`tel:${contact.contactPhone.replace(/\s/g, "")}`} className="hover:text-accent-light transition-colors">
+                {contact.contactPhone}
+              </a>
+            )}
+            {contact.contactEmail && (
+              <a href={`mailto:${contact.contactEmail}`} className="hover:text-accent-light transition-colors">
+                {contact.contactEmail}
+              </a>
+            )}
             <div className="flex items-center gap-1.5 border-l border-paper/20 pl-6">
               <button
                 onClick={() => switchLocale("sq")}
@@ -99,7 +109,7 @@ export function Header({ brands, categories }: Props) {
                   Fillers
                 </span>
                 <span className="text-[10.5px] tracking-wide text-ink-faint -mt-0.5">
-                  Ndriço me ne!
+                  {contact.tagline || "Ndriço me ne!"}
                 </span>
               </span>
             </Link>

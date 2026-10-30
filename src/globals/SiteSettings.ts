@@ -1,7 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 
-// Layout + labels only: field names/shape are unchanged, so no migration is needed.
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Cilësimet e faqes',
@@ -29,10 +28,85 @@ export const SiteSettings: GlobalConfig = {
             },
             { name: 'address', type: 'text', localized: true, label: 'Adresa' },
             {
-              name: 'businessRegistrationNumber',
+              type: 'row',
+              fields: [
+                {
+                  name: 'whatsapp',
+                  type: 'text',
+                  label: 'WhatsApp',
+                  admin: { description: 'Numri me prefiks, p.sh. +383 44 123 456. Bosh = s’shfaqet.' },
+                },
+                {
+                  name: 'businessRegistrationNumber',
+                  type: 'text',
+                  label: 'NUIS (numri i regjistrimit të biznesit)',
+                  admin: { description: 'Shfaqet në fund të faqes dhe te checkout si sinjal besimi.' },
+                },
+              ],
+            },
+            {
+              name: 'openingHours',
+              type: 'textarea',
+              localized: true,
+              label: 'Orari i punës',
+              admin: { description: 'Një rresht për çdo ditë/periudhë, p.sh. "Hën–Pre: 09:00–17:00".' },
+            },
+            {
+              name: 'showMap',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Shfaq hartën (Google Maps) te faqja e kontaktit',
+              admin: { description: 'Harta gjendet automatikisht nga adresa më lart.' },
+            },
+          ],
+        },
+        {
+          label: 'Tekstet e faqes',
+          description: 'Tekstet që shfaqen në çdo faqe. Lëri bosh për të përdorur tekstin standard.',
+          fields: [
+            {
+              name: 'announcement',
+              type: 'group',
+              label: 'Shiriti i njoftimeve (lart në faqe)',
+              fields: [
+                { name: 'enabled', type: 'checkbox', defaultValue: false, label: 'Shfaqe shiritin' },
+                {
+                  name: 'text',
+                  type: 'text',
+                  localized: true,
+                  label: 'Teksti',
+                  admin: { description: 'P.sh. "Dërgesë falas për porosi mbi 200€".' },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'linkLabel', type: 'text', localized: true, label: 'Teksti i lidhjes (opsionale)' },
+                    { name: 'linkHref', type: 'text', label: 'Lidhja', admin: { description: 'P.sh. /promotions' } },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'tagline',
               type: 'text',
-              label: 'NUIS (numri i regjistrimit të biznesit)',
-              admin: { description: 'Shfaqet në fund të faqes dhe te checkout si sinjal besimi.' },
+              localized: true,
+              label: 'Slogani nën logo',
+              admin: { description: 'Standard: "Ndriço me ne!"' },
+            },
+            {
+              name: 'topBarNotice',
+              type: 'text',
+              localized: true,
+              label: 'Teksti në shiritin e zi lart',
+              admin: { description: 'Standard: "Vetëm për profesionistë të licencuar…"' },
+            },
+            { name: 'footerDescription', type: 'textarea', localized: true, label: 'Përshkrimi në footer (nën logo)' },
+            {
+              name: 'professionalNotice',
+              type: 'textarea',
+              localized: true,
+              label: 'Njoftimi profesional në footer',
+              admin: { description: 'Kutia me mburojë në fund të çdo faqeje.' },
             },
           ],
         },

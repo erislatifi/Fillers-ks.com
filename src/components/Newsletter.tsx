@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowRightIcon } from "@/components/icons";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 export async function Newsletter() {
   const t = await getTranslations("newsletter");
@@ -26,21 +26,7 @@ export async function Newsletter() {
               {t("description")}
             </p>
 
-            <form className="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                required
-                placeholder={t("placeholder")}
-                className="w-full rounded-full border border-line bg-paper px-5 py-3.5 text-sm outline-none focus:border-accent transition-colors placeholder:text-ink-faint"
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-ink text-paper px-6 py-3.5 text-sm font-medium hover:bg-accent-deep transition-colors shrink-0"
-              >
-                {t("subscribe")}
-                <ArrowRightIcon className="h-4 w-4" />
-              </button>
-            </form>
+            <NewsletterForm variant="section" />
           </div>
         </div>
       </div>

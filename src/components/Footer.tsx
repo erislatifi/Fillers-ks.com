@@ -3,11 +3,14 @@ import { Link } from "@/i18n/navigation";
 import type { Brand, Category, SiteSetting } from "@/payload-types";
 import { BrandMark } from "@/components/BrandMark";
 import { InstagramIcon, FacebookIcon, LinkedinIcon, ShieldCheckIcon } from "@/components/icons";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 type Props = {
   brands: Brand[];
   categories: Category[];
   siteSettings: SiteSetting;
+  // Pages from the admin marked "show in footer" (privacy, terms, …).
+  footerPages: { title: string; href: string }[];
 };
 
 const socialIcons = {
@@ -16,9 +19,11 @@ const socialIcons = {
   linkedin: LinkedinIcon,
 };
 
-export async function Footer({ brands, categories, siteSettings }: Props) {
+export async function Footer({ brands, categories, siteSettings, footerPages }: Props) {
   const t = await getTranslations("footer");
   const year = new Date().getFullYear();
+  // Admin-editable texts (Cilësimet → Tekstet e faqes), falling back to the built-in copy.
+  const hours = siteSettings.openingHours?.trim() || t("hours");
 
   return (
     <footer className="bg-ink text-paper/70">
@@ -32,12 +37,12 @@ export async function Footer({ brands, categories, siteSettings }: Props) {
                   Fillers
                 </span>
                 <span className="text-[10px] tracking-wide text-paper/45 -mt-0.5">
-                  Ndriço me ne!
+                  {siteSettings.tagline || "Ndriço me ne!"}
                 </span>
               </span>
             </div>
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed">
-              {t("tagline")}
+              {siteSettings.footerDescription || t("tagline")}
             </p>
             <div className="mt-6 flex items-center gap-3">
               {(siteSettings.socialLinks ?? []).map((link) => {
@@ -111,25 +116,13 @@ export async function Footer({ brands, categories, siteSettings }: Props) {
               {siteSettings.contactEmail && (
                 <li><a href={`mailto:${siteSettings.contactEmail}`} className="hover:text-accent-light transition-colors">{siteSettings.contactEmail}</a></li>
               )}
-              <li>{t("hours")}</li>
+              <li className="whitespace-pre-line">{hours}</li>
             </ul>
 
-            <form className="mt-6">
-              <label className="text-[12px] font-semibold uppercase tracking-wider text-paper/90">{t("newsletterHeading")}</label>
-              <div className="mt-3 flex items-center rounded-full border border-paper/15 pl-4 pr-1.5 py-1.5 focus-within:border-accent-light transition-colors">
-                <input
-                  type="email"
-                  placeholder={t("emailPlaceholder")}
-                  className="w-full bg-transparent text-[13px] outline-none placeholder:text-paper/40"
-                />
-                <button
-                  type="submit"
-                  className="rounded-full bg-accent px-4 py-2 text-[12px] font-medium text-paper shrink-0 hover:bg-accent-light transition-colors"
-                >
-                  {t("join")}
-                </button>
-              </div>
-            </form>
+            <div className="mt-6">
+              <p className="text-[12px] font-semibold uppercase tracking-wider text-paper/90">{t("newsletterHeading")}</p>
+              <NewsletterForm variant="footer" />
+            </div>
           </div>
         </div>
 
@@ -137,16 +130,18 @@ export async function Footer({ brands, categories, siteSettings }: Props) {
           <ShieldCheckIcon className="h-5 w-5 text-accent-light shrink-0 mt-0.5" />
           <p className="text-[13px] leading-relaxed text-paper/60">
             <span className="text-paper/85 font-medium">{t("noticeLabel")} </span>
-            {t("notice")}
+            {siteSettings.professionalNotice || t("notice")}
           </p>
         </div>
 
         <div className="mt-10 pt-6 border-t border-paper/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12.5px] text-paper/45">
           <p>© {year} Fillers Kosovo. {t("rights")}</p>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-paper/70 transition-colors">{t("privacy")}</Link>
-            <Link href="/terms" className="hover:text-paper/70 transition-colors">{t("terms")}</Link>
-            <Link href="/shipping" className="hover:text-paper/70 transition-colors">{t("shipping")}</Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {footerPages.map((p) => (
+              <Link key={p.href} href={p.href} className="hover:text-paper/70 transition-colors">
+                {p.title}
+              </Link>
+            ))}
           </div>
         </div>
       </div>

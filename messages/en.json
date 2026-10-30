@@ -114,7 +114,9 @@
     "title": "New products, promotions and clinical education — straight to your inbox.",
     "description": "For licensed professionals only. Unsubscribe anytime.",
     "placeholder": "your.name@clinic.com",
-    "subscribe": "Subscribe"
+    "subscribe": "Subscribe",
+    "success": "Thank you! You're subscribed.",
+    "error": "Please enter a valid email."
   },
   "footer": {
     "tagline": "Kosovo's certified distributor of premium aesthetic medicine — serving licensed professionals with original products and clinical support since day one.",
@@ -302,5 +304,29 @@
   },
   "productPage": {
     "deliveryEstimate": "Delivery within 1-2 business days"
+  },
+  "pages": {
+    "eyebrow": "Information",
+    "updated": "Updated {date}"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Talk to our team",
+    "description": "Have a question about a product, an order, or becoming a partner clinic? Reach out — we usually reply within one business day.",
+    "detailsTitle": "Contact details",
+    "whatsapp": "Message us on WhatsApp",
+    "hours": "Opening hours",
+    "professionalNotice": "For licensed medical professionals and certified aesthetic clinics only. New clinics may be asked to verify their professional license before their first order.",
+    "name": "Full name",
+    "clinic": "Clinic (optional)",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending…",
+    "successTitle": "Message sent!",
+    "successText": "Thank you — we'll get back to you shortly.",
+    "error": "We couldn't send your message. Please check the fields or give us a call.",
+    "mapTitle": "Map of our location"
   }
 }

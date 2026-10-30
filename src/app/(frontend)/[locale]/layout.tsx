@@ -8,6 +8,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/contexts/CartContext";
 import { getBrands, getCategories, getSiteSettings } from "@/lib/payload";
+import { getFooterPages } from "@/lib/pages";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 import "../globals.css";
 
 const inter = Inter({
@@ -60,11 +62,13 @@ export default async function RootLayout({ children, params }: Props) {
 
   const messages = await getMessages();
   const appLocale = locale as AppLocale;
-  const [brands, categories, siteSettings] = await Promise.all([
+  const [brands, categories, siteSettings, footerPages] = await Promise.all([
     getBrands(appLocale),
     getCategories(appLocale),
     getSiteSettings(appLocale),
+    getFooterPages(appLocale),
   ]);
+  const { contactPhone, contactEmail, tagline, topBarNotice } = siteSettings;
 
   return (
     <html
@@ -74,9 +78,10 @@ export default async function RootLayout({ children, params }: Props) {
       <body className="min-h-full flex flex-col bg-paper text-ink">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
-            <Header brands={brands} categories={categories} />
+            <AnnouncementBar announcement={siteSettings.announcement} />
+            <Header brands={brands} categories={categories} contact={{ contactPhone, contactEmail, tagline, topBarNotice }} />
             <main className="flex-1 flex flex-col">{children}</main>
-            <Footer brands={brands} categories={categories} siteSettings={siteSettings} />
+            <Footer brands={brands} categories={categories} siteSettings={siteSettings} footerPages={footerPages} />
           </CartProvider>
         </NextIntlClientProvider>
       </body>

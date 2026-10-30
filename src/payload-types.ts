@@ -70,6 +70,8 @@ export interface Config {
   collections: {
     orders: Order;
     customers: Customer;
+    'contact-messages': ContactMessage;
+    subscribers: Subscriber;
     products: Product;
     brands: Brand;
     categories: Category;
@@ -77,6 +79,7 @@ export interface Config {
     testimonials: Testimonial;
     articles: Article;
     promotions: Promotion;
+    pages: Page;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -87,6 +90,8 @@ export interface Config {
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
+    'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -94,6 +99,7 @@ export interface Config {
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     promotions: PromotionsSelect<false> | PromotionsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -398,6 +404,36 @@ export interface Media {
   };
 }
 /**
+ * Mesazhet nga forma e kontaktit në faqe. Ndrysho statusin kur t’i përgjigjesh.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages".
+ */
+export interface ContactMessage {
+  id: number;
+  status?: ('new' | 'read' | 'replied') | null;
+  name: string;
+  clinicName?: string | null;
+  email: string;
+  phone?: string | null;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Email-at që janë regjistruar për newsletter nga faqja.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  locale?: ('sq' | 'en') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Fjalët e klinikave partnere që shfaqen në Ballinë.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -484,6 +520,53 @@ export interface Promotion {
   createdAt: string;
 }
 /**
+ * Privatësia, kushtet, dërgesa, pyetjet e shpeshta dhe faqe të tjera me tekst. Shkruaji në shqip, pastaj ndërro gjuhën lart për anglishten.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Një fjali e shkurtër nën titull (opsionale).
+   */
+  intro?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Shfaqen si listë që hapet me klik, nën përmbajtjen (p.sh. te faqja FAQ).
+   */
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * privacy, terms, shipping dhe faq kanë adresat e tyre. Për faqe të reja përdor p.sh. "kthimet" → /info/kthimet.
+   */
+  slug: string;
+  showInFooter?: boolean | null;
+  metaDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Njerëzit që kanë qasje në këtë panel.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -544,6 +627,14 @@ export interface PayloadLockedDocument {
         value: number | Customer;
       } | null)
     | ({
+        relationTo: 'contact-messages';
+        value: number | ContactMessage;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -570,6 +661,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'promotions';
         value: number | Promotion;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'users';
@@ -697,6 +792,30 @@ export interface CustomersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages_select".
+ */
+export interface ContactMessagesSelect<T extends boolean = true> {
+  status?: T;
+  name?: T;
+  clinicName?: T;
+  email?: T;
+  phone?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  locale?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -842,6 +961,27 @@ export interface PromotionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  content?: T;
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  slug?: T;
+  showInFooter?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -970,9 +1110,46 @@ export interface SiteSetting {
   contactEmail?: string | null;
   address?: string | null;
   /**
+   * Numri me prefiks, p.sh. +383 44 123 456. Bosh = s’shfaqet.
+   */
+  whatsapp?: string | null;
+  /**
    * Shfaqet në fund të faqes dhe te checkout si sinjal besimi.
    */
   businessRegistrationNumber?: string | null;
+  /**
+   * Një rresht për çdo ditë/periudhë, p.sh. "Hën–Pre: 09:00–17:00".
+   */
+  openingHours?: string | null;
+  /**
+   * Harta gjendet automatikisht nga adresa më lart.
+   */
+  showMap?: boolean | null;
+  announcement?: {
+    enabled?: boolean | null;
+    /**
+     * P.sh. "Dërgesë falas për porosi mbi 200€".
+     */
+    text?: string | null;
+    linkLabel?: string | null;
+    /**
+     * P.sh. /promotions
+     */
+    linkHref?: string | null;
+  };
+  /**
+   * Standard: "Ndriço me ne!"
+   */
+  tagline?: string | null;
+  /**
+   * Standard: "Vetëm për profesionistë të licencuar…"
+   */
+  topBarNotice?: string | null;
+  footerDescription?: string | null;
+  /**
+   * Kutia me mburojë në fund të çdo faqeje.
+   */
+  professionalNotice?: string | null;
   bankDetails?: {
     bankName?: string | null;
     accountHolder?: string | null;
@@ -1032,7 +1209,22 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   contactPhone?: T;
   contactEmail?: T;
   address?: T;
+  whatsapp?: T;
   businessRegistrationNumber?: T;
+  openingHours?: T;
+  showMap?: T;
+  announcement?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        linkLabel?: T;
+        linkHref?: T;
+      };
+  tagline?: T;
+  topBarNotice?: T;
+  footerDescription?: T;
+  professionalNotice?: T;
   bankDetails?:
     | T
     | {

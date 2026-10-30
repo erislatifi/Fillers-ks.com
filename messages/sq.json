@@ -114,7 +114,9 @@
     "title": "Produkte të reja, promocione dhe edukim klinik — direkt në email-in tënd.",
     "description": "Vetëm për profesionistë të licencuar. Çabonohu kurdo.",
     "placeholder": "emri.juaj@klinika.com",
-    "subscribe": "Abonohu"
+    "subscribe": "Abonohu",
+    "success": "Faleminderit! U regjistruat me sukses.",
+    "error": "Shkruani një email të vlefshëm."
   },
   "footer": {
     "tagline": "Distributori i certifikuar i Kosovës për mjekësi estetike premium — duke shërbyer profesionistë të licencuar me produkte origjinale dhe mbështetje klinike që nga dita e parë.",
@@ -302,5 +304,29 @@
   },
   "productPage": {
     "deliveryEstimate": "Dërgesë brenda 1-2 ditësh pune"
+  },
+  "pages": {
+    "eyebrow": "Informacion",
+    "updated": "Përditësuar më {date}"
+  },
+  "contact": {
+    "eyebrow": "Kontakt",
+    "title": "Flisni me ekipin tonë",
+    "description": "Keni pyetje për një produkt, porosi apo si të bëheni klinikë partnere? Na shkruani — zakonisht përgjigjemi brenda një dite pune.",
+    "detailsTitle": "Të dhënat e kontaktit",
+    "whatsapp": "Na shkruani në WhatsApp",
+    "hours": "Orari i punës",
+    "professionalNotice": "Vetëm për profesionistë të licencuar mjekësorë dhe klinika të certifikuara. Klinikave të reja mund t'u kërkohet verifikimi i licencës para porosisë së parë.",
+    "name": "Emri dhe mbiemri",
+    "clinic": "Klinika (opsionale)",
+    "email": "Email",
+    "phone": "Telefoni (opsionale)",
+    "message": "Mesazhi",
+    "send": "Dërgo mesazhin",
+    "sending": "Duke dërguar…",
+    "successTitle": "Mesazhi u dërgua!",
+    "successText": "Faleminderit — do t'ju përgjigjemi sa më shpejt.",
+    "error": "S'arritëm ta dërgojmë mesazhin. Kontrolloni fushat ose na telefononi.",
+    "mapTitle": "Harta e lokacionit tonë"
   }
 }
