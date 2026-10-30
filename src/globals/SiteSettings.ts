@@ -61,6 +61,45 @@ export const SiteSettings: GlobalConfig = {
           ],
         },
         {
+          label: 'Dërgesa dhe porositë',
+          description: 'Kostoja e korrierit, njoftimet për porosi dhe të dhënat që dalin në faturë.',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'courierFee',
+                  type: 'number',
+                  min: 0,
+                  label: 'Kostoja e dërgesës me korrier (€)',
+                  admin: { description: 'Bosh ose 0 = "konfirmohet nga ekipi".' },
+                },
+                {
+                  name: 'freeShippingThreshold',
+                  type: 'number',
+                  min: 0,
+                  label: 'Dërgesë falas mbi (€)',
+                  admin: { description: 'Bosh = asnjëherë falas.' },
+                },
+              ],
+            },
+            {
+              name: 'orderNotificationEmail',
+              type: 'email',
+              label: 'Email-i ku vijnë njoftimet për porosi dhe mesazhe',
+              admin: {
+                description: 'Kërkon që email-i (SMTP) të jetë konfiguruar te Hostinger. Bosh = email-i i kontaktit.',
+              },
+            },
+            {
+              name: 'legalName',
+              type: 'text',
+              label: 'Emri ligjor i biznesit (në faturë)',
+              admin: { description: 'P.sh. Alp Estetik SHPK.' },
+            },
+          ],
+        },
+        {
           label: 'Tekstet e faqes',
           description: 'Tekstet që shfaqen në çdo faqe. Lëri bosh për të përdorur tekstin standard.',
           fields: [

@@ -111,6 +111,12 @@ async function OrdersList({ customer, locale }: { customer: Customer; locale: Ap
                     {t("orderDate")}: {date.format(new Date(order.createdAt))}
                   </span>
                   <span>{t("orderItems", { count: itemCount })}</span>
+                  {order.trackingNumber && (
+                    <span>
+                      {t("tracking")}: {order.courierName ? `${order.courierName} · ` : ""}
+                      {order.trackingNumber}
+                    </span>
+                  )}
                   {order.requestedDeliveryDate && (
                     <span>{t("deliveryOn", { date: date.format(new Date(order.requestedDeliveryDate)) })}</span>
                   )}
@@ -128,7 +134,7 @@ async function OrdersList({ customer, locale }: { customer: Customer; locale: Ap
                 </ul>
                 <div className="mt-3 pt-3 border-t border-line-soft flex justify-between text-[14px]">
                   <span className="text-ink-soft">{t("orderTotal")}</span>
-                  <span className="font-display text-ink">€{order.subtotal.toFixed(2)}</span>
+                  <span className="font-display text-ink">€{(order.total ?? order.subtotal).toFixed(2)}</span>
                 </div>
               </li>
             );

@@ -215,7 +215,8 @@
       "wrong-password": "Fjalëkalimi aktual është i gabuar.",
       "session-expired": "Sesioni skadoi. Hyr përsëri.",
       "server-error": "Diçka shkoi keq. Provo përsëri ose na kontakto."
-    }
+    },
+    "tracking": "Gjurmimi"
   },
   "checkout": {
     "title": "Përfundo Porosinë",
@@ -296,7 +297,8 @@
       "shippingFree": "Falas",
       "shippingTbd": "Konfirmohet nga ekipi",
       "total": "Totali",
-      "editCart": "Ndrysho shportën"
+      "editCart": "Ndrysho shportën",
+      "freeOver": "Dërgesë falas për porosi mbi {amount}"
     },
     "acceptTerms": "Pajtohem me <terms>kushtet e shitjes</terms> dhe <privacy>politikën e privatësisë</privacy>.",
     "successCod": "Pagesa bëhet cash te korrieri kur e pranoni porosinë.",

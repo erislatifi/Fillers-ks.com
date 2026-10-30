@@ -1,6 +1,8 @@
 "use server";
 
+import { after } from "next/server";
 import { getPayloadClient } from "@/lib/payload";
+import { emailContactMessage } from "@/lib/email";
 
 export type FormState = { ok?: boolean; error?: string } | null;
 
@@ -25,6 +27,7 @@ export async function sendContactMessage(_prev: FormState, form: FormData): Prom
   try {
     const payload = await getPayloadClient();
     await payload.create({ collection: "contact-messages", data });
+    after(() => emailContactMessage(data));
     return { ok: true };
   } catch (err) {
     console.error("sendContactMessage failed", err);

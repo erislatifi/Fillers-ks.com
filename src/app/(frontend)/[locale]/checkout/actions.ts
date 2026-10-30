@@ -1,6 +1,9 @@
 "use server";
 
+import { after } from "next/server";
 import { getPayloadClient } from "@/lib/payload";
+import { shippingCost } from "@/lib/shipping";
+import { emailNewOrder } from "@/lib/email";
 import { getCurrentCustomer } from "@/lib/customerSession";
 import { paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
 
@@ -36,7 +39,7 @@ type CheckoutInput = {
 };
 
 type CheckoutResult =
-  | { success: true; orderNumber: string }
+  | { success: true; orderNumber: string; shipping: number | null; total: number }
   | { success: false; error: string };
 
 const filled = (v?: string) => Boolean(v?.trim());
@@ -91,6 +94,10 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
     );
 
     const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    // Priced on the server from Cilësimet → Dërgesa dhe porositë, never trusted from the form.
+    const settings = await payload.findGlobal({ slug: "site-settings" });
+    const shipping = shippingCost(input.deliveryMethod, subtotal, settings);
+    const total = subtotal + (shipping ?? 0);
     // Taken from the session cookie, never from the form, so an order can't be filed under
     // someone else's account.
     const customer = await getCurrentCustomer();
@@ -113,11 +120,14 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         invoice: input.invoice,
         items,
         subtotal,
+        shippingCost: shipping ?? undefined,
+        total,
         customer: customer?.id,
       },
     });
 
-    return { success: true, orderNumber: order.orderNumber ?? String(order.id) };
+    after(() => emailNewOrder(order));
+    return { success: true, orderNumber: order.orderNumber ?? String(order.id), shipping, total };
   } catch (err) {
     console.error("submitOrder failed", err);
     return { success: false, error: "server-error" };

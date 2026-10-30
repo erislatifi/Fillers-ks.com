@@ -1,5 +1,8 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, FieldAccess } from 'payload'
 import { isAdmin, isAdminUser } from '../access/isAdmin'
+
+// Internal fields: a logged-in clinic can read its own orders, but never these.
+const staffOnly: FieldAccess = ({ req }) => isAdminUser(req)
 
 function generateOrderNumber() {
   const now = new Date()
@@ -16,7 +19,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'orderNumber',
     group: 'Shitjet',
-    defaultColumns: ['orderNumber', 'clinicName', 'status', 'paymentMethod', 'requestedDeliveryDate', 'subtotal', 'createdAt'],
+    defaultColumns: ['orderNumber', 'clinicName', 'status', 'deliveryMethod', 'paymentMethod', 'total', 'createdAt'],
     description: 'Kërkesat që dërgojnë klinikat nga shporta. Hapi një porosi për ta konfirmuar dhe për të ndryshuar statusin.',
   },
   access: {
@@ -31,7 +34,27 @@ export const Orders: CollectionConfig = {
     update: isAdmin,
     delete: isAdmin,
   },
+  hooks: {
+    // Record every status change (and the initial "pending") with who made it and when.
+    beforeChange: [
+      ({ data, originalDoc, operation, req }) => {
+        const status = data.status ?? originalDoc?.status ?? 'pending'
+        if (operation === 'update' && status === originalDoc?.status) return data
+        const history = data.statusHistory ?? originalDoc?.statusHistory ?? []
+        data.statusHistory = [
+          ...history,
+          { status, changedAt: new Date().toISOString(), changedBy: req.user?.email ?? 'checkout' },
+        ]
+        return data
+      },
+    ],
+  },
   fields: [
+    {
+      name: 'printButtons',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: './components/admin/OrderPrintButtons#OrderPrintButtons' } },
+    },
     {
       name: 'orderNumber',
       type: 'text',
@@ -85,11 +108,24 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
-      name: 'subtotal',
-      type: 'number',
-      required: true,
-      label: 'Totali (€)',
+      type: 'row',
       admin: { position: 'sidebar' },
+      fields: [
+        { name: 'subtotal', type: 'number', required: true, label: 'Produktet (€)' },
+        {
+          name: 'shippingCost',
+          type: 'number',
+          min: 0,
+          label: 'Transporti (€)',
+          admin: { description: 'Bosh = konfirmohet nga ekipi.' },
+        },
+      ],
+    },
+    {
+      name: 'total',
+      type: 'number',
+      label: 'Totali për pagesë (€)',
+      admin: { position: 'sidebar', description: 'Produktet + transporti.' },
     },
     {
       // Set server-side at checkout when the clinic is logged in; empty for guest orders.
@@ -140,6 +176,55 @@ export const Orders: CollectionConfig = {
         },
         { name: 'deliveryAddress', type: 'textarea', label: 'Adresa e dorëzimit' },
         { name: 'notes', type: 'textarea', label: 'Shënime nga klienti' },
+        {
+          type: 'row',
+          fields: [
+            { name: 'courierName', type: 'text', label: 'Korrieri', admin: { description: 'P.sh. PostaExpress' } },
+            { name: 'trackingNumber', type: 'text', label: 'Numri i gjurmimit' },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Shënime të brendshme dhe historiku',
+      admin: { initCollapsed: false },
+      fields: [
+        {
+          name: 'internalNotes',
+          type: 'textarea',
+          label: 'Shënime të brendshme',
+          access: { read: staffOnly },
+          admin: { description: 'Vetëm për ekipin — klienti nuk i sheh kurrë.' },
+        },
+        {
+          name: 'statusHistory',
+          type: 'array',
+          label: 'Historiku i statusit',
+          labels: { singular: 'Ndryshim', plural: 'Ndryshimet' },
+          access: { read: staffOnly },
+          admin: { readOnly: true, initCollapsed: true },
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'status',
+                  type: 'select',
+                  label: 'Statusi',
+                  options: [
+                    { label: 'Në pritje', value: 'pending' },
+                    { label: 'Konfirmuar', value: 'confirmed' },
+                    { label: 'Dorëzuar', value: 'fulfilled' },
+                    { label: 'Anuluar', value: 'cancelled' },
+                  ],
+                },
+                { name: 'changedAt', type: 'date', label: 'Kur', admin: { date: { pickerAppearance: 'dayAndTime' } } },
+                { name: 'changedBy', type: 'text', label: 'Nga' },
+              ],
+            },
+          ],
+        },
       ],
     },
     {

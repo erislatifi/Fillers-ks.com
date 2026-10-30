@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCart } from "@/contexts/CartContext";
 import { submitOrder } from "@/app/(frontend)/[locale]/checkout/actions";
 import { paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
+import { shippingCost } from "@/lib/shipping";
 import { Button } from "@/components/Button";
 import { Link } from "@/i18n/navigation";
 import { MediaFrame, hueFromSlug } from "@/components/media";
@@ -122,6 +123,9 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
   const [needsInvoice, setNeedsInvoice] = useState(false);
 
   const courier = delivery === "courier";
+  // Display only — the server recalculates it from the same settings when the order is placed.
+  const shipping = shippingCost(delivery, subtotal, siteSettings);
+  const total = subtotal + (shipping ?? 0);
 
   function chooseDelivery(next: DeliveryMethod) {
     setDelivery(next);
@@ -367,7 +371,7 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
               </div>
               {payment === "bank_transfer" && <div className="sm:col-span-2">{bankDetails}</div>}
               {payment === "cash_on_delivery" && (
-                <p className="sm:col-span-2 text-[13px] text-ink-soft">{t("payment.codNote", { total: eur(subtotal) })}</p>
+                <p className="sm:col-span-2 text-[13px] text-ink-soft">{t("payment.codNote", { total: eur(total) })}</p>
               )}
             </Section>
 
@@ -475,12 +479,19 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-ink-soft">{t("summary.shipping")}</span>
-                <span className="text-ink">{courier ? t("summary.shippingTbd") : t("summary.shippingFree")}</span>
+                <span className="text-ink">
+                  {shipping === null ? t("summary.shippingTbd") : shipping === 0 ? t("summary.shippingFree") : eur(shipping)}
+                </span>
               </div>
+              {courier && shipping !== 0 && siteSettings.freeShippingThreshold ? (
+                <p className="text-[12px] text-accent-deep">
+                  {t("summary.freeOver", { amount: eur(siteSettings.freeShippingThreshold) })}
+                </p>
+              ) : null}
             </div>
             <div className="mt-4 pt-4 border-t border-line-soft flex items-center justify-between text-[15px]">
               <span className="font-medium text-ink">{t("summary.total")}</span>
-              <span className="font-display text-lg text-ink">{eur(subtotal)}</span>
+              <span className="font-display text-lg text-ink">{eur(total)}</span>
             </div>
 
             <div className="mt-5 pt-5 border-t border-line-soft space-y-2">

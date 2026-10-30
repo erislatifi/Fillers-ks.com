@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mark } from "./Logo";
 
-/** Pinned links above the collection groups: Dashboard, pending-orders alert, view live site. */
-export function NavTopLinks({ pending }: { pending: number }) {
+/** Pinned links above the collection groups: Dashboard, pending-orders and new-message alerts, view live site. */
+export function NavTopLinks({ pending, newMessages }: { pending: number; newMessages: number }) {
   const pathname = usePathname();
   const onDashboard = pathname === "/admin" || pathname === "/admin/";
 
@@ -34,6 +34,13 @@ export function NavTopLinks({ pending }: { pending: number }) {
         >
           <span className="fk-nav-alert__count">{pending}</span>
           <span>{pending === 1 ? "porosi pret konfirmim" : "porosi presin konfirmim"}</span>
+        </Link>
+      )}
+
+      {newMessages > 0 && (
+        <Link href="/admin/collections/contact-messages?where[status][equals]=new" className="fk-nav-alert">
+          <span className="fk-nav-alert__count">{newMessages}</span>
+          <span>{newMessages === 1 ? "mesazh i ri" : "mesazhe të reja"}</span>
         </Link>
       )}
 

@@ -181,6 +181,14 @@ export interface Order {
   paymentMethod: 'pickup' | 'bank_transfer' | 'cash_on_delivery';
   subtotal: number;
   /**
+   * Bosh = konfirmohet nga ekipi.
+   */
+  shippingCost?: number | null;
+  /**
+   * Produktet + transporti.
+   */
+  total?: number | null;
+  /**
    * Bosh nëse porosia u bë pa llogari.
    */
   customer?: (number | null) | Customer;
@@ -195,6 +203,23 @@ export interface Order {
   requestedDeliveryDate?: string | null;
   deliveryAddress?: string | null;
   notes?: string | null;
+  /**
+   * P.sh. PostaExpress
+   */
+  courierName?: string | null;
+  trackingNumber?: string | null;
+  /**
+   * Vetëm për ekipin — klienti nuk i sheh kurrë.
+   */
+  internalNotes?: string | null;
+  statusHistory?:
+    | {
+        status?: ('pending' | 'confirmed' | 'fulfilled' | 'cancelled') | null;
+        changedAt?: string | null;
+        changedBy?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   needsInvoice?: boolean | null;
   invoice?: {
     companyName?: string | null;
@@ -732,6 +757,8 @@ export interface OrdersSelect<T extends boolean = true> {
   deliveryMethod?: T;
   paymentMethod?: T;
   subtotal?: T;
+  shippingCost?: T;
+  total?: T;
   customer?: T;
   clinicName?: T;
   contactName?: T;
@@ -741,6 +768,17 @@ export interface OrdersSelect<T extends boolean = true> {
   requestedDeliveryDate?: T;
   deliveryAddress?: T;
   notes?: T;
+  courierName?: T;
+  trackingNumber?: T;
+  internalNotes?: T;
+  statusHistory?:
+    | T
+    | {
+        status?: T;
+        changedAt?: T;
+        changedBy?: T;
+        id?: T;
+      };
   needsInvoice?: T;
   invoice?:
     | T
@@ -1155,6 +1193,22 @@ export interface SiteSetting {
    * Harta gjendet automatikisht nga adresa më lart.
    */
   showMap?: boolean | null;
+  /**
+   * Bosh ose 0 = "konfirmohet nga ekipi".
+   */
+  courierFee?: number | null;
+  /**
+   * Bosh = asnjëherë falas.
+   */
+  freeShippingThreshold?: number | null;
+  /**
+   * Kërkon që email-i (SMTP) të jetë konfiguruar te Hostinger. Bosh = email-i i kontaktit.
+   */
+  orderNotificationEmail?: string | null;
+  /**
+   * P.sh. Alp Estetik SHPK.
+   */
+  legalName?: string | null;
   announcement?: {
     enabled?: boolean | null;
     /**
@@ -1261,6 +1315,10 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   businessRegistrationNumber?: T;
   openingHours?: T;
   showMap?: T;
+  courierFee?: T;
+  freeShippingThreshold?: T;
+  orderNotificationEmail?: T;
+  legalName?: T;
   announcement?:
     | T
     | {
