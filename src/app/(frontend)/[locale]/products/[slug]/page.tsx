@@ -35,6 +35,8 @@ export default async function ProductPage({ params }: Props) {
   const category = typeof product.category === "object" ? product.category : null;
   const t = await getTranslations("bestSellers");
   const tp = await getTranslations("productPage");
+  const ts = await getTranslations("stock");
+  const onSale = !product.quoteOnly && !!product.compareAtPrice && product.compareAtPrice > (product.price ?? 0);
   const Glyph = category?.slug === "lasers-devices" ? DeviceGlyph : VialGlyph;
   const images = (product.images ?? []).filter((img) => mediaUrl(img));
 
@@ -101,12 +103,37 @@ export default async function ProductPage({ params }: Props) {
 
               <p className="mt-6 font-display text-2xl text-ink">
                 {product.quoteOnly ? t("requestQuote") : `€${(product.price ?? 0).toFixed(2)}`}
+                {onSale && (
+                  <span className="ml-3 text-[17px] text-ink-faint line-through">€{product.compareAtPrice!.toFixed(2)}</span>
+                )}
+              </p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px]">
+                <span
+                  className={
+                    product.stockStatus === "out_of_stock"
+                      ? "text-red-700"
+                      : product.stockStatus === "low_stock" || product.stockStatus === "preorder"
+                        ? "text-amber-700"
+                        : "text-emerald-700"
+                  }
+                >
+                  ● {ts(product.stockStatus ?? "in_stock")}
+                </span>
+                {product.sku && (
+                  <span className="text-ink-faint">
+                    {ts("sku")}: {product.sku}
+                  </span>
+                )}
               </p>
 
               <p className="mt-6 text-[15px] leading-relaxed text-ink-soft">{product.description}</p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                {product.quoteOnly ? (
+                {product.stockStatus === "out_of_stock" && !product.quoteOnly ? (
+                  <span className="inline-flex items-center rounded-full border border-line px-6 py-4 text-[15px] text-ink-faint">
+                    {ts("outOfStockButton")}
+                  </span>
+                ) : product.quoteOnly ? (
                   <Button href="/contact" size="lg">
                     {t("requestQuote")}
                     <ArrowRightIcon className="h-4 w-4" />

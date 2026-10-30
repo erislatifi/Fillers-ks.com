@@ -302,7 +302,9 @@
     },
     "acceptTerms": "I agree to the <terms>terms of sale</terms> and the <privacy>privacy policy</privacy>.",
     "successCod": "You pay the courier in cash when you receive the order.",
-    "successBank": "Bank details are below — use the order number as the payment reference."
+    "successBank": "Bank details are below — use the order number as the payment reference.",
+    "errorUnavailable": "One or more products in your cart are no longer available. Refresh your cart and try again.",
+    "minOrder": "The minimum order value is {amount}. Please add a few more products to your cart."
   },
   "productPage": {
     "deliveryEstimate": "Delivery within 1-2 business days"
@@ -330,5 +332,13 @@
     "successText": "Thank you — we'll get back to you shortly.",
     "error": "We couldn't send your message. Please check the fields or give us a call.",
     "mapTitle": "Map of our location"
+  },
+  "stock": {
+    "in_stock": "In stock",
+    "low_stock": "Low stock",
+    "out_of_stock": "Out of stock",
+    "preorder": "Pre-order",
+    "outOfStockButton": "Out of stock",
+    "sku": "SKU"
   }
 }

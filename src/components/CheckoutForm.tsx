@@ -4,7 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useCart } from "@/contexts/CartContext";
 import { submitOrder } from "@/app/(frontend)/[locale]/checkout/actions";
-import { paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
+import { checkoutChoices, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
 import { shippingCost } from "@/lib/shipping";
 import { Button } from "@/components/Button";
 import { Link } from "@/i18n/navigation";
@@ -115,10 +115,12 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
   const t = useTranslations("checkout");
   const { items, subtotal, clear } = useCart();
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [placed, setPlaced] = useState<{ orderNumber: string; payment: PaymentMethod } | null>(null);
-  const [delivery, setDelivery] = useState<DeliveryMethod>("pickup");
-  const [payment, setPayment] = useState<PaymentMethod>("pickup");
+  // Only the options switched on in Cilësimet → Dërgesa dhe porositë.
+  const choices = checkoutChoices(siteSettings.checkoutOptions);
+  const [delivery, setDelivery] = useState<DeliveryMethod>(choices.deliveries[0]);
+  const [payment, setPayment] = useState<PaymentMethod>(choices.payments(choices.deliveries[0])[0]);
   const [scheduled, setScheduled] = useState(false);
   const [needsInvoice, setNeedsInvoice] = useState(false);
 
@@ -126,17 +128,18 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
   // Display only — the server recalculates it from the same settings when the order is placed.
   const shipping = shippingCost(delivery, subtotal, siteSettings);
   const total = subtotal + (shipping ?? 0);
+  const belowMinimum = subtotal < choices.minOrder;
 
   function chooseDelivery(next: DeliveryMethod) {
     setDelivery(next);
     // Keep the payment valid for the new delivery method.
-    if (!paymentsFor[next].includes(payment)) setPayment(paymentsFor[next][0]);
+    if (!choices.payments(next).includes(payment)) setPayment(choices.payments(next)[0]);
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
-    setError(false);
+    setError(null);
 
     const form = new FormData(e.currentTarget);
     const result = await submitOrder({
@@ -176,7 +179,7 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
       setPlaced({ orderNumber: result.orderNumber, payment });
       clear();
     } else {
-      setError(true);
+      setError(result.error);
     }
   }
 
@@ -273,20 +276,24 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
 
             <Section step={2} title={t("steps.delivery")}>
               <div className="sm:col-span-2 grid sm:grid-cols-2 gap-3">
-                <OptionCard
-                  selected={delivery === "pickup"}
-                  onSelect={() => chooseDelivery("pickup")}
-                  icon={<BuildingIcon className="h-5 w-5" />}
-                  label={t("delivery.pickupLabel")}
-                  description={t("delivery.pickupDescription")}
-                />
-                <OptionCard
-                  selected={courier}
-                  onSelect={() => chooseDelivery("courier")}
-                  icon={<TruckIcon className="h-5 w-5" />}
-                  label={t("delivery.courierLabel")}
-                  description={t("delivery.courierDescription")}
-                />
+                {choices.deliveries.includes("pickup") && (
+                  <OptionCard
+                    selected={delivery === "pickup"}
+                    onSelect={() => chooseDelivery("pickup")}
+                    icon={<BuildingIcon className="h-5 w-5" />}
+                    label={t("delivery.pickupLabel")}
+                    description={t("delivery.pickupDescription")}
+                  />
+                )}
+                {choices.deliveries.includes("courier") && (
+                  <OptionCard
+                    selected={courier}
+                    onSelect={() => chooseDelivery("courier")}
+                    icon={<TruckIcon className="h-5 w-5" />}
+                    label={t("delivery.courierLabel")}
+                    description={t("delivery.courierDescription")}
+                  />
+                )}
               </div>
 
               {courier ? (
@@ -331,7 +338,7 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
 
             <Section step={3} title={t("steps.payment")}>
               <div className="sm:col-span-2 grid sm:grid-cols-3 gap-3">
-                {courier ? (
+                {!choices.payments(delivery).some((p) => p !== "bank_transfer") ? null : courier ? (
                   <OptionCard
                     selected={payment === "cash_on_delivery"}
                     onSelect={() => setPayment("cash_on_delivery")}
@@ -348,13 +355,15 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
                     description={t("payment.officeDescription")}
                   />
                 )}
-                <OptionCard
-                  selected={payment === "bank_transfer"}
-                  onSelect={() => setPayment("bank_transfer")}
-                  icon={<BuildingIcon className="h-5 w-5" />}
-                  label={t("payment.bankLabel")}
-                  description={t("payment.bankDescription")}
-                />
+                {choices.payments(delivery).includes("bank_transfer") && (
+                  <OptionCard
+                    selected={payment === "bank_transfer"}
+                    onSelect={() => setPayment("bank_transfer")}
+                    icon={<BuildingIcon className="h-5 w-5" />}
+                    label={t("payment.bankLabel")}
+                    description={t("payment.bankDescription")}
+                  />
+                )}
                 <div
                   aria-disabled="true"
                   className="rounded-2xl border border-line bg-mist p-4 text-left opacity-50 cursor-not-allowed"
@@ -411,7 +420,11 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
 
             {error && (
               <div className="sm:col-span-2 rounded-xl border border-red-200 bg-red-50 p-4 text-[13px] text-red-700">
-                {t("errorTitle")} — {t("errorDescription")}
+                {t("errorTitle")} — {error === "unavailable"
+                  ? t("errorUnavailable")
+                  : error === "min-order"
+                    ? t("minOrder", { amount: eur(choices.minOrder) })
+                    : t("errorDescription")}
               </div>
             )}
 
@@ -439,7 +452,12 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
                 </span>
               </label>
               <p className="text-[12.5px] text-ink-faint">{t("professionalNotice")}</p>
-              <Button type="submit" size="lg" disabled={submitting}>
+              {belowMinimum && (
+                <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-[13px] text-amber-800">
+                  {t("minOrder", { amount: eur(choices.minOrder) })}
+                </p>
+              )}
+              <Button type="submit" size="lg" disabled={submitting || belowMinimum}>
                 {submitting ? t("submitting") : t("submit")}
                 <ArrowRightIcon className="h-4 w-4" />
               </Button>

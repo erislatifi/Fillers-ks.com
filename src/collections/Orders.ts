@@ -1,5 +1,5 @@
 import type { CollectionConfig, FieldAccess } from 'payload'
-import { isAdmin, isAdminUser } from '../access/isAdmin'
+import { hiddenForEditors, isAdmin, isAdminUser } from '../access/isAdmin'
 
 // Internal fields: a logged-in clinic can read its own orders, but never these.
 const staffOnly: FieldAccess = ({ req }) => isAdminUser(req)
@@ -19,6 +19,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'orderNumber',
     group: 'Shitjet',
+    hidden: hiddenForEditors,
     defaultColumns: ['orderNumber', 'clinicName', 'status', 'deliveryMethod', 'paymentMethod', 'total', 'createdAt'],
     description: 'Kërkesat që dërgojnë klinikat nga shporta. Hapi një porosi për ta konfirmuar dhe për të ndryshuar statusin.',
   },

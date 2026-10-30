@@ -284,6 +284,10 @@ export interface Customer {
  */
 export interface Product {
   id: number;
+  /**
+   * Hiqe tikun për ta fshehur pa e fshirë.
+   */
+  visible?: boolean | null;
   name: string;
   /**
    * Pjesa e lidhjes, p.sh. juvederm-voluma. Vetëm shkronja të vogla, numra dhe viza — pa hapësira.
@@ -299,6 +303,15 @@ export interface Product {
    * Lëre 0 nëse produkti shitet vetëm me ofertë.
    */
   price?: number | null;
+  /**
+   * Për zbritje: shfaqet i vizatuar mbi çmimin e ri. Bosh = pa zbritje.
+   */
+  compareAtPrice?: number | null;
+  /**
+   * Kodi i brendshëm ose i prodhuesit.
+   */
+  sku?: string | null;
+  stockStatus?: ('in_stock' | 'low_stock' | 'out_of_stock' | 'preorder') | null;
   /**
    * Shkruaje veç për shqip dhe veç për anglisht (ndërro gjuhën lart djathtas).
    */
@@ -599,6 +612,9 @@ export interface Page {
  */
 export interface User {
   id: number;
+  /**
+   * Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa porositë, klientët, mesazhet dhe cilësimet.
+   */
   roles?: ('admin' | 'editor')[] | null;
   updatedAt: string;
   createdAt: string;
@@ -860,12 +876,16 @@ export interface SubscribersSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  visible?: T;
   name?: T;
   slug?: T;
   brand?: T;
   category?: T;
   size?: T;
   price?: T;
+  compareAtPrice?: T;
+  sku?: T;
+  stockStatus?: T;
   description?: T;
   images?: T;
   quoteOnly?: T;
@@ -1202,6 +1222,20 @@ export interface SiteSetting {
    */
   freeShippingThreshold?: number | null;
   /**
+   * Hiq tikun për ta fshehur një opsion nga checkout.
+   */
+  checkoutOptions?: {
+    pickupEnabled?: boolean | null;
+    courierEnabled?: boolean | null;
+    officePaymentEnabled?: boolean | null;
+    bankTransferEnabled?: boolean | null;
+    cashOnDeliveryEnabled?: boolean | null;
+    /**
+     * Bosh = pa minimum.
+     */
+    minOrderAmount?: number | null;
+  };
+  /**
    * Kërkon që email-i (SMTP) të jetë konfiguruar te Hostinger. Bosh = email-i i kontaktit.
    */
   orderNotificationEmail?: string | null;
@@ -1221,6 +1255,14 @@ export interface SiteSetting {
      */
     linkHref?: string | null;
   };
+  /**
+   * Zëvendëson logon standarde lart dhe poshtë. Më mirë PNG/SVG me sfond transparent.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Hiqe tikun për ta fshehur butonin SQ/EN. Faqja kryesore mbetet në shqip.
+   */
+  englishEnabled?: boolean | null;
   /**
    * Standard: "Ndriço me ne!"
    */
@@ -1317,6 +1359,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   showMap?: T;
   courierFee?: T;
   freeShippingThreshold?: T;
+  checkoutOptions?:
+    | T
+    | {
+        pickupEnabled?: T;
+        courierEnabled?: T;
+        officePaymentEnabled?: T;
+        bankTransferEnabled?: T;
+        cashOnDeliveryEnabled?: T;
+        minOrderAmount?: T;
+      };
   orderNotificationEmail?: T;
   legalName?: T;
   announcement?:
@@ -1327,6 +1379,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         linkLabel?: T;
         linkHref?: T;
       };
+  logo?: T;
+  englishEnabled?: T;
   tagline?: T;
   topBarNotice?: T;
   footerDescription?: T;

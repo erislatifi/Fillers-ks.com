@@ -22,7 +22,9 @@ type Props = {
   brands: Brand[];
   categories: Category[];
   // Only the bits the header shows — keeps the client payload small.
-  contact: Pick<SiteSetting, "contactPhone" | "contactEmail" | "tagline" | "topBarNotice">;
+  contact: Pick<SiteSetting, "contactPhone" | "contactEmail" | "tagline" | "topBarNotice" | "englishEnabled"> & {
+    logoUrl: string | null;
+  };
 };
 
 export function Header({ brands, categories, contact }: Props) {
@@ -75,6 +77,7 @@ export function Header({ brands, categories, contact }: Props) {
                 {contact.contactEmail}
               </a>
             )}
+            {contact.englishEnabled !== false && (
             <div className="flex items-center gap-1.5 border-l border-paper/20 pl-6">
               <button
                 onClick={() => switchLocale("sq")}
@@ -90,6 +93,7 @@ export function Header({ brands, categories, contact }: Props) {
                 EN
               </button>
             </div>
+            )}
           </div>
         </div>
       </div>
@@ -103,15 +107,22 @@ export function Header({ brands, categories, contact }: Props) {
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
           <div className="flex items-center justify-between h-20">
             <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              <BrandMark className="h-9 w-auto" />
-              <span className="flex flex-col leading-none">
-                <span className="font-display text-[22px] tracking-[0.01em] font-semibold brand-gradient-text">
-                  Fillers
-                </span>
-                <span className="text-[10.5px] tracking-wide text-ink-faint -mt-0.5">
-                  {contact.tagline || "Ndriço me ne!"}
-                </span>
-              </span>
+              {contact.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={contact.logoUrl} alt="Fillers Kosovo" className="h-11 w-auto max-w-[200px] object-contain" />
+              ) : (
+                <>
+                  <BrandMark className="h-9 w-auto" />
+                  <span className="flex flex-col leading-none">
+                    <span className="font-display text-[22px] tracking-[0.01em] font-semibold brand-gradient-text">
+                      Fillers
+                    </span>
+                    <span className="text-[10.5px] tracking-wide text-ink-faint -mt-0.5">
+                      {contact.tagline || "Ndriço me ne!"}
+                    </span>
+                  </span>
+                </>
+              )}
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1">
@@ -271,6 +282,7 @@ export function Header({ brands, categories, contact }: Props) {
                 <CloseIcon className="h-5 w-5" />
               </button>
             </div>
+            {contact.englishEnabled !== false && (
             <div className="flex items-center gap-2 mb-6">
               <button
                 onClick={() => switchLocale("sq")}
@@ -285,6 +297,7 @@ export function Header({ brands, categories, contact }: Props) {
                 English
               </button>
             </div>
+            )}
             <nav className="flex flex-col gap-1">
               {navItems.map((item) => (
                 <Link

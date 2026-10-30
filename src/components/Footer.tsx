@@ -4,6 +4,7 @@ import type { Brand, Category, SiteSetting } from "@/payload-types";
 import { BrandMark } from "@/components/BrandMark";
 import { InstagramIcon, FacebookIcon, LinkedinIcon, ShieldCheckIcon } from "@/components/icons";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { mediaUrl } from "@/components/media";
 
 type Props = {
   brands: Brand[];
@@ -31,6 +32,11 @@ export async function Footer({ brands, categories, siteSettings, footerPages }: 
         <div className="grid gap-12 lg:grid-cols-[1.3fr_0.9fr_0.9fr_0.9fr_1.1fr]">
           <div>
             <div className="flex items-center gap-2.5">
+              {mediaUrl(siteSettings.logo) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={mediaUrl(siteSettings.logo)!} alt="Fillers Kosovo" className="h-10 w-auto max-w-[180px] object-contain" />
+              ) : (
+              <>
               <BrandMark className="h-8 w-auto" />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-lg tracking-[0.01em] font-semibold text-paper">
@@ -40,6 +46,8 @@ export async function Footer({ brands, categories, siteSettings, footerPages }: 
                   {siteSettings.tagline || "Ndriço me ne!"}
                 </span>
               </span>
+              </>
+              )}
             </div>
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed">
               {siteSettings.footerDescription || t("tagline")}

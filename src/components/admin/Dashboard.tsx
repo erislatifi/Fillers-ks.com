@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import type { Payload } from "payload";
+import type { Payload, TypedUser } from "payload";
+import { hasAdminRole } from "../../access/isAdmin";
 
 const TZ = "Europe/Belgrade";
 const DAY = 86_400_000;
@@ -150,7 +151,42 @@ function topN(entries: Map<string, number>, n: number) {
     .map(([name, value]) => ({ name, value }));
 }
 
-export async function Dashboard({ payload }: { payload: Payload }) {
+const EDITOR_ACTIONS = [
+  { href: "/admin/collections/products/create", icon: "box", title: "Produkt i ri", text: "Shto në katalog" },
+  { href: "/admin/collections/products", icon: "box", title: "Produktet", text: "Çmime, stok, foto" },
+  { href: "/admin/collections/brands", icon: "star", title: "Brendet", text: "Logo dhe përshkrim" },
+  { href: "/admin/collections/media/create", icon: "image", title: "Ngarko foto", text: "Biblioteka e fotove" },
+  { href: "/admin/collections/pages", icon: "tag", title: "Faqet", text: "Kushtet, privatësia, FAQ" },
+  { href: "/admin/globals/homepage", icon: "home", title: "Ballina", text: "Seksionet dhe tekstet" },
+];
+
+/** Editors don't see sales: a greeting and shortcuts to the catalog and content. */
+function EditorDashboard() {
+  return (
+    <div className="fk-dash">
+      <header className="fk-dash__head">
+        <div>
+          <h1 className="fk-dash__title">{greeting()}</h1>
+          <p className="fk-dash__sub">Menaxho katalogun dhe përmbajtjen e faqes.</p>
+        </div>
+      </header>
+      <div className="fk-actions">
+        {EDITOR_ACTIONS.map((a) => (
+          <Link key={a.href} href={a.href} className="fk-action">
+            <span className="fk-action__icon">
+              <Ico name={a.icon} />
+            </span>
+            <span className="fk-action__title">{a.title}</span>
+            <span className="fk-action__text">{a.text}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export async function Dashboard({ payload, user }: { payload: Payload; user?: TypedUser }) {
+  if (!hasAdminRole(user as { collection?: string; roles?: string[] } | undefined)) return <EditorDashboard />;
   const [products, brands, categories, ordersRes, testimonials, articles, promotions] = await Promise.all([
     payload.find({ collection: "products", limit: 1000, depth: 0 }),
     payload.find({ collection: "brands", limit: 200, depth: 0 }),
@@ -259,7 +295,8 @@ export async function Dashboard({ payload }: { payload: Payload }) {
     { href: "/admin/collections/brands/create", icon: "star", title: "Brend i ri", text: "Logo dhe përshkrim" },
     { href: "/admin/collections/media/create", icon: "image", title: "Ngarko foto", text: "Biblioteka e fotove" },
     { href: "/admin/collections/promotions/create", icon: "tag", title: "Promocion i ri", text: "Oferta dhe paketa" },
-    { href: "/admin/globals/homepage", icon: "home", title: "Ballina", text: "Tekstet kryesore" },
+    { href: "/admin/globals/homepage", icon: "home", title: "Ballina", text: "Seksionet dhe tekstet" },
+    { href: "/admin/collections/pages", icon: "tag", title: "Faqet", text: "Kushtet, privatësia, FAQ" },
     { href: "/admin/globals/site-settings", icon: "gear", title: "Cilësimet", text: "Kontakt, banka, rrjete" },
   ];
 

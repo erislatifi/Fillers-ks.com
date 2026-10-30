@@ -5,7 +5,7 @@ import { getPayloadClient } from "@/lib/payload";
 import { shippingCost } from "@/lib/shipping";
 import { emailNewOrder } from "@/lib/email";
 import { getCurrentCustomer } from "@/lib/customerSession";
-import { paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
+import { checkoutChoices, paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
 
 type CheckoutItem = {
   slug: string;
@@ -75,27 +75,49 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
   try {
     const payload = await getPayloadClient();
 
+    // The cart lives in the browser, so only slug + quantity are trusted from it; price,
+    // name and availability always come from the database.
     const items = await Promise.all(
       input.items.map(async (item) => {
         const found = await payload.find({
           collection: "products",
           where: { slug: { equals: item.slug } },
           limit: 1,
+          depth: 1,
         });
+        const product = found.docs[0];
+        const quantity = Math.floor(Number(item.quantity));
+        if (
+          !product ||
+          product.visible === false ||
+          product.quoteOnly ||
+          product.stockStatus === "out_of_stock" ||
+          !(quantity >= 1 && quantity <= 999)
+        ) {
+          return null;
+        }
         return {
-          product: found.docs[0]?.id,
-          name: item.name,
-          brandName: item.brandName,
-          size: item.size,
-          price: item.price,
-          quantity: item.quantity,
+          product: product.id,
+          name: product.name,
+          brandName: typeof product.brand === "object" && product.brand ? product.brand.name : item.brandName,
+          size: product.size ?? undefined,
+          price: product.price ?? 0,
+          quantity,
         };
       }),
     );
+    if (items.some((i) => i === null)) return { success: false, error: "unavailable" };
+    const validItems = items.filter((i): i is NonNullable<typeof i> => i !== null);
 
-    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const subtotal = validItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
     // Priced on the server from Cilësimet → Dërgesa dhe porositë, never trusted from the form.
     const settings = await payload.findGlobal({ slug: "site-settings" });
+    // Options the admin switched off are refused even if a stale form still sends them.
+    const choices = checkoutChoices(settings.checkoutOptions);
+    if (!choices.deliveries.includes(input.deliveryMethod) || !choices.payments(input.deliveryMethod).includes(input.paymentMethod)) {
+      return { success: false, error: "missing-fields" };
+    }
+    if (subtotal < choices.minOrder) return { success: false, error: "min-order" };
     const shipping = shippingCost(input.deliveryMethod, subtotal, settings);
     const total = subtotal + (shipping ?? 0);
     // Taken from the session cookie, never from the form, so an order can't be filed under
@@ -118,7 +140,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         paymentMethod: input.paymentMethod,
         needsInvoice: Boolean(input.invoice),
         invoice: input.invoice,
-        items,
+        items: validItems,
         subtotal,
         shippingCost: shipping ?? undefined,
         total,

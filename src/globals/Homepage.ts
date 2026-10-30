@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isAdmin } from '../access/isAdmin'
+import { isStaff } from '../access/isAdmin'
 
 export const Homepage: GlobalConfig = {
   slug: 'homepage',
@@ -10,7 +10,7 @@ export const Homepage: GlobalConfig = {
   },
   access: {
     read: () => true,
-    update: isAdmin,
+    update: isStaff,
   },
   fields: [
     {

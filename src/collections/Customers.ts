@@ -1,5 +1,5 @@
 import type { Access, CollectionConfig } from 'payload'
-import { isAdmin, isAdminUser } from '../access/isAdmin'
+import { hiddenForEditors, isAdmin, isAdminUser } from '../access/isAdmin'
 
 // A customer may only see and edit their own record; staff see everyone.
 const adminOrSelf: Access = ({ req }) => {
@@ -16,6 +16,7 @@ export const Customers: CollectionConfig = {
   admin: {
     useAsTitle: 'clinicName',
     group: 'Shitjet',
+    hidden: hiddenForEditors,
     defaultColumns: ['clinicName', 'fullName', 'email', 'phone', 'city', 'createdAt'],
     description: 'Klinikat që janë regjistruar vetë në faqe. Porositë e tyre lidhen me llogarinë.',
   },

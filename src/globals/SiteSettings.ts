@@ -1,11 +1,12 @@
 import type { GlobalConfig } from 'payload'
-import { isAdmin } from '../access/isAdmin'
+import { hiddenForEditors, isAdmin } from '../access/isAdmin'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
   label: 'Cilësimet e faqes',
   admin: {
     group: 'Administrimi',
+    hidden: hiddenForEditors,
     description: 'Të dhënat e kontaktit, bankës, rrjeteve sociale dhe SEO që përdoren në të gjithë faqen.',
   },
   access: {
@@ -84,6 +85,36 @@ export const SiteSettings: GlobalConfig = {
               ],
             },
             {
+              name: 'checkoutOptions',
+              type: 'group',
+              label: 'Mënyrat e marrjes dhe pagesës në checkout',
+              admin: { description: 'Hiq tikun për ta fshehur një opsion nga checkout.' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'pickupEnabled', type: 'checkbox', defaultValue: true, label: 'Marrje në zyrë' },
+                    { name: 'courierEnabled', type: 'checkbox', defaultValue: true, label: 'Dërgesë me korrier' },
+                  ],
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'officePaymentEnabled', type: 'checkbox', defaultValue: true, label: 'Pagesë në zyrë' },
+                    { name: 'bankTransferEnabled', type: 'checkbox', defaultValue: true, label: 'Transfer bankar' },
+                    { name: 'cashOnDeliveryEnabled', type: 'checkbox', defaultValue: true, label: 'Cash te korrieri' },
+                  ],
+                },
+                {
+                  name: 'minOrderAmount',
+                  type: 'number',
+                  min: 0,
+                  label: 'Vlera minimale e porosisë (€)',
+                  admin: { description: 'Bosh = pa minimum.' },
+                },
+              ],
+            },
+            {
               name: 'orderNotificationEmail',
               type: 'email',
               label: 'Email-i ku vijnë njoftimet për porosi dhe mesazhe',
@@ -122,6 +153,25 @@ export const SiteSettings: GlobalConfig = {
                     { name: 'linkLabel', type: 'text', localized: true, label: 'Teksti i lidhjes (opsionale)' },
                     { name: 'linkHref', type: 'text', label: 'Lidhja', admin: { description: 'P.sh. /promotions' } },
                   ],
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'logo',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Logoja',
+                  admin: { description: 'Zëvendëson logon standarde lart dhe poshtë. Më mirë PNG/SVG me sfond transparent.' },
+                },
+                {
+                  name: 'englishEnabled',
+                  type: 'checkbox',
+                  defaultValue: true,
+                  label: 'Shfaq zgjedhjen e gjuhës angleze (EN)',
+                  admin: { description: 'Hiqe tikun për ta fshehur butonin SQ/EN. Faqja kryesore mbetet në shqip.' },
                 },
               ],
             },

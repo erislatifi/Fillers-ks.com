@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin } from '../access/isAdmin'
+import { hiddenForEditors, isAdmin } from '../access/isAdmin'
 
 // Newsletter sign-ups from the footer and homepage forms (server action only).
 export const Subscribers: CollectionConfig = {
@@ -8,6 +8,7 @@ export const Subscribers: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     group: 'Shitjet',
+    hidden: hiddenForEditors,
     defaultColumns: ['email', 'locale', 'createdAt'],
     description: 'Email-at që janë regjistruar për newsletter nga faqja.',
   },

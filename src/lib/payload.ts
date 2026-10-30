@@ -2,6 +2,9 @@ import config from "@payload-config";
 import { getPayload, type Payload } from "payload";
 import type { AppLocale } from "@/i18n/routing";
 
+// Products unticked as "I dukshëm në faqe" in the admin never reach the public site.
+const VISIBLE = { visible: { not_equals: false } } as const;
+
 let payloadPromise: Promise<Payload> | null = null;
 
 export function getPayloadClient(): Promise<Payload> {
@@ -43,7 +46,7 @@ export async function getCategoryProductCounts() {
     categories.docs.map(async (cat) => {
       const res = await payload.count({
         collection: "products",
-        where: { category: { equals: cat.id } },
+        where: { and: [{ category: { equals: cat.id } }, VISIBLE] },
       });
       counts[cat.id] = res.totalDocs;
     }),
@@ -56,6 +59,7 @@ export async function getProducts(locale: AppLocale) {
   const result = await payload.find({
     collection: "products",
     locale,
+    where: VISIBLE,
     limit: 200,
     depth: 2,
   });
@@ -119,7 +123,7 @@ export async function getProductBySlug(slug: string, locale: AppLocale) {
   const result = await payload.find({
     collection: "products",
     locale,
-    where: { slug: { equals: slug } },
+    where: { and: [{ slug: { equals: slug } }, VISIBLE] },
     limit: 1,
     depth: 2,
   });
@@ -153,7 +157,7 @@ export async function getProductsByBrand(brandId: number, locale: AppLocale) {
   const result = await payload.find({
     collection: "products",
     locale,
-    where: { brand: { equals: brandId } },
+    where: { and: [{ brand: { equals: brandId } }, VISIBLE] },
     limit: 100,
     depth: 2,
   });
@@ -165,7 +169,7 @@ export async function getProductsByCategory(categoryId: number, locale: AppLocal
   const result = await payload.find({
     collection: "products",
     locale,
-    where: { category: { equals: categoryId } },
+    where: { and: [{ category: { equals: categoryId } }, VISIBLE] },
     limit: 100,
     depth: 2,
   });

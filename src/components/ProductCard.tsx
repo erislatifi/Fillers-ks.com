@@ -15,6 +15,9 @@ type Props = {
 
 export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrink-0" }: Props) {
   const t = useTranslations("bestSellers");
+  const ts = useTranslations("stock");
+  const outOfStock = product.stockStatus === "out_of_stock";
+  const onSale = !product.quoteOnly && !!product.compareAtPrice && product.compareAtPrice > (product.price ?? 0);
   const { addItem } = useCart();
   const brandName = typeof product.brand === "object" ? product.brand.name : "";
   const categorySlug = typeof product.category === "object" ? product.category.slug : "";
@@ -23,7 +26,7 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (product.quoteOnly) return;
+    if (product.quoteOnly || outOfStock) return;
     addItem({
       slug: product.slug,
       name: product.name,
@@ -53,6 +56,10 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
             {product.bestSeller && <Badge variant="dark">{t("badge")}</Badge>}
             {product.newArrival && <Badge variant="accent">{t("newBadge")}</Badge>}
+            {onSale && <Badge variant="accent">−{Math.round((1 - (product.price ?? 0) / product.compareAtPrice!) * 100)}%</Badge>}
+            {(outOfStock || product.stockStatus === "preorder") && (
+              <Badge variant="dark">{ts(product.stockStatus!)}</Badge>
+            )}
           </div>
 
           <button
@@ -70,7 +77,7 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
           </div>
         </MediaFrame>
 
-        {!product.quoteOnly && (
+        {!product.quoteOnly && !outOfStock && (
           <button
             aria-label="Add to cart"
             onClick={handleAddToCart}
@@ -89,6 +96,9 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
         <p className="mt-0.5 text-[12.5px] text-ink-faint">{product.size}</p>
         <p className="mt-2 font-display text-[15px] text-ink">
           {product.quoteOnly ? t("requestQuote") : `€${(product.price ?? 0).toFixed(2)}`}
+          {onSale && (
+            <span className="ml-2 text-[13px] text-ink-faint line-through">€{product.compareAtPrice!.toFixed(2)}</span>
+          )}
         </p>
       </div>
     </Link>

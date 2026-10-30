@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin } from '../access/isAdmin'
+import { hiddenForEditors, isAdmin } from '../access/isAdmin'
 
 // Messages from the public contact form. Created only by the server action (Local API),
 // so REST create stays admin-only and can't be used to spam the inbox.
@@ -9,6 +9,7 @@ export const ContactMessages: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Shitjet',
+    hidden: hiddenForEditors,
     defaultColumns: ['name', 'clinicName', 'email', 'status', 'createdAt'],
     description: 'Mesazhet nga forma e kontaktit në faqe. Ndrysho statusin kur t’i përgjigjesh.',
   },
