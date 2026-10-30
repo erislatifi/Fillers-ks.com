@@ -32,7 +32,9 @@ if (cmd === "snapshot" && a) {
   fs.writeFileSync(path.join(dir, `${a}.json`), JSON.stringify(json, null, 2));
   console.log(`Saved scripts/sql/snapshots/${a}.json`);
 } else if (cmd === "diff" && a && b) {
-  const read = (n: string) => JSON.parse(fs.readFileSync(path.join(dir, `${n}.json`), "utf8"));
+  // "empty" = a blank database, e.g. to build a full schema for testing the SQL.
+  const read = (n: string) =>
+    n === "empty" ? db.defaultDrizzleSnapshot : JSON.parse(fs.readFileSync(path.join(dir, `${n}.json`), "utf8"));
   const statements: string[] = await kit.generateMigration(read(a), read(b));
   console.log(statements.length ? statements.join("\n") : "-- no schema changes");
 } else {
