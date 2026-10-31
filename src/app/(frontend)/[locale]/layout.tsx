@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/contexts/CartContext";
 import { getBrands, getCategories, getSiteSettings } from "@/lib/payload";
 import { getFooterPages } from "@/lib/pages";
+import { getMenus } from "@/lib/navigation";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { mediaUrl } from "@/components/media";
 import "../globals.css";
@@ -63,11 +64,12 @@ export default async function RootLayout({ children, params }: Props) {
 
   const messages = await getMessages();
   const appLocale = locale as AppLocale;
-  const [brands, categories, siteSettings, footerPages] = await Promise.all([
+  const [brands, categories, siteSettings, footerPages, menus] = await Promise.all([
     getBrands(appLocale),
     getCategories(appLocale),
     getSiteSettings(appLocale),
     getFooterPages(appLocale),
+    getMenus(appLocale),
   ]);
   const { contactPhone, contactEmail, tagline, topBarNotice, englishEnabled } = siteSettings;
   const logoUrl = mediaUrl(siteSettings.logo);
@@ -81,9 +83,9 @@ export default async function RootLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
             <AnnouncementBar announcement={siteSettings.announcement} />
-            <Header brands={brands} categories={categories} contact={{ contactPhone, contactEmail, tagline, topBarNotice, englishEnabled, logoUrl }} />
+            <Header brands={brands} categories={categories} menu={{ items: menus.header, showWishlist: menus.showWishlist }} contact={{ contactPhone, contactEmail, tagline, topBarNotice, englishEnabled, logoUrl }} />
             <main className="flex-1 flex flex-col">{children}</main>
-            <Footer brands={brands} categories={categories} siteSettings={siteSettings} footerPages={footerPages} />
+            <Footer brands={brands} categories={categories} siteSettings={siteSettings} footerPages={footerPages} companyLinks={menus.footer} />
           </CartProvider>
         </NextIntlClientProvider>
       </body>

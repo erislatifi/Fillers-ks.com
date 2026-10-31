@@ -23,6 +23,7 @@ import { Subscribers } from './collections/Subscribers'
 import { SiteSettings } from './globals/SiteSettings'
 import { Homepage } from './globals/Homepage'
 import { SiteTexts } from './globals/SiteTexts'
+import { Navigation } from './globals/Navigation'
 import { adminTranslationsSq } from './i18n/adminTranslations'
 
 const filename = fileURLToPath(import.meta.url)
@@ -91,7 +92,7 @@ export default buildConfig({
     },
   },
   collections: [Orders, Customers, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
-  globals: [Homepage, SiteTexts, SiteSettings],
+  globals: [Homepage, Navigation, SiteTexts, SiteSettings],
   localization: {
     locales: ['sq', 'en'],
     defaultLocale: 'sq',

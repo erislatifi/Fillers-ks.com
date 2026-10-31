@@ -12,6 +12,8 @@ type Props = {
   siteSettings: SiteSetting;
   // Pages from the admin marked "show in footer" (privacy, terms, …).
   footerPages: { title: string; href: string }[];
+  // Company column from Përmbajtja → Menytë (or the built-in links).
+  companyLinks: { label: string; href: string }[];
 };
 
 const socialIcons = {
@@ -20,7 +22,7 @@ const socialIcons = {
   linkedin: LinkedinIcon,
 };
 
-export async function Footer({ brands, categories, siteSettings, footerPages }: Props) {
+export async function Footer({ brands, categories, siteSettings, footerPages, companyLinks }: Props) {
   const t = await getTranslations("footer");
   const year = new Date().getFullYear();
   // Admin-editable texts (Cilësimet → Tekstet e faqes), falling back to the built-in copy.
@@ -106,11 +108,13 @@ export async function Footer({ brands, categories, siteSettings, footerPages }: 
           <div>
             <h3 className="text-[12px] font-semibold uppercase tracking-wider text-paper/90">{t("companyHeading")}</h3>
             <ul className="mt-5 space-y-3">
-              <li><Link href="/about" className="text-[13.5px] hover:text-accent-light transition-colors">{t("aboutUs")}</Link></li>
-              <li><Link href="/education" className="text-[13.5px] hover:text-accent-light transition-colors">{t("education")}</Link></li>
-              <li><Link href="/promotions" className="text-[13.5px] hover:text-accent-light transition-colors">{t("promotions")}</Link></li>
-              <li><Link href="/account/register" className="text-[13.5px] hover:text-accent-light transition-colors">{t("becomePartner")}</Link></li>
-              <li><Link href="/contact" className="text-[13.5px] hover:text-accent-light transition-colors">{t("contact")}</Link></li>
+              {companyLinks.map((l) => (
+                <li key={l.href + l.label}>
+                  <Link href={l.href} className="text-[13.5px] hover:text-accent-light transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

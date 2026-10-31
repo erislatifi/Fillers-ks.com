@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { Brand, Category, SiteSetting } from "@/payload-types";
+import type { MenuItem } from "@/lib/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { BrandBadge } from "@/components/media";
 import { useCart } from "@/contexts/CartContext";
@@ -21,29 +22,22 @@ import {
 type Props = {
   brands: Brand[];
   categories: Category[];
+  // From Përmbajtja → Menytë (or the built-in menu).
+  menu: { items: MenuItem[]; showWishlist: boolean };
   // Only the bits the header shows — keeps the client payload small.
   contact: Pick<SiteSetting, "contactPhone" | "contactEmail" | "tagline" | "topBarNotice" | "englishEnabled"> & {
     logoUrl: string | null;
   };
 };
 
-export function Header({ brands, categories, contact }: Props) {
+export function Header({ brands, categories, menu, contact }: Props) {
   const t = useTranslations("nav");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const { count } = useCart();
 
-  const navItems = [
-    { label: t("shop"), href: "/catalog" },
-    { label: t("brands"), key: "brands" },
-    { label: t("categories"), key: "categories" },
-    { label: t("newArrivals"), href: "/new-arrivals" },
-    { label: t("promotions"), href: "/promotions" },
-    { label: t("education"), href: "/education" },
-    { label: t("about"), href: "/about" },
-    { label: t("contact"), href: "/contact" },
-  ] as const;
+  const navItems = menu.items;
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -129,12 +123,12 @@ export function Header({ brands, categories, contact }: Props) {
               {navItems.map((item) => (
                 <div
                   key={item.label}
-                  onMouseEnter={() => "key" in item && setOpenMenu(item.key)}
+                  onMouseEnter={() => item.key && setOpenMenu(item.key)}
                   className="relative"
                 >
-                  {"href" in item ? (
+                  {!item.key ? (
                     <Link
-                      href={item.href}
+                      href={item.href ?? "/"}
                       className="flex items-center gap-1 px-4 py-2 text-[13.5px] font-medium text-ink/80 hover:text-ink transition-colors"
                     >
                       {item.label}
@@ -162,13 +156,15 @@ export function Header({ brands, categories, contact }: Props) {
               >
                 <SearchIcon className="h-[19px] w-[19px] text-ink/80" />
               </button>
-              <Link
-                href="/wishlist"
-                aria-label={t("wishlist")}
-                className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full hover:bg-mist transition-colors"
-              >
-                <HeartIcon className="h-[19px] w-[19px] text-ink/80" />
-              </Link>
+              {menu.showWishlist && (
+                <Link
+                  href="/wishlist"
+                  aria-label={t("wishlist")}
+                  className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full hover:bg-mist transition-colors"
+                >
+                  <HeartIcon className="h-[19px] w-[19px] text-ink/80" />
+                </Link>
+              )}
               <Link
                 href="/account"
                 aria-label={t("account")}
@@ -302,7 +298,7 @@ export function Header({ brands, categories, contact }: Props) {
               {navItems.map((item) => (
                 <Link
                   key={item.label}
-                  href={"href" in item ? item.href : `/${item.key}`}
+                  href={item.key ? `/${item.key}` : item.href ?? "/"}
                   onClick={() => setMobileOpen(false)}
                   className="py-3 text-[15px] font-medium border-b border-line-soft text-ink"
                 >
@@ -312,9 +308,11 @@ export function Header({ brands, categories, contact }: Props) {
               <Link href="/account" onClick={() => setMobileOpen(false)} className="py-3 text-[15px] font-medium border-b border-line-soft text-ink">
                 {t("account")}
               </Link>
-              <Link href="/wishlist" onClick={() => setMobileOpen(false)} className="py-3 text-[15px] font-medium text-ink">
-                {t("wishlist")}
-              </Link>
+              {menu.showWishlist && (
+                <Link href="/wishlist" onClick={() => setMobileOpen(false)} className="py-3 text-[15px] font-medium text-ink">
+                  {t("wishlist")}
+                </Link>
+              )}
             </nav>
           </div>
         </div>

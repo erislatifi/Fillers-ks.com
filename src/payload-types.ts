@@ -112,11 +112,13 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('sq' | 'en') | ('sq' | 'en')[];
   globals: {
     homepage: Homepage;
+    navigation: Navigation;
     'site-texts': SiteText;
     'site-settings': SiteSetting;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
     'site-texts': SiteTextsSelect<false> | SiteTextsSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
@@ -1196,6 +1198,36 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
+ * Menyja lart dhe lidhjet në fund të faqes. Zvarrit për t’i rirenditur. Lista bosh = menyja standarde.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  headerItems?:
+    | {
+        label: string;
+        type?: ('link' | 'brands' | 'categories') | null;
+        /**
+         * P.sh. /catalog, /promotions, /info/kthimet ose https://…
+         */
+        href?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  footerLinks?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  showWishlist?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Çdo tekst i faqes: butonat, titujt, fushat e formave, mesazhet. Ndërro gjuhën lart për anglishten. Fusha bosh = teksti standard.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1396,6 +1428,31 @@ export interface HomepageSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  headerItems?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        href?: T;
+        id?: T;
+      };
+  footerLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  showWishlist?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
