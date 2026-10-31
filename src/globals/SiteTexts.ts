@@ -17,6 +17,7 @@ export const SiteTexts: GlobalConfig = {
     read: () => true,
     update: isStaff,
   },
+  versions: { max: 20 },
   fields: [
     {
       name: 'overrides',

@@ -10,6 +10,7 @@ export const Products: CollectionConfig = {
     defaultColumns: ['name', 'brand', 'price', 'stockStatus', 'visible', 'bestSeller'],
     description: 'Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.',
   },
+  versions: { maxPerDoc: 10 },
   access: {
     ...publicReadAdminWrite,
     // Hidden products stay out of the public REST API; staff still see them.

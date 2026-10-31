@@ -22,7 +22,8 @@ import {
   getPromotions,
   getHomepage,
 } from "@/lib/payload";
-import { resolveSections, type SectionKey, type SectionText } from "@/lib/homepage";
+import { resolveSections, SECTION_KEYS, type SectionKey, type SectionText } from "@/lib/homepage";
+import { RenderBlock } from "@/components/blocks/RenderBlocks";
 import type { AppLocale } from "@/i18n/routing";
 
 type Props = {
@@ -69,12 +70,23 @@ export default async function Home({ params }: Props) {
     newsletter: (h) => <Newsletter heading={h} />,
   };
 
+  // Ballina → Blloqet: built-in sections and free blocks in the admin's order. Until that
+  // list is saved for the first time, the older section list (or the defaults) is used.
+  const layout = homepage.layout ?? [];
   return (
     <>
       <Hero hero={homepage.hero} />
-      {resolveSections(homepage).map(({ key, heading }) => (
-        <Fragment key={key}>{render[key](heading)}</Fragment>
-      ))}
+      {layout.length > 0
+        ? layout.map((block, i) => {
+            const key = block.id ?? String(i);
+            if (block.blockType === "section") {
+              if (block.isHidden || !SECTION_KEYS.includes(block.section as SectionKey)) return null;
+              const heading = { eyebrow: block.eyebrow, title: block.title, description: block.description };
+              return <Fragment key={key}>{render[block.section as SectionKey](heading)}</Fragment>;
+            }
+            return <RenderBlock key={key} block={block} locale={appLocale} />;
+          })
+        : resolveSections(homepage).map(({ key, heading }) => <Fragment key={key}>{render[key](heading)}</Fragment>)}
     </>
   );
 }

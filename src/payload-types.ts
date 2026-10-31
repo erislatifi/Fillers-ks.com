@@ -595,6 +595,106 @@ export interface Page {
     [k: string]: unknown;
   } | null;
   /**
+   * Shfaqen pas përmbajtjes: foto + tekst, banner me butona, produkte, pyetje, video…
+   */
+  layout?:
+    | (
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            text?: string | null;
+            image: number | Media;
+            imagePosition?: ('left' | 'right') | null;
+            buttonLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'imageText';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            text?: string | null;
+            buttonLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            buttonHref?: string | null;
+            secondaryLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            secondaryHref?: string | null;
+            theme?: ('dark' | 'accent' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            source?: ('bestSellers' | 'newArrivals' | 'onSale' | 'brand' | 'category' | 'manual') | null;
+            brand?: (number | null) | Brand;
+            category?: (number | null) | Category;
+            products?: (number | Product)[] | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productRow';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * Lidhje nga YouTube ose Vimeo.
+             */
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+      )[]
+    | null;
+  /**
    * Shfaqen si listë që hapet me klik, nën përmbajtjen (p.sh. te faqja FAQ).
    */
   faq?:
@@ -1036,6 +1136,83 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   intro?: T;
   content?: T;
+  layout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageText?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              image?: T;
+              imagePosition?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              secondaryLabel?: T;
+              secondaryHref?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productRow?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              source?: T;
+              brand?: T;
+              category?: T;
+              products?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   faq?:
     | T
     | {
@@ -1164,6 +1341,125 @@ export interface Homepage {
      */
     distributionNote?: string | null;
   };
+  layout?:
+    | (
+        | {
+            section:
+              | 'brands'
+              | 'about'
+              | 'devices'
+              | 'bestSellers'
+              | 'categories'
+              | 'why'
+              | 'newArrivals'
+              | 'education'
+              | 'promotions'
+              | 'testimonials'
+              | 'instagram'
+              | 'newsletter';
+            isHidden?: boolean | null;
+            eyebrow?: string | null;
+            title?: string | null;
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'section';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            text?: string | null;
+            image: number | Media;
+            imagePosition?: ('left' | 'right') | null;
+            buttonLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'imageText';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            text?: string | null;
+            buttonLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            buttonHref?: string | null;
+            secondaryLabel?: string | null;
+            /**
+             * P.sh. /catalog, /contact, /info/oferta ose https://…
+             */
+            secondaryHref?: string | null;
+            theme?: ('dark' | 'accent' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            source?: ('bestSellers' | 'newArrivals' | 'onSale' | 'brand' | 'category' | 'manual') | null;
+            brand?: (number | null) | Brand;
+            category?: (number | null) | Category;
+            products?: (number | Product)[] | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productRow';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            eyebrow?: string | null;
+            title?: string | null;
+            /**
+             * Lidhje nga YouTube ose Vimeo.
+             */
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+      )[]
+    | null;
   sections?:
     | {
         section:
@@ -1409,6 +1705,94 @@ export interface HomepageSelect<T extends boolean = true> {
         paragraph2?: T;
         quote?: T;
         distributionNote?: T;
+      };
+  layout?:
+    | T
+    | {
+        section?:
+          | T
+          | {
+              section?: T;
+              isHidden?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageText?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              image?: T;
+              imagePosition?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              secondaryLabel?: T;
+              secondaryHref?: T;
+              theme?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productRow?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              source?: T;
+              brand?: T;
+              category?: T;
+              products?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   sections?:
     | T

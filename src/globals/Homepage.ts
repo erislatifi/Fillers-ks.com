@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { isStaff } from '../access/isAdmin'
+import { contentBlocks, SectionBlock } from '../blocks'
 
 export const Homepage: GlobalConfig = {
   slug: 'homepage',
@@ -12,6 +13,8 @@ export const Homepage: GlobalConfig = {
     read: () => true,
     update: isStaff,
   },
+  // Keeps the last 20 saves — "Versionet" tab restores an older one.
+  versions: { max: 20 },
   fields: [
     {
       type: 'tabs',
@@ -102,16 +105,27 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: 'Seksionet',
+          label: 'Blloqet',
           description:
-            'Renditja e seksioneve pas pjesës kryesore. Zvarrit për t’i rirenditur, hiq tikun për t’i fshehur. Titujt bosh = teksti standard.',
+            'Gjithçka pas pjesës kryesore, me radhë. Shto seksione të gatshme (brendet, më të shiturat…) ose blloqe të reja (tekst, foto, banner, produkte, pyetje, video). Zvarrit për t’i rirenditur.',
           fields: [
             {
+              name: 'layout',
+              type: 'blocks',
+              label: 'Blloqet e ballinës',
+              labels: { singular: 'Bllok', plural: 'Blloqet' },
+              blocks: [SectionBlock, ...contentBlocks],
+              admin: { initCollapsed: true },
+            },
+            {
+              // Superseded by `layout`; kept (hidden) so the database doesn't lose the column
+              // and older data still renders until the layout is saved once.
               name: 'sections',
               type: 'array',
               label: 'Seksionet e ballinës',
               labels: { singular: 'Seksion', plural: 'Seksionet' },
               admin: {
+                hidden: true,
                 initCollapsed: true,
                 components: { RowLabel: './components/admin/SectionRowLabel#SectionRowLabel' },
               },

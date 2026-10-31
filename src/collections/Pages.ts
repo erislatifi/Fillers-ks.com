@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { publicReadAdminWrite } from '../access/isAdmin'
+import { contentBlocks } from '../blocks'
 
 // Text pages edited from the admin: privacy, terms, shipping, FAQ, and any page the
 // client adds later. The slugs privacy/terms/shipping/faq have their own routes; any
@@ -16,6 +17,7 @@ export const Pages: CollectionConfig = {
       'Privatësia, kushtet, dërgesa, pyetjet e shpeshta dhe faqe të tjera me tekst. Shkruaji në shqip, pastaj ndërro gjuhën lart për anglishten.',
   },
   access: publicReadAdminWrite,
+  versions: { maxPerDoc: 20 },
   fields: [
     { name: 'title', type: 'text', required: true, localized: true, label: 'Titulli' },
     {
@@ -31,6 +33,17 @@ export const Pages: CollectionConfig = {
       localized: true,
       label: 'Përmbajtja',
       editor: lexicalEditor(),
+    },
+    {
+      name: 'layout',
+      type: 'blocks',
+      label: 'Blloqe shtesë',
+      labels: { singular: 'Bllok', plural: 'Blloqet' },
+      blocks: contentBlocks,
+      admin: {
+        initCollapsed: true,
+        description: 'Shfaqen pas përmbajtjes: foto + tekst, banner me butona, produkte, pyetje, video…',
+      },
     },
     {
       name: 'faq',

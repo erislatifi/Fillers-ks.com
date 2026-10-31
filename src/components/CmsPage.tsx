@@ -5,6 +5,7 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { PageHero } from "@/components/PageHero";
 import { ChevronDownIcon } from "@/components/icons";
 import { getPageBySlug } from "@/lib/pages";
+import { RenderBlocks } from "@/components/blocks/RenderBlocks";
 import type { AppLocale } from "@/i18n/routing";
 
 type Props = { slug: string; locale: string };
@@ -48,7 +49,14 @@ export async function CmsPage({ slug, locale }: Props) {
             </div>
           )}
 
-          <p className="mt-12 text-[12.5px] text-ink-faint">
+        </div>
+      </section>
+
+      <RenderBlocks blocks={page.layout} locale={locale as AppLocale} />
+
+      <section className="bg-paper pb-16">
+        <div className="mx-auto max-w-3xl px-6 lg:px-10">
+          <p className="text-[12.5px] text-ink-faint">
             {t("updated", {
               date: new Intl.DateTimeFormat(locale === "sq" ? "sq-AL" : "en-GB", { dateStyle: "long" }).format(
                 new Date(page.updatedAt),
