@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { PageHero } from "@/components/PageHero";
 import { ProductCard } from "@/components/ProductCard";
@@ -15,6 +16,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { filter, category, brand } = await searchParams;
   const appLocale = locale as AppLocale;
+  const t = await getTranslations({ locale: appLocale, namespace: "catalogPage" });
 
   const [allProducts, categories, brands] = await Promise.all([
     getProducts(appLocale),
@@ -53,15 +55,15 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   return (
     <>
       <PageHero
-        eyebrow="Shop"
-        title="Full product catalog"
-        description="Browse the complete range of dermal fillers, skin boosters, biostimulators and aesthetic devices — filter by category or brand."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        description={t("description")}
       />
       <section className="bg-paper py-16 sm:py-20">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
           <div className="mb-4">
             <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
-              Category
+              {t("category")}
             </p>
             <div className="flex flex-wrap gap-2">
               <Link
@@ -70,7 +72,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                   !category ? "border-ink bg-ink text-paper" : "border-line text-ink-soft hover:border-accent"
                 }`}
               >
-                All
+                {t("all")}
               </Link>
               {categories.map((c) => (
                 <Link
@@ -90,7 +92,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
           <div className="mb-10">
             <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
-              Brand
+              {t("brand")}
             </p>
             <div className="flex flex-wrap gap-2">
               <Link
@@ -99,7 +101,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                   !brand ? "border-ink bg-ink text-paper" : "border-line text-ink-soft hover:border-accent"
                 }`}
               >
-                All
+                {t("all")}
               </Link>
               {brands.map((b) => (
                 <Link
@@ -137,7 +139,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-ink-soft text-sm">No products match this filter.</p>
+            <p className="text-ink-soft text-sm">{t("empty")}</p>
           )}
         </div>
       </section>

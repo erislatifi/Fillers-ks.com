@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { PageHero } from "@/components/PageHero";
 import { Promotions } from "@/components/Promotions";
 import { getPromotions } from "@/lib/payload";
@@ -11,14 +12,17 @@ type Props = {
 
 export default async function PromotionsPage({ params }: Props) {
   const { locale } = await params;
-  const promotions = await getPromotions(locale as AppLocale);
+  const [promotions, t] = await Promise.all([
+    getPromotions(locale as AppLocale),
+    getTranslations({ locale: locale as AppLocale, namespace: "promotionsPage" }),
+  ]);
 
   return (
     <>
       <PageHero
-        eyebrow="Promotions"
-        title="Current offers for partner clinics"
-        description="Seasonal bundles, welcome discounts and partnership offers for licensed clinics."
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        description={t("description")}
       />
       <Promotions promotions={promotions} />
     </>

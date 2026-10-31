@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/PageHero";
 import { ProductRow } from "@/components/ProductRow";
@@ -25,18 +26,19 @@ export default async function CategoryPage({ params }: Props) {
   if (!category) notFound();
 
   const products = await getProductsByCategory(category.id, appLocale);
+  const t = await getTranslations({ locale: appLocale, namespace: "categoryPage" });
 
   return (
     <>
       <PageHero
-        eyebrow="Category"
+        eyebrow={t("eyebrow")}
         title={category.name}
         description={category.description ?? undefined}
       />
       <section className="bg-paper py-16 sm:py-20">
         <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
           <p className="mb-8 text-[13px] text-ink-faint">
-            {products.length} product{products.length === 1 ? "" : "s"} in {category.name}
+            {t("count", { count: products.length, name: category.name })}
           </p>
           {products.length > 0 ? (
             <div className="flex flex-col gap-5">

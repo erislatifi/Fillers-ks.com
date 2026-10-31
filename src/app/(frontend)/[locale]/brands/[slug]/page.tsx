@@ -30,6 +30,7 @@ export default async function BrandPage({ params }: Props) {
 
   const products = await getProductsByBrand(brand.id, appLocale);
   const t = await getTranslations("brands");
+  const tb = await getTranslations("brandPage");
 
   return (
     <>
@@ -76,7 +77,7 @@ export default async function BrandPage({ params }: Props) {
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Button href="/contact" size="lg">
-              {brand.type === "device" ? t("discover") + " · Request a Quote" : "Order This Brand"}
+              {brand.type === "device" ? t("discover") + " · " + tb("requestQuote") : tb("orderBrand")}
               <ArrowRightIcon className="h-4 w-4" />
             </Button>
             <Button href="/brands" variant="secondary" size="lg">
@@ -98,7 +99,7 @@ export default async function BrandPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <p className="text-ink-soft text-sm">No products published for this brand yet.</p>
+            <p className="text-ink-soft text-sm">{tb("noProducts")}</p>
           )}
         </div>
       </section>

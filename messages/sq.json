@@ -342,5 +342,36 @@
     "preorder": "Me porosi",
     "outOfStockButton": "Pa stok",
     "sku": "Kodi"
+  },
+  "catalogPage": {
+    "eyebrow": "Shop",
+    "title": "Katalogu i plotë i produkteve",
+    "description": "Shfleto gamën e plotë të filler-ave, skin booster-ave, biostimulatorëve dhe pajisjeve estetike — filtro sipas kategorisë ose brendit.",
+    "empty": "Asnjë produkt nuk përputhet me këtë filtër.",
+    "category": "Kategoria",
+    "brand": "Brendi",
+    "all": "Të gjitha"
+  },
+  "categoryPage": {
+    "eyebrow": "Kategoria",
+    "count": "{count, plural, one {# produkt} other {# produkte}} në {name}"
+  },
+  "promotionsPage": {
+    "eyebrow": "Promocione",
+    "title": "Ofertat aktuale për klinikat partnere",
+    "description": "Paketa sezonale, zbritje mirëseardhjeje dhe oferta partneriteti për klinikat e licencuara."
+  },
+  "wishlistPage": {
+    "title": "Të preferuarat",
+    "description": "Ruajtja e produkteve për më vonë vjen së shpejti. Ndërkohë shfleto katalogun e plotë."
+  },
+  "comingSoon": {
+    "badge": "Së shpejti",
+    "cta": "Na kontakto"
+  },
+  "brandPage": {
+    "requestQuote": "Kërko ofertë",
+    "orderBrand": "Porosit këtë brend",
+    "noProducts": "Ende s'ka produkte të publikuara për këtë brend."
   }
 }

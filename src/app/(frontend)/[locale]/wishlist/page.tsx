@@ -1,12 +1,9 @@
+import { getTranslations } from "next-intl/server";
 import { ComingSoon } from "@/components/ComingSoon";
 
 export const metadata = { title: "Wishlist" };
 
-export default function WishlistPage() {
-  return (
-    <ComingSoon
-      title="Wishlist"
-      description="Saving products for later is coming soon. Browse the catalog to explore our full range in the meantime."
-    />
-  );
+export default async function WishlistPage() {
+  const t = await getTranslations("wishlistPage");
+  return <ComingSoon title={t("title")} description={t("description")} />;
 }

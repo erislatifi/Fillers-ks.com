@@ -112,10 +112,12 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('sq' | 'en') | ('sq' | 'en')[];
   globals: {
     homepage: Homepage;
+    'site-texts': SiteText;
     'site-settings': SiteSetting;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'site-texts': SiteTextsSelect<false> | SiteTextsSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: 'sq' | 'en';
@@ -1194,6 +1196,26 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
+ * Çdo tekst i faqes: butonat, titujt, fushat e formave, mesazhet. Ndërro gjuhën lart për anglishten. Fusha bosh = teksti standard.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-texts".
+ */
+export interface SiteText {
+  id: number;
+  overrides?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Të dhënat e kontaktit, bankës, rrjeteve sociale dhe SEO që përdoren në të gjithë faqen.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1374,6 +1396,16 @@ export interface HomepageSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-texts_select".
+ */
+export interface SiteTextsSelect<T extends boolean = true> {
+  overrides?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

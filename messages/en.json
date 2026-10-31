@@ -342,5 +342,36 @@
     "preorder": "Pre-order",
     "outOfStockButton": "Out of stock",
     "sku": "SKU"
+  },
+  "catalogPage": {
+    "eyebrow": "Shop",
+    "title": "Full product catalog",
+    "description": "Browse the complete range of dermal fillers, skin boosters, biostimulators and aesthetic devices — filter by category or brand.",
+    "empty": "No products match this filter.",
+    "category": "Category",
+    "brand": "Brand",
+    "all": "All"
+  },
+  "categoryPage": {
+    "eyebrow": "Category",
+    "count": "{count, plural, one {# product} other {# products}} in {name}"
+  },
+  "promotionsPage": {
+    "eyebrow": "Promotions",
+    "title": "Current offers for partner clinics",
+    "description": "Seasonal bundles, welcome discounts and partnership offers for licensed clinics."
+  },
+  "wishlistPage": {
+    "title": "Wishlist",
+    "description": "Saving products for later is coming soon. Browse the catalog to explore our full range in the meantime."
+  },
+  "comingSoon": {
+    "badge": "Coming Soon",
+    "cta": "Contact Us Instead"
+  },
+  "brandPage": {
+    "requestQuote": "Request a Quote",
+    "orderBrand": "Order This Brand",
+    "noProducts": "No products published for this brand yet."
   }
 }
