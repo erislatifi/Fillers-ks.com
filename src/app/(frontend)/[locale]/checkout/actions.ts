@@ -2,7 +2,8 @@
 
 import { after } from "next/server";
 import { getPayloadClient } from "@/lib/payload";
-import { shippingCost } from "@/lib/shipping";
+import { quoteShipping } from "@/lib/shipping";
+import { COUNTRY_CODES, HOME_COUNTRY } from "@/lib/countries";
 import { emailNewOrder } from "@/lib/email";
 import { getCurrentCustomer } from "@/lib/customerSession";
 import { checkoutChoices, paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
@@ -23,6 +24,7 @@ type CheckoutInput = {
   phone: string;
   deliveryMethod: DeliveryMethod;
   deliveryAddress?: string;
+  country?: string;
   city?: string;
   requestedDeliveryDate?: string;
   notes?: string;
@@ -118,7 +120,9 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
       return { success: false, error: "missing-fields" };
     }
     if (subtotal < choices.minOrder) return { success: false, error: "min-order" };
-    const shipping = shippingCost(input.deliveryMethod, subtotal, settings);
+    const country = courier && COUNTRY_CODES.includes(input.country as never) ? input.country! : HOME_COUNTRY;
+    const quote = quoteShipping(input.deliveryMethod, subtotal, settings, { country, city: input.city });
+    const shipping = quote.cost;
     const total = subtotal + (shipping ?? 0);
     // Taken from the session cookie, never from the form, so an order can't be filed under
     // someone else's account.
@@ -134,7 +138,9 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         deliveryMethod: input.deliveryMethod,
         // Address fields only mean something for courier delivery.
         deliveryAddress: courier ? input.deliveryAddress : undefined,
+        country: courier ? (country as "XK") : undefined,
         city: courier ? input.city : input.city || undefined,
+        shippingZone: courier ? quote.zoneName ?? undefined : undefined,
         requestedDeliveryDate: input.requestedDeliveryDate || undefined,
         notes: input.notes,
         paymentMethod: input.paymentMethod,

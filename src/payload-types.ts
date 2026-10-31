@@ -196,6 +196,7 @@ export interface Order {
   contactName: string;
   email: string;
   phone: string;
+  country?: ('XK' | 'AL' | 'MK' | 'ME') | null;
   city?: string | null;
   /**
    * Bosh = sa më shpejt.
@@ -203,6 +204,10 @@ export interface Order {
   requestedDeliveryDate?: string | null;
   deliveryAddress?: string | null;
   notes?: string | null;
+  /**
+   * E gjetur automatikisht nga adresa.
+   */
+  shippingZone?: string | null;
   /**
    * P.sh. PostaExpress
    */
@@ -780,10 +785,12 @@ export interface OrdersSelect<T extends boolean = true> {
   contactName?: T;
   email?: T;
   phone?: T;
+  country?: T;
   city?: T;
   requestedDeliveryDate?: T;
   deliveryAddress?: T;
   notes?: T;
+  shippingZone?: T;
   courierName?: T;
   trackingNumber?: T;
   internalNotes?: T;
@@ -1214,11 +1221,37 @@ export interface SiteSetting {
    */
   showMap?: boolean | null;
   /**
-   * Bosh ose 0 = "konfirmohet nga ekipi".
+   * Checkout-i gjen zonën sipas shtetit dhe qytetit të klientit: së pari zona që e ka qytetin në listë, pastaj zona pa qytete (gjithë shteti).
+   */
+  shippingZones?:
+    | {
+        /**
+         * P.sh. Prishtinë, Kosova tjetër, Shqipëri.
+         */
+        name: string;
+        country: 'XK' | 'AL' | 'MK' | 'ME';
+        /**
+         * Një qytet për rresht. Lëre bosh që zona të vlejë për gjithë shtetin.
+         */
+        cities?: string | null;
+        price: number;
+        /**
+         * Bosh = asnjëherë falas.
+         */
+        freeOver?: number | null;
+        /**
+         * P.sh. 24 orë, 2–4 ditë.
+         */
+        deliveryTime?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Për adresat që s’bien në asnjë zonë. Bosh = "konfirmohet nga ekipi".
    */
   courierFee?: number | null;
   /**
-   * Bosh = asnjëherë falas.
+   * Për adresat jashtë zonave. Bosh = asnjëherë falas.
    */
   freeShippingThreshold?: number | null;
   /**
@@ -1357,6 +1390,17 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   businessRegistrationNumber?: T;
   openingHours?: T;
   showMap?: T;
+  shippingZones?:
+    | T
+    | {
+        name?: T;
+        country?: T;
+        cities?: T;
+        price?: T;
+        freeOver?: T;
+        deliveryTime?: T;
+        id?: T;
+      };
   courierFee?: T;
   freeShippingThreshold?: T;
   checkoutOptions?:

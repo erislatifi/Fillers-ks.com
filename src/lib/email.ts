@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { getPayloadClient } from "@/lib/payload";
 import type { ContactMessage, Order } from "@/payload-types";
+import { countryName } from "@/lib/countries";
 
 // Emails go out only when SMTP is configured in the host's env vars (SMTP_HOST, SMTP_PORT,
 // SMTP_USER, SMTP_PASS, optional ORDER_EMAIL_FROM). Without them every function is a no-op,
@@ -46,7 +47,7 @@ export async function emailNewOrder(order: Order) {
     `Transporti: ${eur(order.shippingCost)}`,
     `Totali: ${eur(order.total)}`,
     "",
-    `Marrja: ${order.deliveryMethod === "courier" ? `Korrier — ${order.deliveryAddress ?? ""}, ${order.city ?? ""}` : "Në zyrë"}`,
+    `Marrja: ${order.deliveryMethod === "courier" ? `Korrier — ${order.deliveryAddress ?? ""}, ${order.city ?? ""}, ${countryName(order.country)}` : "Në zyrë"}`,
     `Pagesa: ${{ pickup: "Në zyrë", bank_transfer: "Transfer bankar", cash_on_delivery: "Cash te korrieri" }[order.paymentMethod]}`,
   ].join("\n");
 

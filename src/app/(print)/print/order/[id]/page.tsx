@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { getPayloadClient } from "@/lib/payload";
 import { PrintButton } from "./PrintButton";
+import { countryName } from "@/lib/countries";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -93,6 +94,8 @@ export default async function PrintOrderPage({ params, searchParams }: Props) {
             <div className="pre">
               {order.deliveryAddress}
               {order.city ? `\n${order.city}` : ""}
+              {order.country ? `, ${countryName(order.country)}` : ""}
+              {order.shippingZone ? `\nZona: ${order.shippingZone}` : ""}
             </div>
           )}
           <div>{PAYMENT[order.paymentMethod] ?? order.paymentMethod}</div>

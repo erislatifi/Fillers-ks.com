@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCart } from "@/contexts/CartContext";
 import { submitOrder } from "@/app/(frontend)/[locale]/checkout/actions";
 import { checkoutChoices, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
-import { shippingCost } from "@/lib/shipping";
+import { deliveryCountries, quoteShipping, zoneCities } from "@/lib/shipping";
+import { countryName, HOME_COUNTRY } from "@/lib/countries";
 import { Button } from "@/components/Button";
 import { Link } from "@/i18n/navigation";
 import { MediaFrame, hueFromSlug } from "@/components/media";
@@ -113,6 +114,7 @@ function Field({
 
 export function CheckoutForm({ siteSettings, customer }: Props) {
   const t = useTranslations("checkout");
+  const locale = useLocale();
   const { items, subtotal, clear } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -126,7 +128,12 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
 
   const courier = delivery === "courier";
   // Display only — the server recalculates it from the same settings when the order is placed.
-  const shipping = shippingCost(delivery, subtotal, siteSettings);
+  const [country, setCountry] = useState<string>(HOME_COUNTRY);
+  const [city, setCity] = useState<string>(customer?.city ?? "");
+  const quote = quoteShipping(delivery, subtotal, siteSettings, { country, city });
+  const shipping = quote.cost;
+  const countries = deliveryCountries(siteSettings);
+  const cities = zoneCities(siteSettings, country);
   const total = subtotal + (shipping ?? 0);
   const belowMinimum = subtotal < choices.minOrder;
 
@@ -149,6 +156,7 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
       phone: str(form, "phone"),
       deliveryMethod: delivery,
       deliveryAddress: courier ? str(form, "deliveryAddress") : undefined,
+      country: courier ? country : undefined,
       city: courier ? str(form, "city") : undefined,
       requestedDeliveryDate: scheduled ? str(form, "deliveryDate") : undefined,
       notes: str(form, "notes"),
@@ -298,8 +306,38 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
 
               {courier ? (
                 <>
+                  {countries.length > 1 && (
+                    <Field label={t("country")}>
+                      <select
+                        name="country"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        autoComplete="country"
+                        className="input mt-2"
+                      >
+                        {countries.map((c) => (
+                          <option key={c} value={c}>
+                            {countryName(c, locale)}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  )}
                   <Field label={t("city")}>
-                    <input name="city" required defaultValue={customer?.city ?? ""} autoComplete="address-level2" className="input mt-2" />
+                    <input
+                      name="city"
+                      required
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      list="checkout-cities"
+                      autoComplete="address-level2"
+                      className="input mt-2"
+                    />
+                    <datalist id="checkout-cities">
+                      {cities.map((c) => (
+                        <option key={c} value={c} />
+                      ))}
+                    </datalist>
                   </Field>
                   <Field label={t("address")} wide>
                     <textarea
@@ -501,10 +539,11 @@ export function CheckoutForm({ siteSettings, customer }: Props) {
                   {shipping === null ? t("summary.shippingTbd") : shipping === 0 ? t("summary.shippingFree") : eur(shipping)}
                 </span>
               </div>
-              {courier && shipping !== 0 && siteSettings.freeShippingThreshold ? (
-                <p className="text-[12px] text-accent-deep">
-                  {t("summary.freeOver", { amount: eur(siteSettings.freeShippingThreshold) })}
-                </p>
+              {courier && quote.deliveryTime && (
+                <p className="text-[12px] text-ink-faint">{t("summary.deliveryTime", { time: quote.deliveryTime })}</p>
+              )}
+              {courier && shipping !== 0 && quote.freeOver ? (
+                <p className="text-[12px] text-accent-deep">{t("summary.freeOver", { amount: eur(quote.freeOver) })}</p>
               ) : null}
             </div>
             <div className="mt-4 pt-4 border-t border-line-soft flex items-center justify-between text-[15px]">

@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 import { hiddenForEditors, isAdmin } from '../access/isAdmin'
+import { countryOptions } from '../lib/countries'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -63,8 +64,43 @@ export const SiteSettings: GlobalConfig = {
         },
         {
           label: 'Dërgesa dhe porositë',
-          description: 'Kostoja e korrierit, njoftimet për porosi dhe të dhënat që dalin në faturë.',
+          description: 'Zonat dhe çmimet e korrierit, opsionet e checkout-it, njoftimet dhe të dhënat në faturë.',
           fields: [
+            {
+              name: 'shippingZones',
+              type: 'array',
+              label: 'Zonat e dërgesës',
+              labels: { singular: 'Zonë', plural: 'Zonat' },
+              admin: {
+                initCollapsed: true,
+                components: { RowLabel: './components/admin/ZoneRowLabel#ZoneRowLabel' },
+                description:
+                  'Checkout-i gjen zonën sipas shtetit dhe qytetit të klientit: së pari zona që e ka qytetin në listë, pastaj zona pa qytete (gjithë shteti).',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'name', type: 'text', required: true, localized: true, label: 'Emri', admin: { description: 'P.sh. Prishtinë, Kosova tjetër, Shqipëri.' } },
+                    { name: 'country', type: 'select', required: true, defaultValue: 'XK', label: 'Shteti', options: countryOptions },
+                  ],
+                },
+                {
+                  name: 'cities',
+                  type: 'textarea',
+                  label: 'Qytetet',
+                  admin: { description: 'Një qytet për rresht. Lëre bosh që zona të vlejë për gjithë shtetin.', rows: 4 },
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'price', type: 'number', required: true, min: 0, label: 'Çmimi (€)' },
+                    { name: 'freeOver', type: 'number', min: 0, label: 'Falas mbi (€)', admin: { description: 'Bosh = asnjëherë falas.' } },
+                    { name: 'deliveryTime', type: 'text', localized: true, label: 'Koha e dorëzimit', admin: { description: 'P.sh. 24 orë, 2–4 ditë.' } },
+                  ],
+                },
+              ],
+            },
             {
               type: 'row',
               fields: [
@@ -72,15 +108,15 @@ export const SiteSettings: GlobalConfig = {
                   name: 'courierFee',
                   type: 'number',
                   min: 0,
-                  label: 'Kostoja e dërgesës me korrier (€)',
-                  admin: { description: 'Bosh ose 0 = "konfirmohet nga ekipi".' },
+                  label: 'Çmimi standard i korrierit (€)',
+                  admin: { description: 'Për adresat që s’bien në asnjë zonë. Bosh = "konfirmohet nga ekipi".' },
                 },
                 {
                   name: 'freeShippingThreshold',
                   type: 'number',
                   min: 0,
-                  label: 'Dërgesë falas mbi (€)',
-                  admin: { description: 'Bosh = asnjëherë falas.' },
+                  label: 'Falas mbi (€), standard',
+                  admin: { description: 'Për adresat jashtë zonave. Bosh = asnjëherë falas.' },
                 },
               ],
             },

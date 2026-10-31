@@ -298,13 +298,15 @@
       "shippingTbd": "Konfirmohet nga ekipi",
       "total": "Totali",
       "editCart": "Ndrysho shportën",
-      "freeOver": "Dërgesë falas për porosi mbi {amount}"
+      "freeOver": "Dërgesë falas për porosi mbi {amount}",
+      "deliveryTime": "Dorëzimi: {time}"
     },
     "acceptTerms": "Pajtohem me <terms>kushtet e shitjes</terms> dhe <privacy>politikën e privatësisë</privacy>.",
     "successCod": "Pagesa bëhet cash te korrieri kur e pranoni porosinë.",
     "successBank": "Të dhënat bankare i keni më poshtë — përdorni numrin e porosisë si përshkrim të pagesës.",
     "errorUnavailable": "Një ose më shumë produkte në shportë nuk janë më në dispozicion. Rifreskoni shportën dhe provoni përsëri.",
-    "minOrder": "Vlera minimale e porosisë është {amount}. Shtoni edhe disa produkte në shportë."
+    "minOrder": "Vlera minimale e porosisë është {amount}. Shtoni edhe disa produkte në shportë.",
+    "country": "Shteti"
   },
   "productPage": {
     "deliveryEstimate": "Dërgesë brenda 1-2 ditësh pune"

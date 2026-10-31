@@ -1,5 +1,6 @@
 import type { CollectionConfig, FieldAccess } from 'payload'
 import { hiddenForEditors, isAdmin, isAdminUser } from '../access/isAdmin'
+import { countryOptions } from '../lib/countries'
 
 // Internal fields: a logged-in clinic can read its own orders, but never these.
 const staffOnly: FieldAccess = ({ req }) => isAdminUser(req)
@@ -166,6 +167,7 @@ export const Orders: CollectionConfig = {
         {
           type: 'row',
           fields: [
+            { name: 'country', type: 'select', defaultValue: 'XK', label: 'Shteti', options: countryOptions },
             { name: 'city', type: 'text', label: 'Qyteti' },
             {
               name: 'requestedDeliveryDate',
@@ -180,6 +182,7 @@ export const Orders: CollectionConfig = {
         {
           type: 'row',
           fields: [
+            { name: 'shippingZone', type: 'text', label: 'Zona e dërgesës', admin: { readOnly: true, description: 'E gjetur automatikisht nga adresa.' } },
             { name: 'courierName', type: 'text', label: 'Korrieri', admin: { description: 'P.sh. PostaExpress' } },
             { name: 'trackingNumber', type: 'text', label: 'Numri i gjurmimit' },
           ],
