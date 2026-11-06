@@ -10,10 +10,13 @@ export function NavTopLinks({
   pending,
   newMessages,
   showCommissions,
+  showImport = false,
 }: {
   pending: number;
   newMessages: number;
   showCommissions: boolean;
+  /** Admins only: the WordPress catalog import. */
+  showImport?: boolean;
 }) {
   const pathname = usePathname();
   const onDashboard = pathname === "/admin" || pathname === "/admin/";
@@ -58,6 +61,15 @@ export function NavTopLinks({
           className={`nav__link${pathname?.startsWith("/admin/komisionet") ? " nav__link--selected" : ""}`}
         >
           <span className="nav__link-label">Komisionet</span>
+        </Link>
+      )}
+
+      {showImport && (
+        <Link
+          href="/admin/importo"
+          className={`nav__link${pathname?.startsWith("/admin/importo") ? " nav__link--selected" : ""}`}
+        >
+          <span className="nav__link-label">Importo nga WordPress</span>
         </Link>
       )}
 

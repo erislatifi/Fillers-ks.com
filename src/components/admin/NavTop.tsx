@@ -22,5 +22,5 @@ export async function NavTop({ payload, user }: { payload: Payload; user?: Typed
   } catch {
     // Never let a count failure break the whole admin nav.
   }
-  return <NavTopLinks pending={pending} newMessages={newMessages} showCommissions={showCommissions} />;
+  return <NavTopLinks pending={pending} newMessages={newMessages} showCommissions={showCommissions} showImport />;
 }
