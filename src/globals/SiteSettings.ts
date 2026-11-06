@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload'
 import { hiddenForEditors, isAdmin } from '../access/isAdmin'
 import { countryOptions } from '../lib/countries'
+import { panelOnly } from '../lib/commission'
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -59,6 +60,40 @@ export const SiteSettings: GlobalConfig = {
               defaultValue: true,
               label: 'Shfaq hartën (Google Maps) te faqja e kontaktit',
               admin: { description: 'Harta gjendet automatikisht nga adresa më lart.' },
+            },
+          ],
+        },
+        {
+          label: 'Komisionet',
+          description: 'Si llogaritet komisioni i agjentëve të shitjes.',
+          fields: [
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'defaultCommissionRate',
+                  type: 'number',
+                  min: 0,
+                  max: 100,
+                  label: 'Komisioni standard (%)',
+                  access: { read: panelOnly },
+                  admin: { description: 'Kur as produkti as agjenti s’kanë përqindje të vetën.' },
+                },
+                {
+                  name: 'commissionStatuses',
+                  type: 'select',
+                  hasMany: true,
+                  defaultValue: ['fulfilled'],
+                  label: 'Porositë që numërohen në raport',
+                  access: { read: panelOnly },
+                  admin: { description: 'Zakonisht vetëm "Dorëzuar" — porositë e anuluara s’numërohen kurrë.' },
+                  options: [
+                    { label: 'Në pritje', value: 'pending' },
+                    { label: 'Konfirmuar', value: 'confirmed' },
+                    { label: 'Dorëzuar', value: 'fulfilled' },
+                  ],
+                },
+              ],
             },
           ],
         },

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import { publicReadAdminWrite } from '../access/isAdmin'
+import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
 import { contentBlocks } from '../blocks'
 
 // Text pages edited from the admin: privacy, terms, shipping, FAQ, and any page the
@@ -12,6 +12,7 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     group: 'Përmbajtja',
+    hidden: hiddenForAgents,
     defaultColumns: ['title', 'slug', 'showInFooter', 'updatedAt'],
     description:
       'Privatësia, kushtet, dërgesa, pyetjet e shpeshta dhe faqe të tjera me tekst. Shkruaji në shqip, pastaj ndërro gjuhën lart për anglishten.',

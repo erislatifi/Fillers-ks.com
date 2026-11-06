@@ -1,11 +1,12 @@
 import type { CollectionConfig } from 'payload'
-import { publicReadAdminWrite } from '../access/isAdmin'
+import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Foto', plural: 'Fotot' },
   admin: {
     group: 'Media',
+    hidden: hiddenForAgents,
     description: 'Biblioteka e fotove — ngarko këtu një herë, pastaj zgjidhi te produktet, brendet dhe artikujt.',
   },
   access: publicReadAdminWrite,

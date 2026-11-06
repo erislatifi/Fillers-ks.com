@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isStaff } from '../access/isAdmin'
+import { isStaff, hiddenForAgents } from '../access/isAdmin'
 
 // Header menu and the footer "Company" links. Empty lists = the built-in menus.
 export const Navigation: GlobalConfig = {
@@ -7,6 +7,7 @@ export const Navigation: GlobalConfig = {
   label: 'Menytë',
   admin: {
     group: 'Përmbajtja',
+    hidden: hiddenForAgents,
     description: 'Menyja lart dhe lidhjet në fund të faqes. Zvarrit për t’i rirenditur. Lista bosh = menyja standarde.',
   },
   access: {

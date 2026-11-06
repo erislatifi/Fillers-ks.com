@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { publicReadAdminWrite } from '../access/isAdmin'
+import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
 
 export const Brands: CollectionConfig = {
   slug: 'brands',
@@ -7,6 +7,7 @@ export const Brands: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Katalogu',
+    hidden: hiddenForAgents,
     description: 'Brendet që shpërndan — shfaqen në Ballinë, në faqen e brendeve dhe në filtrat e katalogut.',
   },
   access: publicReadAdminWrite,

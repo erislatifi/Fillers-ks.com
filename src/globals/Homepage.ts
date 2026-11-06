@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isStaff } from '../access/isAdmin'
+import { isStaff, hiddenForAgents } from '../access/isAdmin'
 import { contentBlocks, SectionBlock } from '../blocks'
 
 export const Homepage: GlobalConfig = {
@@ -7,6 +7,7 @@ export const Homepage: GlobalConfig = {
   label: 'Ballina',
   admin: {
     group: 'Administrimi',
+    hidden: hiddenForAgents,
     description: 'Tekstet kryesore të faqes ballore. Ndryshimet shfaqen në faqe sapo i ruan.',
   },
   access: {

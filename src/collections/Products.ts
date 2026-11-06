@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { isStaffUser, publicReadAdminWrite } from '../access/isAdmin'
+import { isAdminUser, isStaffUser, publicReadAdminWrite } from '../access/isAdmin'
+import { panelOnly } from '../lib/commission'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -101,6 +102,16 @@ export const Products: CollectionConfig = {
       hasMany: true,
       label: 'Fotot e produktit',
       admin: { description: 'Foto e parë është ajo kryesore. Ngarko foto të qarta, me sfond të pastër.' },
+    },
+    {
+      name: 'commissionRate',
+      type: 'number',
+      min: 0,
+      max: 100,
+      label: 'Komisioni i agjentit (%)',
+      // Internal: never sent to the public site or the REST API for visitors.
+      access: { read: panelOnly, create: ({ req }) => isAdminUser(req), update: ({ req }) => isAdminUser(req) },
+      admin: { position: 'sidebar', description: 'Bosh = vlen komisioni standard i agjentit.' },
     },
     {
       name: 'quoteOnly',

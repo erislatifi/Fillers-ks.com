@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { publicReadAdminWrite } from '../access/isAdmin'
+import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
@@ -7,6 +7,7 @@ export const Testimonials: CollectionConfig = {
   admin: {
     useAsTitle: 'clinic',
     group: 'Përmbajtja',
+    hidden: hiddenForAgents,
     description: 'Fjalët e klinikave partnere që shfaqen në Ballinë.',
   },
   access: publicReadAdminWrite,

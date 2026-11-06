@@ -196,6 +196,14 @@ export interface Order {
    * Bosh nëse porosia u bë pa llogari.
    */
   customer?: (number | null) | Customer;
+  /**
+   * Kujt i llogaritet komisioni për këtë porosi.
+   */
+  agent?: (number | null) | User;
+  /**
+   * Llogaritet vetë nga përqindjet e artikujve.
+   */
+  commissionTotal?: number | null;
   clinicName: string;
   contactName: string;
   email: string;
@@ -244,6 +252,11 @@ export interface Order {
     size?: string | null;
     price: number;
     quantity: number;
+    /**
+     * Vendoset vetë; mund ta ndryshosh për këtë porosi.
+     */
+    commissionRate?: number | null;
+    commission?: number | null;
     id?: string | null;
   }[];
   updatedAt: string;
@@ -266,6 +279,10 @@ export interface Customer {
    * Opsionale — e plotëson klinika gjatë regjistrimit.
    */
   licenseNumber?: string | null;
+  /**
+   * Porositë e kësaj klinike i llogariten këtij agjenti.
+   */
+  agent?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -284,6 +301,47 @@ export interface Customer {
     | null;
   password?: string | null;
   collection: 'customers';
+}
+/**
+ * Njerëzit që kanë qasje në këtë panel: administratorët, redaktorët dhe agjentët e shitjes.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  /**
+   * Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa shitjet. Agjent shitjeje: vetëm porositë, klinikat dhe komisioni i vet.
+   */
+  roles?: ('admin' | 'editor' | 'agent')[] | null;
+  fullName?: string | null;
+  phone?: string | null;
+  /**
+   * Vetëm shkronja/numra, p.sh. ARBEN. Lidhja personale: shop-fillers-ks.com/sq?ref=ARBEN — kush porosit pas saj i shkon këtij agjenti.
+   */
+  agentCode?: string | null;
+  /**
+   * Vlen për produktet që s’kanë përqindjen e tyre.
+   */
+  defaultCommissionRate?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.
@@ -329,6 +387,10 @@ export interface Product {
    * Foto e parë është ajo kryesore. Ngarko foto të qarta, me sfond të pastër.
    */
   images?: (number | Media)[] | null;
+  /**
+   * Bosh = vlen komisioni standard i agjentit.
+   */
+  commissionRate?: number | null;
   /**
    * Në vend të çmimit, klientët shohin “Kërko ofertë”.
    */
@@ -714,37 +776,6 @@ export interface Page {
   createdAt: string;
 }
 /**
- * Njerëzit që kanë qasje në këtë panel.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  /**
-   * Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa porositë, klientët, mesazhet dhe cilësimet.
-   */
-  roles?: ('admin' | 'editor')[] | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -885,6 +916,8 @@ export interface OrdersSelect<T extends boolean = true> {
   shippingCost?: T;
   total?: T;
   customer?: T;
+  agent?: T;
+  commissionTotal?: T;
   clinicName?: T;
   contactName?: T;
   email?: T;
@@ -925,6 +958,8 @@ export interface OrdersSelect<T extends boolean = true> {
         size?: T;
         price?: T;
         quantity?: T;
+        commissionRate?: T;
+        commission?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -941,6 +976,7 @@ export interface CustomersSelect<T extends boolean = true> {
   city?: T;
   address?: T;
   licenseNumber?: T;
+  agent?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -999,6 +1035,7 @@ export interface ProductsSelect<T extends boolean = true> {
   stockStatus?: T;
   description?: T;
   images?: T;
+  commissionRate?: T;
   quoteOnly?: T;
   bestSeller?: T;
   newArrival?: T;
@@ -1232,6 +1269,10 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   roles?: T;
+  fullName?: T;
+  phone?: T;
+  agentCode?: T;
+  defaultCommissionRate?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1571,6 +1612,14 @@ export interface SiteSetting {
    */
   showMap?: boolean | null;
   /**
+   * Kur as produkti as agjenti s’kanë përqindje të vetën.
+   */
+  defaultCommissionRate?: number | null;
+  /**
+   * Zakonisht vetëm "Dorëzuar" — porositë e anuluara s’numërohen kurrë.
+   */
+  commissionStatuses?: ('pending' | 'confirmed' | 'fulfilled')[] | null;
+  /**
    * Checkout-i gjen zonën sipas shtetit dhe qytetit të klientit: së pari zona që e ka qytetin në listë, pastaj zona pa qytete (gjithë shteti).
    */
   shippingZones?:
@@ -1863,6 +1912,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   businessRegistrationNumber?: T;
   openingHours?: T;
   showMap?: T;
+  defaultCommissionRate?: T;
+  commissionStatuses?: T;
   shippingZones?:
     | T
     | {

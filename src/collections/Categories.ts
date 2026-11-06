@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { publicReadAdminWrite } from '../access/isAdmin'
+import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -7,6 +7,7 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Katalogu',
+    hidden: hiddenForAgents,
     description: 'Grupet e produkteve (p.sh. Filerë dermik, Biostimulues). Përdoren si filtra në katalog.',
   },
   access: publicReadAdminWrite,

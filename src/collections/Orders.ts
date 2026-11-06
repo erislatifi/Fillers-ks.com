@@ -1,5 +1,6 @@
-import type { CollectionConfig, FieldAccess } from 'payload'
-import { hiddenForEditors, isAdmin, isAdminUser } from '../access/isAdmin'
+import type { AccessResult, CollectionConfig, FieldAccess } from 'payload'
+import { hiddenForNonSales, isAdmin, isAdminUser, isAgentUser } from '../access/isAdmin'
+import { applyCommission, panelOnly } from '../lib/commission'
 import { countryOptions } from '../lib/countries'
 
 // Internal fields: a logged-in clinic can read its own orders, but never these.
@@ -20,7 +21,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: 'orderNumber',
     group: 'Shitjet',
-    hidden: hiddenForEditors,
+    hidden: hiddenForNonSales,
     defaultColumns: ['orderNumber', 'clinicName', 'status', 'deliveryMethod', 'paymentMethod', 'total', 'createdAt'],
     description: 'Kërkesat që dërgojnë klinikat nga shporta. Hapi një porosi për ta konfirmuar dhe për të ndryshuar statusin.',
   },
@@ -28,8 +29,10 @@ export const Orders: CollectionConfig = {
     // Checkout submits orders without being logged in.
     create: () => true,
     // Order contents include clinic contact details — staff see all, a customer only their own.
-    read: ({ req }) => {
+    read: ({ req }): AccessResult => {
       if (isAdminUser(req)) return true
+      // A sales agent sees only the orders credited to them.
+      if (isAgentUser(req)) return { agent: { equals: req.user!.id } }
       if (req.user?.collection === 'customers') return { customer: { equals: req.user.id } }
       return false
     },
@@ -49,6 +52,7 @@ export const Orders: CollectionConfig = {
         ]
         return data
       },
+      applyCommission,
     ],
   },
   fields: [
@@ -136,6 +140,24 @@ export const Orders: CollectionConfig = {
       relationTo: 'customers',
       label: 'Llogaria e klientit',
       admin: { position: 'sidebar', description: 'Bosh nëse porosia u bë pa llogari.' },
+    },
+    {
+      // Credited sales agent: from the clinic's assigned agent or the agent's link at checkout;
+      // an admin can set or change it. Changing it re-applies that agent's rates.
+      name: 'agent',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Agjenti i shitjes',
+      filterOptions: { roles: { in: ['agent'] } },
+      access: { read: panelOnly, update: ({ req }) => isAdminUser(req), create: ({ req }) => isAdminUser(req) },
+      admin: { position: 'sidebar', description: 'Kujt i llogaritet komisioni për këtë porosi.' },
+    },
+    {
+      name: 'commissionTotal',
+      type: 'number',
+      label: 'Komisioni (€)',
+      access: { read: panelOnly },
+      admin: { position: 'sidebar', readOnly: true, description: 'Llogaritet vetë nga përqindjet e artikujve.' },
     },
     {
       type: 'collapsible',
@@ -283,6 +305,27 @@ export const Orders: CollectionConfig = {
           fields: [
             { name: 'price', type: 'number', required: true, label: 'Çmimi (€)' },
             { name: 'quantity', type: 'number', required: true, min: 1, label: 'Sasia' },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'commissionRate',
+              type: 'number',
+              min: 0,
+              max: 100,
+              label: 'Komisioni (%)',
+              access: { read: panelOnly, update: ({ req }) => isAdminUser(req) },
+              admin: { description: 'Vendoset vetë; mund ta ndryshosh për këtë porosi.' },
+            },
+            {
+              name: 'commission',
+              type: 'number',
+              label: 'Komisioni (€)',
+              access: { read: panelOnly },
+              admin: { readOnly: true },
+            },
           ],
         },
       ],

@@ -1,9 +1,18 @@
-import type { Access, CollectionConfig } from 'payload'
-import { hiddenForEditors, isAdmin, isAdminUser, isStaffUser } from '../access/isAdmin'
+import type { Access, CollectionConfig, FieldAccess } from 'payload'
+import { hiddenForEditors, isAdmin, isAdminUser, isPanelUser } from '../access/isAdmin'
 
-// Admins manage everyone; an editor can only see and update their own account.
+// Admins manage everyone; editors and agents can only see and update their own account.
 const adminOrSelf: Access = ({ req }) =>
-  isAdminUser(req) ? true : isStaffUser(req) ? { id: { equals: req.user!.id } } : false
+  isAdminUser(req) ? true : isPanelUser(req) ? { id: { equals: req.user!.id } } : false
+
+// Only an admin may set roles, commission rates and referral codes — nobody promotes
+// themselves or raises their own commission.
+const adminOnlyWrite: { create: FieldAccess; update: FieldAccess } = {
+  create: ({ req }) => isAdminUser(req),
+  update: ({ req }) => isAdminUser(req),
+}
+
+const isAgent = (data: { roles?: string[] | null } | undefined) => Boolean(data?.roles?.includes('agent'))
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -12,12 +21,13 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
     group: 'Administrimi',
     hidden: hiddenForEditors,
-    description: 'Njerëzit që kanë qasje në këtë panel.',
+    defaultColumns: ['email', 'fullName', 'roles', 'agentCode', 'defaultCommissionRate'],
+    description: 'Njerëzit që kanë qasje në këtë panel: administratorët, redaktorët dhe agjentët e shitjes.',
   },
   auth: true,
   // Staff accounts — a logged-in customer must not list or edit these.
   access: {
-    admin: ({ req }) => isStaffUser(req),
+    admin: ({ req }) => isPanelUser(req),
     read: adminOrSelf,
     create: isAdmin,
     update: adminOrSelf,
@@ -30,15 +40,61 @@ export const Users: CollectionConfig = {
       hasMany: true,
       defaultValue: ['admin'],
       label: 'Rolet',
-      // Only an admin can change roles — an editor must not be able to promote themselves.
-      access: { create: ({ req }) => isAdminUser(req), update: ({ req }) => isAdminUser(req) },
+      access: adminOnlyWrite,
       admin: {
         description:
-          'Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa porositë, klientët, mesazhet dhe cilësimet.',
+          'Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa shitjet. Agjent shitjeje: vetëm porositë, klinikat dhe komisioni i vet.',
       },
       options: [
         { label: 'Administrator', value: 'admin' },
         { label: 'Redaktor', value: 'editor' },
+        { label: 'Agjent shitjeje', value: 'agent' },
+      ],
+    },
+    {
+      type: 'row',
+      fields: [
+        { name: 'fullName', type: 'text', label: 'Emri dhe mbiemri' },
+        { name: 'phone', type: 'text', label: 'Telefoni' },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Agjenti i shitjes',
+      admin: { condition: (data) => isAgent(data) },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'agentCode',
+              type: 'text',
+              unique: true,
+              label: 'Kodi i agjentit',
+              access: adminOnlyWrite,
+              hooks: {
+                // "arben 1" → "ARBEN1", so links match regardless of how the code was typed.
+                beforeValidate: [
+                  ({ value }) =>
+                    typeof value === 'string' ? value.toUpperCase().replace(/[^A-Z0-9_-]/g, '') || null : value,
+                ],
+              },
+              admin: {
+                description:
+                  'Vetëm shkronja/numra, p.sh. ARBEN. Lidhja personale: shop-fillers-ks.com/sq?ref=ARBEN — kush porosit pas saj i shkon këtij agjenti.',
+              },
+            },
+            {
+              name: 'defaultCommissionRate',
+              type: 'number',
+              min: 0,
+              max: 100,
+              label: 'Komisioni standard (%)',
+              access: adminOnlyWrite,
+              admin: { description: 'Vlen për produktet që s’kanë përqindjen e tyre.' },
+            },
+          ],
+        },
       ],
     },
   ],

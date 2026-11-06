@@ -6,6 +6,7 @@ import { quoteShipping } from "@/lib/shipping";
 import { COUNTRY_CODES, HOME_COUNTRY } from "@/lib/countries";
 import { emailNewOrder } from "@/lib/email";
 import { getCurrentCustomer } from "@/lib/customerSession";
+import { creditedAgent } from "@/lib/agents";
 import { checkoutChoices, paymentsFor, type DeliveryMethod, type PaymentMethod } from "@/lib/checkout";
 
 type CheckoutItem = {
@@ -127,6 +128,11 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
     // Taken from the session cookie, never from the form, so an order can't be filed under
     // someone else's account.
     const customer = await getCurrentCustomer();
+    // Sales agent credited with this order (assigned clinic agent, else referral link).
+    const customerRecord = customer
+      ? await payload.findByID({ collection: "customers", id: customer.id, depth: 0 }).catch(() => null)
+      : null;
+    const agent = await creditedAgent(customerRecord);
 
     const order = await payload.create({
       collection: "orders",
@@ -151,6 +157,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         shippingCost: shipping ?? undefined,
         total,
         customer: customer?.id,
+        agent: agent ?? undefined,
       },
     });
 

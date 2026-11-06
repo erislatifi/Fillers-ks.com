@@ -1,5 +1,5 @@
 import type { GlobalConfig } from 'payload'
-import { isStaff } from '../access/isAdmin'
+import { isStaff, hiddenForAgents } from '../access/isAdmin'
 
 // Every UI text of the public site (buttons, headings, form labels, messages) can be
 // reworded here. Defaults live in messages/sq.json + en.json; this global only stores the
@@ -10,6 +10,7 @@ export const SiteTexts: GlobalConfig = {
   label: 'Tekstet (fjalori)',
   admin: {
     group: 'Përmbajtja',
+    hidden: hiddenForAgents,
     description:
       'Çdo tekst i faqes: butonat, titujt, fushat e formave, mesazhet. Ndërro gjuhën lart për anglishten. Fusha bosh = teksti standard.',
   },

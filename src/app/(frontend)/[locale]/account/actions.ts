@@ -5,6 +5,7 @@ import { redirect } from "@/i18n/navigation";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { getPayloadClient } from "@/lib/payload";
 import { clearCustomerToken, getCurrentCustomer, setCustomerToken } from "@/lib/customerSession";
+import { agentFromReferral } from "@/lib/agents";
 
 export type AccountFormState = { error?: string; saved?: boolean } | null;
 
@@ -47,7 +48,9 @@ export async function registerCustomer(_prev: AccountFormState, form: FormData):
     const existing = await payload.count({ collection: "customers", where: { email: { equals: data.email } } });
     if (existing.totalDocs > 0) return { error: "email-taken" };
 
-    await payload.create({ collection: "customers", data: { ...data, password } });
+    // A clinic that signs up through an agent's link stays assigned to that agent.
+    const agent = await agentFromReferral();
+    await payload.create({ collection: "customers", data: { ...data, password, agent: agent ?? undefined } });
     await loginAndStoreToken(data.email, password);
   } catch (err) {
     console.error("registerCustomer failed", err);
