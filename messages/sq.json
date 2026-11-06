@@ -350,7 +350,10 @@
     "empty": "Asnjë produkt nuk përputhet me këtë filtër.",
     "category": "Kategoria",
     "brand": "Brendi",
-    "all": "Të gjitha"
+    "all": "Të gjitha",
+    "count": "{count, plural, one {# produkt} other {# produkte}}",
+    "clearFilters": "Pastro filtrat",
+    "filters": "Filtrat"
   },
   "categoryPage": {
     "eyebrow": "Kategoria",

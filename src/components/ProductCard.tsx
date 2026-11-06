@@ -11,9 +11,11 @@ import { useCart } from "@/contexts/CartContext";
 type Props = {
   product: Product;
   className?: string;
+  /** Smaller card for dense grids (the shop). */
+  compact?: boolean;
 };
 
-export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrink-0" }: Props) {
+export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrink-0", compact = false }: Props) {
   const t = useTranslations("bestSellers");
   const ts = useTranslations("stock");
   const outOfStock = product.stockStatus === "out_of_stock";
@@ -43,14 +45,14 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
       className={`group block ${className}`}
     >
       <div className="relative">
-        <MediaFrame hue={hueFromSlug(product.slug)} className="aspect-[4/5] rounded-2xl border border-line">
+        <MediaFrame hue={hueFromSlug(product.slug)} className={compact ? "aspect-square rounded-xl border border-line" : "aspect-[4/5] rounded-2xl border border-line"}>
           {image ? (
             <UploadedImage
               media={image}
               className="transition-transform duration-500 group-hover:scale-[1.04]"
             />
           ) : (
-            <Glyph className="absolute inset-0 h-full w-full p-10 text-ink/60 transition-transform duration-500 group-hover:scale-[1.04]" />
+            <Glyph className={`absolute inset-0 h-full w-full ${compact ? "p-7" : "p-10"} text-ink/60 transition-transform duration-500 group-hover:scale-[1.04]`} />
           )}
 
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
@@ -81,20 +83,20 @@ export function ProductCard({ product, className = "w-[240px] sm:w-[268px] shrin
           <button
             aria-label="Add to cart"
             onClick={handleAddToCart}
-            className="absolute -bottom-4 right-4 h-11 w-11 rounded-full bg-ink text-paper flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:bg-accent-deep"
+            className={`absolute ${compact ? "-bottom-3.5 right-3 h-9 w-9" : "-bottom-4 right-4 h-11 w-11"} rounded-full bg-ink text-paper flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 group-hover:bg-accent-deep`}
           >
             <BagIcon className="h-4 w-4" />
           </button>
         )}
       </div>
 
-      <div className="mt-6 px-0.5">
-        <p className="text-[11.5px] uppercase tracking-wider text-accent-deep font-medium">
+      <div className={compact ? "mt-4 px-0.5" : "mt-6 px-0.5"}>
+        <p className="text-[11px] uppercase tracking-wider text-accent-deep font-medium">
           {brandName}
         </p>
-        <h3 className="mt-1 text-[15px] font-medium text-ink">{product.name}</h3>
+        <h3 className={`mt-1 font-medium text-ink ${compact ? "text-[13.5px] leading-snug line-clamp-2" : "text-[15px]"}`}>{product.name}</h3>
         <p className="mt-0.5 text-[12.5px] text-ink-faint">{product.size}</p>
-        <p className="mt-2 font-display text-[15px] text-ink">
+        <p className={`font-display text-ink ${compact ? "mt-1 text-[14px]" : "mt-2 text-[15px]"}`}>
           {product.quoteOnly ? t("requestQuote") : `€${(product.price ?? 0).toFixed(2)}`}
           {onSale && (
             <span className="ml-2 text-[13px] text-ink-faint line-through">€{product.compareAtPrice!.toFixed(2)}</span>

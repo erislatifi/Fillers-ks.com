@@ -350,7 +350,10 @@
     "empty": "No products match this filter.",
     "category": "Category",
     "brand": "Brand",
-    "all": "All"
+    "all": "All",
+    "count": "{count, plural, one {# product} other {# products}}",
+    "clearFilters": "Clear filters",
+    "filters": "Filters"
   },
   "categoryPage": {
     "eyebrow": "Category",
