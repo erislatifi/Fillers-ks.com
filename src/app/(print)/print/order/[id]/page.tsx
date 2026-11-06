@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getPayloadClient } from "@/lib/payload";
 import { PrintButton } from "./PrintButton";
 import { countryName } from "@/lib/countries";
+import { hasAdminRole, isAgentOnly } from "@/access/isAdmin";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -30,9 +31,14 @@ export default async function PrintOrderPage({ params, searchParams }: Props) {
   const payload = await getPayloadClient();
   const { user } = await payload.auth({ headers: await headers() });
   if (!user || user.collection !== "users") redirect(`/admin/login?redirect=/print/order/${id}`);
+  // Admins print any order; a sales agent only orders credited to them; editors none.
+  const admin = hasAdminRole(user as { collection?: string; roles?: string[] });
+  const agent = isAgentOnly(user as { collection?: string; roles?: string[] });
+  if (!admin && !agent) notFound();
 
   const order = await payload.findByID({ collection: "orders", id, depth: 0 }).catch(() => null);
   if (!order) notFound();
+  if (!admin && Number(order.agent) !== Number(user.id)) notFound();
   const settings = await payload.findGlobal({ slug: "site-settings", locale: "sq" });
 
   const shipping = order.shippingCost;

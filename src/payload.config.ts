@@ -20,6 +20,7 @@ import { Customers } from './collections/Customers'
 import { Pages } from './collections/Pages'
 import { ContactMessages } from './collections/ContactMessages'
 import { Subscribers } from './collections/Subscribers'
+import { CommissionPayouts } from './collections/CommissionPayouts'
 import { SiteSettings } from './globals/SiteSettings'
 import { Homepage } from './globals/Homepage'
 import { SiteTexts } from './globals/SiteTexts'
@@ -84,6 +85,11 @@ export default buildConfig({
         dashboard: {
           Component: './components/admin/Dashboard#Dashboard',
         },
+        // Monthly sales + commission per agent (admins: all, agents: their own).
+        commissions: {
+          Component: './components/admin/CommissionsView#CommissionsView',
+          path: '/komisionet',
+        },
       },
       graphics: {
         Icon: './components/admin/Logo#Icon',
@@ -91,7 +97,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Orders, Customers, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
+  collections: [Orders, Customers, CommissionPayouts, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
   globals: [Homepage, Navigation, SiteTexts, SiteSettings],
   localization: {
     locales: ['sq', 'en'],

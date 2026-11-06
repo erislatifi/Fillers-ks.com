@@ -70,6 +70,7 @@ export interface Config {
   collections: {
     orders: Order;
     customers: Customer;
+    'commission-payouts': CommissionPayout;
     'contact-messages': ContactMessage;
     subscribers: Subscriber;
     products: Product;
@@ -90,6 +91,7 @@ export interface Config {
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
+    'commission-payouts': CommissionPayoutsSelect<false> | CommissionPayoutsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
@@ -513,6 +515,25 @@ export interface Media {
   };
 }
 /**
+ * Kur ia paguan komisionin një agjenti për një muaj, shënoje këtu — raporti e tregon muajin si të paguar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-payouts".
+ */
+export interface CommissionPayout {
+  id: number;
+  agent: number | User;
+  /**
+   * Formati VVVV-MM, p.sh. 2026-11.
+   */
+  month: string;
+  amount: number;
+  paidAt: string;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Mesazhet nga forma e kontaktit në faqe. Ndrysho statusin kur t’i përgjigjesh.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -808,6 +829,10 @@ export interface PayloadLockedDocument {
         value: number | Customer;
       } | null)
     | ({
+        relationTo: 'commission-payouts';
+        value: number | CommissionPayout;
+      } | null)
+    | ({
         relationTo: 'contact-messages';
         value: number | ContactMessage;
       } | null)
@@ -993,6 +1018,19 @@ export interface CustomersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "commission-payouts_select".
+ */
+export interface CommissionPayoutsSelect<T extends boolean = true> {
+  agent?: T;
+  month?: T;
+  amount?: T;
+  paidAt?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

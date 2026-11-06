@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import type { Payload, TypedUser } from "payload";
-import { hasAdminRole } from "../../access/isAdmin";
+import { hasAdminRole, isAgentOnly } from "../../access/isAdmin";
+import { buildCommissionReport, currentMonth } from "../../lib/commissionReport";
 
 const TZ = "Europe/Belgrade";
 const DAY = 86_400_000;
@@ -45,7 +46,7 @@ const ICONS: Record<string, React.ReactNode> = {
   users: <><circle cx="9" cy="8.5" r="3.2" /><path d="M3.5 19c.9-3.2 3.1-4.8 5.5-4.8s4.6 1.6 5.5 4.8" /><path d="M16 5.6a3 3 0 010 5.8M18.5 14.6c1.3.7 2.3 2 2.8 4" /></>,
 };
 
-function Ico({ name }: { name: keyof typeof ICONS | string }) {
+export function Ico({ name }: { name: keyof typeof ICONS | string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -63,7 +64,7 @@ function Ico({ name }: { name: keyof typeof ICONS | string }) {
   );
 }
 
-function Card({
+export function Card({
   title,
   action,
   children,
@@ -89,7 +90,7 @@ function Card({
   );
 }
 
-function Kpi({
+export function Kpi({
   label,
   value,
   note,
@@ -185,7 +186,48 @@ function EditorDashboard() {
   );
 }
 
+/** Sales agents: this month's numbers, their referral link and the full report. */
+async function AgentDashboard({ payload, user }: { payload: Payload; user: TypedUser }) {
+  const u = user as unknown as { id: number; agentCode?: string | null; fullName?: string | null };
+  const [report] = await buildCommissionReport(payload, currentMonth(), u.id);
+  const totals = report?.totals ?? { orders: 0, sales: 0, commission: 0 };
+  const money = (n: number) => `€${n.toFixed(2)}`;
+  return (
+    <div className="fk-dash">
+      <header className="fk-dash__head">
+        <div>
+          <h1 className="fk-dash__title">
+            {greeting()}
+            {u.fullName ? `, ${u.fullName}` : ""}
+          </h1>
+          <p className="fk-dash__sub">Shitjet dhe komisioni yt këtë muaj.</p>
+        </div>
+        <div className="fk-dash__cta">
+          <Link href="/admin/komisionet" className="fk-btn">
+            Raporti i plotë
+          </Link>
+        </div>
+      </header>
+      <div className="fk-kpis">
+        <Kpi label="Porosi këtë muaj" value={totals.orders} icon="receipt" />
+        <Kpi label="Shitjet" value={money(totals.sales)} icon="euro" tone="teal" />
+        <Kpi label="Komisioni" value={money(totals.commission)} icon="star" tone="pink" />
+      </div>
+      {u.agentCode && (
+        <Card title="Lidhja jote personale">
+          <p className="fk-note">
+            Ndaje këtë lidhje me klinikat — porositë që bëhen pas saj të llogariten ty:
+            <br />
+            <strong>https://shop-fillers-ks.com/sq?ref={u.agentCode}</strong>
+          </p>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 export async function Dashboard({ payload, user }: { payload: Payload; user?: TypedUser }) {
+  if (user && isAgentOnly(user as { collection?: string; roles?: string[] })) return <AgentDashboard payload={payload} user={user} />;
   if (!hasAdminRole(user as { collection?: string; roles?: string[] } | undefined)) return <EditorDashboard />;
   const [products, brands, categories, ordersRes, testimonials, articles, promotions] = await Promise.all([
     payload.find({ collection: "products", limit: 1000, depth: 0 }),
