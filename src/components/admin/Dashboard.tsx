@@ -340,6 +340,7 @@ export async function Dashboard({ payload, user }: { payload: Payload; user?: Ty
     { href: "/admin/globals/homepage", icon: "home", title: "Ballina", text: "Seksionet dhe tekstet" },
     { href: "/admin/collections/pages", icon: "tag", title: "Faqet", text: "Kushtet, privatësia, FAQ" },
     { href: "/admin/globals/site-settings", icon: "gear", title: "Cilësimet", text: "Kontakt, banka, rrjete" },
+    { href: "/admin/importo", icon: "box", title: "Importo nga WordPress", text: "Produktet e dyqanit të vjetër" },
   ];
 
   return (

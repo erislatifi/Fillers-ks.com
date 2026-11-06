@@ -90,6 +90,11 @@ export default buildConfig({
           Component: './components/admin/CommissionsView#CommissionsView',
           path: '/komisionet',
         },
+        // One-off import of the old WooCommerce catalog (admins only).
+        importWordPress: {
+          Component: './components/admin/ImportView#ImportView',
+          path: '/importo',
+        },
       },
       graphics: {
         Icon: './components/admin/Logo#Icon',

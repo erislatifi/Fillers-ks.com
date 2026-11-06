@@ -33,6 +33,7 @@ import { NavTop as NavTop_1f097d9264074d773616ef466315cd5c } from '../../../comp
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { Dashboard as Dashboard_f0f8d4a7080efd2cd25bb6be37c094c0 } from '../../../components/admin/Dashboard'
 import { CommissionsView as CommissionsView_98437cad1f3e526cd1e915f6384eb4a7 } from '../../../components/admin/CommissionsView'
+import { ImportView as ImportView_663e79de7dc8557398774aebb9bfb8ad } from '../../../components/admin/ImportView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -72,5 +73,6 @@ export const importMap = {
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "./components/admin/Dashboard#Dashboard": Dashboard_f0f8d4a7080efd2cd25bb6be37c094c0,
   "./components/admin/CommissionsView#CommissionsView": CommissionsView_98437cad1f3e526cd1e915f6384eb4a7,
+  "./components/admin/ImportView#ImportView": ImportView_663e79de7dc8557398774aebb9bfb8ad,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

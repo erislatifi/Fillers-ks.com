@@ -126,7 +126,7 @@ export default async function ProductPage({ params }: Props) {
                 )}
               </p>
 
-              <p className="mt-6 text-[15px] leading-relaxed text-ink-soft">{product.description}</p>
+              <p className="mt-6 whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">{product.description}</p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 {product.stockStatus === "out_of_stock" && !product.quoteOnly ? (
