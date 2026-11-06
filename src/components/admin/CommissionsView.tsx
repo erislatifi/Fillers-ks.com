@@ -17,7 +17,9 @@ const monthLabel = (m: string) =>
  * Admins pick any agent; an agent only ever sees their own numbers.
  */
 export async function CommissionsView(props: AdminViewServerProps) {
-  const { initPageResult, searchParams, payload, user } = props;
+  const { initPageResult, searchParams, payload } = props;
+  // Custom views don't always receive `user` directly; the request always has it.
+  const user = props.user ?? initPageResult.req.user ?? undefined;
   const u = user as { id: number; collection?: string; roles?: string[] | null } | undefined;
   const admin = hasAdminRole(u);
   const agent = isAgentOnly(u);

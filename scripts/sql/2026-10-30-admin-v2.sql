@@ -1,4 +1,4 @@
--- SUPERSEDED: use 2026-10-31-cms.sql instead (it includes everything below and works
+-- SUPERSEDED: use 2026-11-06-full.sql instead (it includes everything below and works
 -- whether or not this file was already run). Kept for history.
 -- Admin v2 (2026-10-30): pages, contact messages, newsletter, homepage sections,
 -- shipping/tracking/history on orders, product stock/sale/SKU/visibility, roles,

@@ -1,3 +1,5 @@
+-- SUPERSEDED: use 2026-11-06-full.sql instead (it includes everything below and works
+-- whether or not this file was already run). Kept for history.
 -- Fillers Kosovo CMS update (2026-10-31). Run once in Supabase → SQL Editor, then merge
 -- the `cms-v3` branch into main. Works whether or not 2026-10-30-admin-v2.sql was run before.
 --
