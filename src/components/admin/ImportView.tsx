@@ -3,6 +3,7 @@ import type { AdminViewServerProps } from "payload";
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { hasAdminRole } from "../../access/isAdmin";
 import { NEW_BRANDS, PRODUCT_MAP } from "../../lib/wordpress/catalogMap";
+import { PDF_PRODUCTS } from "../../lib/catalog/pdfList";
 import { ImportRunner } from "./ImportRunner";
 
 /** Administrimi → Importo nga WordPress (/admin/importo). Admins only. */
@@ -51,6 +52,14 @@ export function ImportView(props: AdminViewServerProps) {
               . Mund ta nisësh sa herë të duash: produktet ekzistuese përditësohen, nuk dyfishohen.
             </p>
             <ImportRunner />
+
+            <h2 className="fk-dash__title" style={{ fontSize: 22, marginTop: 48 }}>Produktet e listës së furnitorëve (PDF)</h2>
+            <p className="fk-note">
+              {PDF_PRODUCTS.length} produkte nga lista EMERTIMI.pdf që s'ishin në faqe (të tjerat janë tashmë nga WordPress). Shtohen pa
+              çmim (“Kërko ofertë”) dhe pa foto — çmimin dhe fotot i vendos te Produktet. Mund ta nisësh prapë pa frikë: produktet që
+              janë tashmë në faqe nuk preken.
+            </p>
+            <ImportRunner endpoint="/tools/pdf-import" showHideOthers={false} skippedLabel="Ekziston" startLabel="Shto produktet e listës" />
           </>
         )}
       </div>

@@ -17,8 +17,21 @@ const COLOR: Record<Line['status'], string> = {
   error: 'var(--theme-error-500, #dc2626)',
 }
 
-/** Calls /tools/wp-import batch by batch and shows progress (Administrimi → Importo nga WordPress). */
-export function ImportRunner() {
+/**
+ * Calls an import endpoint batch by batch (until `next` is null) and shows progress.
+ * Used for the WordPress import and for the supplier-list (PDF) products.
+ */
+export function ImportRunner({
+  endpoint = '/tools/wp-import',
+  showHideOthers = true,
+  skippedLabel = LABEL.skipped,
+  startLabel = 'Fillo importin',
+}: {
+  endpoint?: string
+  showHideOthers?: boolean
+  skippedLabel?: string
+  startLabel?: string
+} = {}) {
   const [hideOthers, setHideOthers] = useState(false)
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(0)
@@ -35,7 +48,7 @@ export function ImportRunner() {
     setDone(0)
     let offset: number | null = 0
     while (offset !== null) {
-      const res: Response = await fetch('/tools/wp-import', {
+      const res: Response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -48,7 +61,7 @@ export function ImportRunner() {
       }
       setTotal(json.total)
       setLines((prev) => [...prev, ...json.lines])
-      setDone((d) => d + json.lines.filter((l: Line) => l.status !== 'skipped').length)
+      setDone((d) => d + json.lines.filter((l: Line) => !l.name.startsWith('Brendi ') && (showHideOthers ? l.status !== 'skipped' : true)).length)
       offset = json.next
       if (offset === null) setFinished(true)
     }
@@ -60,6 +73,7 @@ export function ImportRunner() {
 
   return (
     <div style={{ maxWidth: 860 }}>
+      {showHideOthers && (
       <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: '16px 0', cursor: 'pointer' }}>
         <input type="checkbox" checked={hideOthers} disabled={running} onChange={(e) => setHideOthers(e.target.checked)} style={{ marginTop: 4 }} />
         <span>
@@ -70,9 +84,10 @@ export function ImportRunner() {
           </span>
         </span>
       </label>
+      )}
 
       <button type="button" className="fk-btn" onClick={run} disabled={running}>
-        {running ? 'Duke importuar…' : finished ? 'Importo prapë' : 'Fillo importin'}
+        {running ? 'Duke importuar…' : finished ? 'Importo prapë' : startLabel}
       </button>
 
       {(running || total !== null) && (
@@ -83,7 +98,7 @@ export function ImportRunner() {
           <p style={{ marginTop: 8, color: 'var(--theme-elevation-600)' }}>
             {done} / {total ?? '…'} produkte · {count('created')} të reja · {count('updated')} të përditësuara
             {count('error') ? ` · ${count('error')} gabime` : ''}
-            {count('skipped') ? ` · ${count('skipped')} të fshehura` : ''}
+            {count('skipped') ? ` · ${count('skipped')} ${showHideOthers ? 'të fshehura' : 'ekzistonin'}` : ''}
           </p>
         </div>
       )}
@@ -109,7 +124,7 @@ export function ImportRunner() {
               {lines.map((l, i) => (
                 <tr key={i}>
                   <td>{l.name}</td>
-                  <td style={{ color: COLOR[l.status], fontWeight: 600 }}>{LABEL[l.status]}</td>
+                  <td style={{ color: COLOR[l.status], fontWeight: 600 }}>{l.status === 'skipped' ? skippedLabel : LABEL[l.status]}</td>
                   <td>{l.note}</td>
                 </tr>
               ))}
