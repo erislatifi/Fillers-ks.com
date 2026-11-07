@@ -5,7 +5,7 @@ import { Rail } from "@/components/Rail";
 import { Button } from "@/components/Button";
 import { ChevronDownIcon, ArrowRightIcon } from "@/components/icons";
 import { MediaFrame, UploadedImage, hueFromSlug } from "@/components/media";
-import { getPayloadClient } from "@/lib/payload";
+import { getPayloadClient, isPublicProduct, VISIBLE } from "@/lib/payload";
 import type { AppLocale } from "@/i18n/routing";
 import type { Where } from "payload";
 import type { Page, Product } from "@/payload-types";
@@ -113,13 +113,11 @@ function CtaSection({ block }: { block: Of<"cta"> }) {
   );
 }
 
-const VISIBLE = { visible: { not_equals: false } } as const;
-
 async function productsFor(block: Of<"productRow">, locale: AppLocale): Promise<Product[]> {
   const limit = block.limit ?? 8;
   const payload = await getPayloadClient();
   if (block.source === "manual") {
-    return (block.products ?? []).filter((p): p is Product => typeof p === "object" && p.visible !== false).slice(0, limit);
+    return (block.products ?? []).filter((p): p is Product => typeof p === "object" && isPublicProduct(p)).slice(0, limit);
   }
   const id = (rel: unknown) => (rel && typeof rel === "object" ? (rel as { id: number }).id : rel);
   const where: Where =

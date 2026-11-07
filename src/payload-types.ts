@@ -416,6 +416,10 @@ export interface Product {
  */
 export interface Brand {
   id: number;
+  /**
+   * Hiqe tikun për ta fshehur brendin pa e fshirë. Fshihen edhe produktet e tij.
+   */
+  visible?: boolean | null;
   name: string;
   /**
    * P.sh. juvederm. Vetëm shkronja të vogla, numra dhe viza.
@@ -451,6 +455,10 @@ export interface Brand {
  */
 export interface Category {
   id: number;
+  /**
+   * Hiqe tikun për ta fshehur kategorinë pa e fshirë. Fshihen edhe produktet e saj.
+   */
+  visible?: boolean | null;
   name: string;
   /**
    * Vetëm shkronja të vogla, numra dhe viza.
@@ -571,6 +579,10 @@ export interface Subscriber {
  */
 export interface Testimonial {
   id: number;
+  /**
+   * Hiqe tikun për ta fshehur vlerësimin pa e fshirë.
+   */
+  visible?: boolean | null;
   clinic: string;
   city: string;
   /**
@@ -589,6 +601,10 @@ export interface Testimonial {
  */
 export interface Article {
   id: number;
+  /**
+   * Hiqe tikun për ta ruajtur si draft — nuk shfaqet në faqe.
+   */
+  visible?: boolean | null;
   title: string;
   /**
    * Vetëm shkronja të vogla, numra dhe viza.
@@ -630,6 +646,10 @@ export interface Article {
  */
 export interface Promotion {
   id: number;
+  /**
+   * Hiqe tikun për ta ndalur ofertën pa e fshirë.
+   */
+  visible?: boolean | null;
   title: string;
   /**
    * Vetëm shkronja të vogla, numra dhe viza.
@@ -1085,6 +1105,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "brands_select".
  */
 export interface BrandsSelect<T extends boolean = true> {
+  visible?: T;
   name?: T;
   slug?: T;
   origin?: T;
@@ -1102,6 +1123,7 @@ export interface BrandsSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  visible?: T;
   name?: T;
   slug?: T;
   description?: T;
@@ -1166,6 +1188,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
+  visible?: T;
   clinic?: T;
   city?: T;
   role?: T;
@@ -1178,6 +1201,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
+  visible?: T;
   title?: T;
   slug?: T;
   excerpt?: T;
@@ -1193,6 +1217,7 @@ export interface ArticlesSelect<T extends boolean = true> {
  * via the `definition` "promotions_select".
  */
 export interface PromotionsSelect<T extends boolean = true> {
+  visible?: T;
   title?: T;
   slug?: T;
   badge?: T;

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 import { isAdminUser, isStaffUser, publicReadAdminWrite } from '../access/isAdmin'
 import { panelOnly } from '../lib/commission'
 
@@ -15,7 +15,16 @@ export const Products: CollectionConfig = {
   access: {
     ...publicReadAdminWrite,
     // Hidden products stay out of the public REST API; staff still see them.
-    read: ({ req }) => (isStaffUser(req) ? true : { visible: { not_equals: false } }),
+    read: ({ req }) =>
+      isStaffUser(req)
+        ? true
+        : ({
+            and: [
+              { visible: { not_equals: false } },
+              { 'brand.visible': { not_equals: false } },
+              { 'category.visible': { not_equals: false } },
+            ],
+          } as Where),
   },
   fields: [
     {

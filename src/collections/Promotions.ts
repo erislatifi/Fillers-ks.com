@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
+import { readVisibleOrStaff, visibleField } from '../fields/visible'
 
 export const Promotions: CollectionConfig = {
   slug: 'promotions',
@@ -8,10 +9,12 @@ export const Promotions: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Përmbajtja',
     hidden: hiddenForAgents,
+    defaultColumns: ['title', 'slug', 'visible'],
     description: 'Ofertat dhe paketat që shfaqen në Ballinë dhe te faqja “Promocione”.',
   },
-  access: publicReadAdminWrite,
+  access: { ...publicReadAdminWrite, read: readVisibleOrStaff },
   fields: [
+    visibleField('Hiqe tikun për ta ndalur ofertën pa e fshirë.'),
     {
       type: 'row',
       fields: [

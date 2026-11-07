@@ -1,9 +1,19 @@
 import config from "@payload-config";
-import { getPayload, type Payload } from "payload";
+import { getPayload, type Payload, type Where } from "payload";
 import type { AppLocale } from "@/i18n/routing";
 
-// Products unticked as "I dukshëm në faqe" in the admin never reach the public site.
-const VISIBLE = { visible: { not_equals: false } } as const;
+// Anything unticked as "I dukshëm në faqe" in the admin never reaches the public site.
+// A product is also hidden when its brand or category is hidden.
+const SHOWN: Where = { visible: { not_equals: false } };
+export const VISIBLE: Where = {
+  and: [SHOWN, { "brand.visible": { not_equals: false } }, { "category.visible": { not_equals: false } }],
+};
+
+/** Same rule as VISIBLE, for a product already loaded with depth ≥ 1. */
+export function isPublicProduct(p: { visible?: boolean | null; brand?: unknown; category?: unknown }) {
+  const hidden = (rel: unknown) => typeof rel === "object" && rel !== null && (rel as { visible?: boolean | null }).visible === false;
+  return p.visible !== false && !hidden(p.brand) && !hidden(p.category);
+}
 
 let payloadPromise: Promise<Payload> | null = null;
 
@@ -19,6 +29,7 @@ export async function getBrands(locale: AppLocale) {
   const result = await payload.find({
     collection: "brands",
     locale,
+    where: SHOWN,
     limit: 100,
     depth: 1,
   });
@@ -30,6 +41,7 @@ export async function getCategories(locale: AppLocale) {
   const result = await payload.find({
     collection: "categories",
     locale,
+    where: SHOWN,
     limit: 50,
   });
   return result.docs;
@@ -39,6 +51,7 @@ export async function getCategoryProductCounts() {
   const payload = await getPayloadClient();
   const categories = await payload.find({
     collection: "categories",
+    where: SHOWN,
     limit: 50,
   });
   const counts: Record<string, number> = {};
@@ -71,6 +84,7 @@ export async function getTestimonials(locale: AppLocale) {
   const result = await payload.find({
     collection: "testimonials",
     locale,
+    where: SHOWN,
     limit: 20,
   });
   return result.docs;
@@ -81,6 +95,7 @@ export async function getArticles(locale: AppLocale) {
   const result = await payload.find({
     collection: "articles",
     locale,
+    where: SHOWN,
     limit: 20,
   });
   return result.docs;
@@ -91,6 +106,7 @@ export async function getPromotions(locale: AppLocale) {
   const result = await payload.find({
     collection: "promotions",
     locale,
+    where: SHOWN,
     limit: 10,
   });
   return result.docs;
@@ -111,7 +127,7 @@ export async function getBrandBySlug(slug: string, locale: AppLocale) {
   const result = await payload.find({
     collection: "brands",
     locale,
-    where: { slug: { equals: slug } },
+    where: { and: [{ slug: { equals: slug } }, SHOWN] },
     limit: 1,
     depth: 1,
   });
@@ -135,7 +151,7 @@ export async function getCategoryBySlug(slug: string, locale: AppLocale) {
   const result = await payload.find({
     collection: "categories",
     locale,
-    where: { slug: { equals: slug } },
+    where: { and: [{ slug: { equals: slug } }, SHOWN] },
     limit: 1,
   });
   return result.docs[0] ?? null;
@@ -146,7 +162,7 @@ export async function getArticleBySlug(slug: string, locale: AppLocale) {
   const result = await payload.find({
     collection: "articles",
     locale,
-    where: { slug: { equals: slug } },
+    where: { and: [{ slug: { equals: slug } }, SHOWN] },
     limit: 1,
   });
   return result.docs[0] ?? null;

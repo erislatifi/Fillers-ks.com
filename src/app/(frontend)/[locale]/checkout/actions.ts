@@ -1,7 +1,7 @@
 "use server";
 
 import { after } from "next/server";
-import { getPayloadClient } from "@/lib/payload";
+import { getPayloadClient, isPublicProduct } from "@/lib/payload";
 import { quoteShipping } from "@/lib/shipping";
 import { COUNTRY_CODES, HOME_COUNTRY } from "@/lib/countries";
 import { emailNewOrder } from "@/lib/email";
@@ -92,7 +92,7 @@ export async function submitOrder(input: CheckoutInput): Promise<CheckoutResult>
         const quantity = Math.floor(Number(item.quantity));
         if (
           !product ||
-          product.visible === false ||
+          !isPublicProduct(product) ||
           product.quoteOnly ||
           product.stockStatus === "out_of_stock" ||
           !(quantity >= 1 && quantity <= 999)

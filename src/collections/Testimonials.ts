@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
+import { readVisibleOrStaff, visibleField } from '../fields/visible'
 
 export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
@@ -8,10 +9,12 @@ export const Testimonials: CollectionConfig = {
     useAsTitle: 'clinic',
     group: 'Përmbajtja',
     hidden: hiddenForAgents,
+    defaultColumns: ['clinic', 'city', 'visible'],
     description: 'Fjalët e klinikave partnere që shfaqen në Ballinë.',
   },
-  access: publicReadAdminWrite,
+  access: { ...publicReadAdminWrite, read: readVisibleOrStaff },
   fields: [
+    visibleField('Hiqe tikun për ta fshehur vlerësimin pa e fshirë.'),
     {
       type: 'row',
       fields: [

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
+import { readVisibleOrStaff, visibleField } from '../fields/visible'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 export const Articles: CollectionConfig = {
@@ -9,10 +10,12 @@ export const Articles: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Përmbajtja',
     hidden: hiddenForAgents,
+    defaultColumns: ['title', 'slug', 'visible'],
     description: 'Artikujt e seksionit mësimor për profesionistët.',
   },
-  access: publicReadAdminWrite,
+  access: { ...publicReadAdminWrite, read: readVisibleOrStaff },
   fields: [
+    visibleField('Hiqe tikun për ta ruajtur si draft — nuk shfaqet në faqe.'),
     {
       type: 'row',
       fields: [

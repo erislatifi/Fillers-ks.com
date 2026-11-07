@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { publicReadAdminWrite, hiddenForAgents } from '../access/isAdmin'
+import { readVisibleOrStaff, visibleField } from '../fields/visible'
 
 export const Brands: CollectionConfig = {
   slug: 'brands',
@@ -8,10 +9,12 @@ export const Brands: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Katalogu',
     hidden: hiddenForAgents,
+    defaultColumns: ['name', 'slug', 'visible'],
     description: 'Brendet që shpërndan — shfaqen në Ballinë, në faqen e brendeve dhe në filtrat e katalogut.',
   },
-  access: publicReadAdminWrite,
+  access: { ...publicReadAdminWrite, read: readVisibleOrStaff },
   fields: [
+    visibleField('Hiqe tikun për ta fshehur brendin pa e fshirë. Fshihen edhe produktet e tij.'),
     {
       type: 'row',
       fields: [
