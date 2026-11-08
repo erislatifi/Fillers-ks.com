@@ -16,6 +16,13 @@ export const Brands: CollectionConfig = {
   fields: [
     visibleField('Hiqe tikun për ta fshehur brendin pa e fshirë. Fshihen edhe produktet e tij.'),
     {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Shfaqe në ballinë',
+      admin: { position: 'sidebar', description: 'Logoja del te shiriti i brendeve në ballinë. Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.' },
+    },
+    {
       type: 'row',
       fields: [
         { name: 'name', type: 'text', required: true, label: 'Emri i brendit' },

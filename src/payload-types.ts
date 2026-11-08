@@ -420,6 +420,10 @@ export interface Brand {
    * Hiqe tikun për ta fshehur brendin pa e fshirë. Fshihen edhe produktet e tij.
    */
   visible?: boolean | null;
+  /**
+   * Logoja del te shiriti i brendeve në ballinë. Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.
+   */
+  featured?: boolean | null;
   name: string;
   /**
    * P.sh. juvederm. Vetëm shkronja të vogla, numra dhe viza.
@@ -1106,6 +1110,7 @@ export interface ProductsSelect<T extends boolean = true> {
  */
 export interface BrandsSelect<T extends boolean = true> {
   visible?: T;
+  featured?: T;
   name?: T;
   slug?: T;
   origin?: T;
