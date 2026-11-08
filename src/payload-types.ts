@@ -421,7 +421,7 @@ export interface Brand {
    */
   visible?: boolean | null;
   /**
-   * Logoja del te shiriti i brendeve në ballinë. Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.
+   * Logoja del te shiriti i brendeve në ballinë (pajisjet edhe te seksioni Pajisjet). Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.
    */
   featured?: boolean | null;
   name: string;
