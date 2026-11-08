@@ -20,7 +20,7 @@ export const Brands: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
       label: 'Shfaqe në ballinë',
-      admin: { position: 'sidebar', description: 'Logoja del te shiriti i brendeve në ballinë. Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.' },
+      admin: { position: 'sidebar', description: 'Logoja del te shiriti i brendeve në ballinë (pajisjet edhe te seksioni Pajisjet). Hiqe tikun për brendet jo kryesore — brendi mbetet në faqe dhe te Brendet.' },
     },
     {
       type: 'row',

@@ -1,6 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { SectionHeading } from "@/components/SectionHeading";
 import { MediaFrame, DeviceGlyph, logoUrl } from "@/components/media";
 import { ArrowRightIcon } from "@/components/icons";
 import type { Brand } from "@/payload-types";
@@ -24,79 +23,84 @@ const factsBySlug: Record<string, { sq: string[]; en: string[] }> = {
 
 const huesBySlug: Record<string, number> = { jeisys: 40, clarius: 30 };
 
+/**
+ * Homepage "Pajisjet": compact — the heading sits beside small partner cards instead of
+ * above two big ones. Brands with a logo first; a light sweep runs across a card on hover.
+ */
 export async function DeviceSpotlight({ devices, heading }: Props) {
   const t = await getTranslations("devices");
   const locale = (await getLocale()) as "sq" | "en";
+  const shown = devices.filter((d) => d.featured !== false).sort(
+    (a, b) => Number(!logoUrl(a.logo)) - Number(!logoUrl(b.logo)) || a.name.localeCompare(b.name),
+  );
+  if (shown.length === 0) return null;
 
   return (
-    <section className="bg-paper py-20 sm:py-28">
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
-          <SectionHeading
-            eyebrow={(heading?.eyebrow || t("eyebrow"))}
-            title={(heading?.title || t("title"))}
-            description={(heading?.description || t("description"))}
-          />
+    <section className="bg-paper py-14 sm:py-20">
+      <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:px-10">
+        <div>
+          <span className="mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-deep">
+            <span className="h-px w-6 bg-accent-deep/60" />
+            {heading?.eyebrow || t("eyebrow")}
+          </span>
+          <h2 className="font-display text-2xl leading-tight tracking-tight text-ink text-balance sm:text-[32px]">
+            {heading?.title || t("title")}
+          </h2>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{heading?.description || t("description")}</p>
           <Link
             href="/category/lasers-devices"
-            className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-accent-deep link-underline shrink-0"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-accent-deep link-underline"
           >
             {t("explore")} <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
 
-        <div className="mt-14 grid md:grid-cols-2 gap-6">
-          {devices.map((d) => (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {shown.map((d) => (
             <Link
               key={d.slug}
               href={`/brands/${d.slug}`}
-              className="group rounded-3xl border border-line bg-paper p-8 sm:p-10 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_24px_48px_-24px_rgba(156,22,104,0.24)]"
+              className="group relative overflow-hidden rounded-2xl border border-line bg-paper p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_20px_40px_-24px_rgba(156,22,104,0.3)] before:pointer-events-none before:absolute before:inset-y-0 before:-left-1/2 before:w-1/2 before:-skew-x-12 before:bg-gradient-to-r before:from-transparent before:via-accent/10 before:to-transparent before:opacity-0 before:transition-all before:duration-700 hover:before:left-full hover:before:opacity-100"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex h-11 items-center justify-between gap-3">
                 {logoUrl(d.logo) ? (
                   // Wordmark logos keep their own shape (a square frame would crop them).
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={logoUrl(d.logo)!} alt={d.name} className="h-14 w-auto max-w-[200px] object-contain object-left" />
+                  <img src={logoUrl(d.logo)!} alt={d.name} className="h-9 w-auto max-w-[140px] object-contain object-left" />
                 ) : (
-                  <MediaFrame hue={huesBySlug[d.slug] ?? 36} className="h-16 w-16 rounded-2xl shrink-0">
-                    <DeviceGlyph className="absolute inset-0 h-full w-full p-3 text-ink/60" />
+                  <MediaFrame hue={huesBySlug[d.slug] ?? 36} className="h-11 w-11 shrink-0 rounded-xl">
+                    <DeviceGlyph className="absolute inset-0 h-full w-full p-2 text-ink/60" />
                   </MediaFrame>
                 )}
-                <span className="mt-1 rounded-full bg-ink text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1 shrink-0">
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-2.5 py-1 text-[9.5px] font-semibold tracking-wide text-paper">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75 motion-reduce:animate-none" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                  </span>
                   {t("partnerBadge")}
                 </span>
               </div>
 
-              <h3 className="mt-6 font-display text-2xl font-semibold text-ink">{d.name}</h3>
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-ink-faint">{d.origin}</p>
-              <p className="mt-3 text-[14px] font-medium text-accent-deep">{d.tagline}</p>
-              <p className="mt-3 text-[14px] leading-relaxed text-ink-soft">{d.description}</p>
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink">{d.name}</h3>
+              <p className="mt-1 text-[13px] font-medium leading-snug text-accent-deep line-clamp-2">{d.tagline}</p>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {(factsBySlug[d.slug]?.[locale] ?? []).map((f) => (
-                  <span
-                    key={f}
-                    className="rounded-full bg-mist border border-line-soft px-3 py-1.5 text-[12px] text-ink-soft"
-                  >
-                    {f}
-                  </span>
-                ))}
-              </div>
+              {(factsBySlug[d.slug]?.[locale] ?? []).length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {factsBySlug[d.slug][locale].map((f) => (
+                    <span key={f} className="rounded-full border border-line-soft bg-mist px-2.5 py-1 text-[11px] text-ink-soft">
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              )}
 
-              <span className="mt-6 inline-flex items-center gap-1.5 text-[13px] font-medium text-ink opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+              <span className="mt-3 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink opacity-60 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-accent-deep group-hover:opacity-100">
                 {t("discover")} {d.name}
                 <ArrowRightIcon className="h-3.5 w-3.5" />
               </span>
             </Link>
           ))}
         </div>
-
-        <Link
-          href="/category/lasers-devices"
-          className="sm:hidden mt-8 inline-flex items-center gap-2 text-sm font-medium text-accent-deep"
-        >
-          {t("explore")} <ArrowRightIcon className="h-4 w-4" />
-        </Link>
       </div>
     </section>
   );
