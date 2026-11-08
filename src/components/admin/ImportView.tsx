@@ -4,6 +4,7 @@ import { DefaultTemplate } from "@payloadcms/next/templates";
 import { hasAdminRole } from "../../access/isAdmin";
 import { NEW_BRANDS, PRODUCT_MAP } from "../../lib/wordpress/catalogMap";
 import { PDF_PRODUCTS } from "../../lib/catalog/pdfList";
+import { bundledLogoSlugs } from "../../lib/catalog/brandLogos";
 import { ImportRunner } from "./ImportRunner";
 
 /** Administrimi → Importo nga WordPress (/admin/importo). Admins only. */
@@ -11,7 +12,8 @@ export function ImportView(props: AdminViewServerProps) {
   const { initPageResult, searchParams, payload } = props;
   const user = props.user ?? initPageResult.req.user ?? undefined;
   const admin = hasAdminRole(user as { collection?: string; roles?: string[] } | undefined);
-  const byCategory = Object.values(PRODUCT_MAP).reduce<Record<string, number>>((acc, p) => {
+  const logoSlugs = bundledLogoSlugs();
+  const byCategory =Object.values(PRODUCT_MAP).reduce<Record<string, number>>((acc, p) => {
     acc[p.category] = (acc[p.category] ?? 0) + 1;
     return acc;
   }, {});
@@ -60,6 +62,13 @@ export function ImportView(props: AdminViewServerProps) {
               janë tashmë në faqe nuk preken.
             </p>
             <ImportRunner endpoint="/tools/pdf-import" showHideOthers={false} skippedLabel="Ekziston" startLabel="Shto produktet e listës" />
+
+            <h2 className="fk-dash__title" style={{ fontSize: 22, marginTop: 48 }}>Logot e brendeve</h2>
+            <p className="fk-note">
+              {logoSlugs.length} logo zyrtare të marra nga faqet e brendeve ({logoSlugs.join(", ")}). Vendosen vetëm te brendet që s'kanë
+              ende logo — logot që i ke ngarkuar vetë nuk preken. Për brendet e tjera ngarko logon te Katalogu → Brendet.
+            </p>
+            <ImportRunner endpoint="/tools/logo-import" showHideOthers={false} skippedLabel="S'u prek" startLabel="Vendos logot" />
           </>
         )}
       </div>

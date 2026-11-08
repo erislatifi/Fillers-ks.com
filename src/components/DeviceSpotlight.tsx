@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { SectionHeading } from "@/components/SectionHeading";
-import { MediaFrame, DeviceGlyph, UploadedImage, mediaUrl } from "@/components/media";
+import { MediaFrame, DeviceGlyph, logoUrl } from "@/components/media";
 import { ArrowRightIcon } from "@/components/icons";
 import type { Brand } from "@/payload-types";
 import type { SectionText } from "@/lib/homepage";
@@ -53,13 +53,15 @@ export async function DeviceSpotlight({ devices, heading }: Props) {
               className="group rounded-3xl border border-line bg-paper p-8 sm:p-10 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_24px_48px_-24px_rgba(156,22,104,0.24)]"
             >
               <div className="flex items-start justify-between gap-4">
-                <MediaFrame hue={huesBySlug[d.slug] ?? 36} className="h-16 w-16 rounded-2xl shrink-0">
-                  {mediaUrl(d.logo) ? (
-                    <UploadedImage media={d.logo} className="p-2 object-contain" />
-                  ) : (
+                {logoUrl(d.logo) ? (
+                  // Wordmark logos keep their own shape (a square frame would crop them).
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoUrl(d.logo)!} alt={d.name} className="h-14 w-auto max-w-[200px] object-contain object-left" />
+                ) : (
+                  <MediaFrame hue={huesBySlug[d.slug] ?? 36} className="h-16 w-16 rounded-2xl shrink-0">
                     <DeviceGlyph className="absolute inset-0 h-full w-full p-3 text-ink/60" />
-                  )}
-                </MediaFrame>
+                  </MediaFrame>
+                )}
                 <span className="mt-1 rounded-full bg-ink text-paper text-[10px] font-semibold tracking-wide px-2.5 py-1 shrink-0">
                   {t("partnerBadge")}
                 </span>

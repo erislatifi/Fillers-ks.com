@@ -11,7 +11,7 @@ import { getBrands, getCategories, getSiteSettings } from "@/lib/payload";
 import { getFooterPages } from "@/lib/pages";
 import { getMenus } from "@/lib/navigation";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
-import { mediaUrl } from "@/components/media";
+import { logoUrl as originalLogoUrl } from "@/components/media";
 import "../globals.css";
 
 const inter = Inter({
@@ -72,7 +72,7 @@ export default async function RootLayout({ children, params }: Props) {
     getMenus(appLocale),
   ]);
   const { contactPhone, contactEmail, tagline, topBarNotice, englishEnabled } = siteSettings;
-  const logoUrl = mediaUrl(siteSettings.logo);
+  const logoUrl = originalLogoUrl(siteSettings.logo);
 
   return (
     <html

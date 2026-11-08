@@ -15,6 +15,15 @@ export function mediaUrl(media: number | Media | null | undefined): string | nul
   return media.sizes?.card?.url || media.url || null;
 }
 
+/**
+ * The original upload, uncropped. For logos: the generated sizes are cropped to portrait
+ * (card = 800×1000, centre), which cuts wide wordmarks.
+ */
+export function logoUrl(media: number | Media | null | undefined): string | null {
+  if (!media || typeof media === "number") return null;
+  return media.url || null;
+}
+
 /** Fills its parent with an uploaded image — use inside a relatively-positioned MediaFrame. */
 export function UploadedImage({
   media,
@@ -86,20 +95,25 @@ export function DeviceGlyph({ className = "" }: { className?: string }) {
   );
 }
 
-/** Circular brand mark: shows the uploaded logo if present, else initials. */
+/**
+ * Brand mark: the uploaded logo at its natural (usually wide) shape, else initials in a circle.
+ * Logos are wordmarks, so they never go inside the small circle — they'd be cropped.
+ */
 export function BrandBadge({
   name,
   logo,
   className = "flex h-12 w-12 items-center justify-center rounded-full bg-mist text-[13px] font-display font-semibold text-accent-deep overflow-hidden",
+  logoClassName = "h-10 w-auto max-w-[110px] object-contain object-left",
 }: {
   name: string;
   logo?: number | Media | null;
   className?: string;
+  logoClassName?: string;
 }) {
-  const url = mediaUrl(logo);
+  const url = logoUrl(logo);
   if (url) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={url} alt={name} className={`${className} object-contain p-1.5`} />;
+    return <img src={url} alt={name} className={logoClassName} />;
   }
   return <span className={className}>{name.slice(0, 2).toUpperCase()}</span>;
 }

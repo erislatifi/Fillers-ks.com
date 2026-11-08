@@ -48,6 +48,7 @@ export default async function BrandPage({ params }: Props) {
             <BrandBadge
               name={brand.name}
               logo={brand.logo}
+              logoClassName="h-16 w-auto max-w-[220px] object-contain object-left shrink-0"
               className="flex h-16 w-16 items-center justify-center rounded-2xl bg-paper border border-line text-xl font-display font-semibold text-accent-deep shrink-0 overflow-hidden"
             />
             <div>
