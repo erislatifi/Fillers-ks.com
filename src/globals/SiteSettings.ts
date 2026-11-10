@@ -235,7 +235,20 @@ export const SiteSettings: GlobalConfig = {
                   type: 'upload',
                   relationTo: 'media',
                   label: 'Logoja',
-                  admin: { description: 'Zëvendëson logon standarde lart dhe poshtë. Më mirë PNG/SVG me sfond transparent.' },
+                  admin: {
+                    description:
+                      'Bosh = gjysmëhëna e Fillers + emri. Nëse ngarkon logo: PNG/SVG me sfond transparent dhe PA hapësirë bosh përreth (përndryshe del e vogël).',
+                  },
+                },
+                {
+                  name: 'favicon',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Ikona në tab-in e browser-it',
+                  admin: {
+                    description:
+                      'Ikona e vogël lart në Chrome (favicon). Foto katrore, p.sh. 512×512 PNG. Bosh = gjysmëhëna e Fillers. Browser-i mund ta tregojë të renë pas disa minutash.',
+                  },
                 },
                 {
                   name: 'englishEnabled',

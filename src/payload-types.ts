@@ -1756,9 +1756,13 @@ export interface SiteSetting {
     linkHref?: string | null;
   };
   /**
-   * Zëvendëson logon standarde lart dhe poshtë. Më mirë PNG/SVG me sfond transparent.
+   * Bosh = gjysmëhëna e Fillers + emri. Nëse ngarkon logo: PNG/SVG me sfond transparent dhe PA hapësirë bosh përreth (përndryshe del e vogël).
    */
   logo?: (number | null) | Media;
+  /**
+   * Ikona e vogël lart në Chrome (favicon). Foto katrore, p.sh. 512×512 PNG. Bosh = gjysmëhëna e Fillers. Browser-i mund ta tregojë të renë pas disa minutash.
+   */
+  favicon?: (number | null) | Media;
   /**
    * Hiqe tikun për ta fshehur butonin SQ/EN. Faqja kryesore mbetet në shqip.
    */
@@ -2016,6 +2020,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         linkHref?: T;
       };
   logo?: T;
+  favicon?: T;
   englishEnabled?: T;
   tagline?: T;
   topBarNotice?: T;

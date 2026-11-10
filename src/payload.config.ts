@@ -74,6 +74,7 @@ export default buildConfig({
     theme: 'light',
     meta: {
       titleSuffix: ' · Fillers Kosovo',
+      icons: [{ rel: 'icon', type: 'image/png', url: '/brand/icon-32.png' }],
     },
     importMap: {
       baseDir: path.resolve(dirname),
