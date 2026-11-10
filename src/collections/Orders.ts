@@ -128,10 +128,60 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
+      type: 'row',
+      admin: { position: 'sidebar' },
+      fields: [
+        {
+          name: 'discountPercent',
+          type: 'number',
+          min: 0,
+          max: 100,
+          label: 'Zbritja (%)',
+          admin: { description: 'E dhënë nga agjenti (deri në kufirin e tij).' },
+        },
+        { name: 'discountAmount', type: 'number', min: 0, label: 'Zbritja (€)', admin: { readOnly: true } },
+      ],
+    },
+    {
       name: 'total',
       type: 'number',
       label: 'Totali për pagesë (€)',
-      admin: { position: 'sidebar', description: 'Produktet + transporti.' },
+      admin: { position: 'sidebar', description: 'Produktet − zbritja + transporti.' },
+    },
+    {
+      name: 'source',
+      type: 'select',
+      defaultValue: 'website',
+      label: 'Burimi',
+      admin: { position: 'sidebar', readOnly: true },
+      options: [
+        { label: 'Faqja (shporta)', value: 'website' },
+        { label: 'Tableti i agjentit', value: 'agent_tablet' },
+      ],
+    },
+    {
+      name: 'visit',
+      type: 'relationship',
+      relationTo: 'visits',
+      label: 'Vizita',
+      access: { read: panelOnly },
+      admin: { position: 'sidebar', readOnly: true, condition: (data) => Boolean(data?.visit) },
+    },
+    {
+      type: 'row',
+      admin: { position: 'sidebar', condition: (data) => Boolean(data?.signature) },
+      fields: [
+        { name: 'signature', type: 'upload', relationTo: 'media', label: 'Nënshkrimi i klinikës', admin: { readOnly: true } },
+        { name: 'signedBy', type: 'text', label: 'Nënshkroi', admin: { readOnly: true } },
+      ],
+    },
+    {
+      // Set by the agent's tablet so an order synced twice (offline retries) is stored once.
+      name: 'clientId',
+      type: 'text',
+      unique: true,
+      index: true,
+      admin: { hidden: true },
     },
     {
       // Set server-side at checkout when the clinic is logged in; empty for guest orders.

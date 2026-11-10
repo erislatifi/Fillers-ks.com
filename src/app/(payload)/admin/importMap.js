@@ -1,4 +1,6 @@
 import { OrderPrintButtons as OrderPrintButtons_e7bec9983e50ee9cc6ed0f4179a15ff8 } from '../../../components/admin/OrderPrintButtons'
+import { MapLink as MapLink_90a69178f2700727dad211b20bdde887 } from '../../../components/admin/MapLink'
+import { MapLinkCell as MapLinkCell_90a69178f2700727dad211b20bdde887 } from '../../../components/admin/MapLink'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -39,6 +41,8 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 /** @type import('payload').ImportMap */
 export const importMap = {
   "./components/admin/OrderPrintButtons#OrderPrintButtons": OrderPrintButtons_e7bec9983e50ee9cc6ed0f4179a15ff8,
+  "./components/admin/MapLink#MapLink": MapLink_90a69178f2700727dad211b20bdde887,
+  "./components/admin/MapLink#MapLinkCell": MapLinkCell_90a69178f2700727dad211b20bdde887,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,

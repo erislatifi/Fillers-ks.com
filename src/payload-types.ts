@@ -69,6 +69,8 @@ export interface Config {
   blocks: {};
   collections: {
     orders: Order;
+    visits: Visit;
+    'agent-locations': AgentLocation;
     customers: Customer;
     'commission-payouts': CommissionPayout;
     'contact-messages': ContactMessage;
@@ -87,9 +89,15 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    visits: {
+      orders: 'orders';
+    };
+  };
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    visits: VisitsSelect<false> | VisitsSelect<true>;
+    'agent-locations': AgentLocationsSelect<false> | AgentLocationsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     'commission-payouts': CommissionPayoutsSelect<false> | CommissionPayoutsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
@@ -191,9 +199,19 @@ export interface Order {
    */
   shippingCost?: number | null;
   /**
-   * Produktet + transporti.
+   * E dhënë nga agjenti (deri në kufirin e tij).
+   */
+  discountPercent?: number | null;
+  discountAmount?: number | null;
+  /**
+   * Produktet − zbritja + transporti.
    */
   total?: number | null;
+  source?: ('website' | 'agent_tablet') | null;
+  visit?: (number | null) | Visit;
+  signature?: (number | null) | Media;
+  signedBy?: string | null;
+  clientId?: string | null;
   /**
    * Bosh nëse porosia u bë pa llogari.
    */
@@ -265,6 +283,80 @@ export interface Order {
   createdAt: string;
 }
 /**
+ * Vizitat e agjentëve te klinikat — të planifikuara dhe të kryera nga tableti (/agjent).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "visits".
+ */
+export interface Visit {
+  id: number;
+  clinicName: string;
+  status?: ('planned' | 'in_progress' | 'done' | 'cancelled') | null;
+  agent: number | User;
+  customer?: (number | null) | Customer;
+  scheduledAt?: string | null;
+  checkInAt?: string | null;
+  checkOutAt?: string | null;
+  interest?: ('low' | 'medium' | 'high') | null;
+  nextVisitAt?: string | null;
+  notes?: string | null;
+  checkInLat?: number | null;
+  checkInLng?: number | null;
+  orders?: {
+    docs?: (number | Order)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  clientId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Njerëzit që kanë qasje në këtë panel: administratorët, redaktorët dhe agjentët e shitjes.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  /**
+   * Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa shitjet. Agjent shitjeje: vetëm porositë, klinikat dhe komisioni i vet.
+   */
+  roles?: ('admin' | 'editor' | 'agent')[] | null;
+  fullName?: string | null;
+  phone?: string | null;
+  /**
+   * Vetëm shkronja/numra, p.sh. ARBEN. Lidhja personale: shop-fillers-ks.com/sq?ref=ARBEN — kush porosit pas saj i shkon këtij agjenti.
+   */
+  agentCode?: string | null;
+  /**
+   * Vlen për produktet që s’kanë përqindjen e tyre.
+   */
+  defaultCommissionRate?: number | null;
+  /**
+   * Sa zbritje guxon me dhënë agjenti në një porosi nga tableti. 0 = asnjë.
+   */
+  maxDiscountPercent?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
  * Klinikat që janë regjistruar vetë në faqe. Porositë e tyre lidhen me llogarinë.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -305,45 +397,54 @@ export interface Customer {
   collection: 'customers';
 }
 /**
- * Njerëzit që kanë qasje në këtë panel: administratorët, redaktorët dhe agjentët e shitjes.
+ * Biblioteka e fotove — ngarko këtu një herë, pastaj zgjidhi te produktet, brendet dhe artikujt.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "media".
  */
-export interface User {
+export interface Media {
   id: number;
   /**
-   * Administrator: gjithçka. Redaktor: produktet, brendet, faqet, ballina dhe përmbajtja — pa shitjet. Agjent shitjeje: vetëm porositë, klinikat dhe komisioni i vet.
+   * Shkruaj shkurt çfarë shihet në foto — ndihmon Google-in dhe përdoruesit me lexues ekrani.
    */
-  roles?: ('admin' | 'editor' | 'agent')[] | null;
-  fullName?: string | null;
-  phone?: string | null;
-  /**
-   * Vetëm shkronja/numra, p.sh. ARBEN. Lidhja personale: shop-fillers-ks.com/sq?ref=ARBEN — kush porosit pas saj i shkon këtij agjenti.
-   */
-  agentCode?: string | null;
-  /**
-   * Vlen për produktet që s’kanë përqindjen e tyre.
-   */
-  defaultCommissionRate?: number | null;
+  alt: string;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.
@@ -477,54 +578,23 @@ export interface Category {
   createdAt: string;
 }
 /**
- * Biblioteka e fotove — ngarko këtu një herë, pastaj zgjidhi te produktet, brendet dhe artikujt.
+ * Ku kanë qenë agjentët (GPS nga tableti, çdo 15 minuta kur aplikacioni është i hapur).
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "agent-locations".
  */
-export interface Media {
+export interface AgentLocation {
   id: number;
-  /**
-   * Shkruaj shkurt çfarë shihet në foto — ndihmon Google-in dhe përdoruesit me lexues ekrani.
-   */
-  alt: string;
+  agent: number | User;
+  recordedAt: string;
+  kind?: ('interval' | 'check_in' | 'check_out') | null;
+  lat: number;
+  lng: number;
+  accuracy?: number | null;
+  visit?: (number | null) | Visit;
+  clientId?: string | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    hero?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * Kur ia paguan komisionin një agjenti për një muaj, shënoje këtu — raporti e tregon muajin si të paguar.
@@ -849,6 +919,14 @@ export interface PayloadLockedDocument {
         value: number | Order;
       } | null)
     | ({
+        relationTo: 'visits';
+        value: number | Visit;
+      } | null)
+    | ({
+        relationTo: 'agent-locations';
+        value: number | AgentLocation;
+      } | null)
+    | ({
         relationTo: 'customers';
         value: number | Customer;
       } | null)
@@ -963,7 +1041,14 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentMethod?: T;
   subtotal?: T;
   shippingCost?: T;
+  discountPercent?: T;
+  discountAmount?: T;
   total?: T;
+  source?: T;
+  visit?: T;
+  signature?: T;
+  signedBy?: T;
+  clientId?: T;
   customer?: T;
   agent?: T;
   commissionTotal?: T;
@@ -1011,6 +1096,44 @@ export interface OrdersSelect<T extends boolean = true> {
         commission?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "visits_select".
+ */
+export interface VisitsSelect<T extends boolean = true> {
+  clinicName?: T;
+  status?: T;
+  agent?: T;
+  customer?: T;
+  scheduledAt?: T;
+  checkInAt?: T;
+  checkOutAt?: T;
+  interest?: T;
+  nextVisitAt?: T;
+  notes?: T;
+  checkInLat?: T;
+  checkInLng?: T;
+  orders?: T;
+  clientId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agent-locations_select".
+ */
+export interface AgentLocationsSelect<T extends boolean = true> {
+  agent?: T;
+  recordedAt?: T;
+  kind?: T;
+  lat?: T;
+  lng?: T;
+  accuracy?: T;
+  visit?: T;
+  clientId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1341,6 +1464,7 @@ export interface UsersSelect<T extends boolean = true> {
   phone?: T;
   agentCode?: T;
   defaultCommissionRate?: T;
+  maxDiscountPercent?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

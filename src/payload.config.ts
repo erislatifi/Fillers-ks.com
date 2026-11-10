@@ -16,6 +16,8 @@ import { Testimonials } from './collections/Testimonials'
 import { Articles } from './collections/Articles'
 import { Promotions } from './collections/Promotions'
 import { Orders } from './collections/Orders'
+import { Visits } from './collections/Visits'
+import { AgentLocations } from './collections/AgentLocations'
 import { Customers } from './collections/Customers'
 import { Pages } from './collections/Pages'
 import { ContactMessages } from './collections/ContactMessages'
@@ -103,7 +105,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Orders, Customers, CommissionPayouts, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
+  collections: [Orders, Visits, AgentLocations, Customers, CommissionPayouts, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
   globals: [Homepage, Navigation, SiteTexts, SiteSettings],
   localization: {
     locales: ['sq', 'en'],

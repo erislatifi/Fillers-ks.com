@@ -60,6 +60,10 @@ export const applyCommission: CollectionBeforeChangeHook = async ({ data, origin
     }
   }
 
+  // Commission is paid on what the clinic actually pays: a discount lowers it proportionally.
+  const discountPercent = Number(data.discountPercent ?? originalDoc?.discountPercent ?? 0) || 0
+  const factor = Math.min(1, Math.max(0, 1 - discountPercent / 100))
+
   let total = 0
   data.items = items.map((item) => {
     let rate = agentChanged ? null : item.commissionRate ?? null
@@ -67,7 +71,7 @@ export const applyCommission: CollectionBeforeChangeHook = async ({ data, origin
       const productId = relId(item.product)
       rate = (productId !== null ? productRates.get(productId) : null) ?? agentRate ?? defaultRate
     }
-    const commission = round2(((item.price ?? 0) * (item.quantity ?? 0) * rate) / 100)
+    const commission = round2(((item.price ?? 0) * (item.quantity ?? 0) * factor * rate) / 100)
     total += commission
     return { ...item, commissionRate: rate, commission }
   })
