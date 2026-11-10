@@ -260,11 +260,46 @@ export const SiteSettings: GlobalConfig = {
               ],
             },
             {
-              name: 'tagline',
-              type: 'text',
-              localized: true,
-              label: 'Slogani nën logo',
-              admin: { description: 'Standard: "Ndriço me ne!"' },
+              type: 'row',
+              fields: [
+                {
+                  name: 'logoSize',
+                  type: 'select',
+                  defaultValue: 'medium',
+                  label: 'Madhësia e logos',
+                  options: [
+                    { label: 'E vogël', value: 'small' },
+                    { label: 'Mesatare', value: 'medium' },
+                    { label: 'E madhe', value: 'large' },
+                  ],
+                  admin: { description: 'Lart në header dhe poshtë në footer.' },
+                },
+                {
+                  name: 'logoText',
+                  type: 'checkbox',
+                  defaultValue: true,
+                  label: 'Shfaq emrin dhe sloganin pranë gjysmëhënës',
+                  admin: { description: 'Vlen kur s’ke ngarkuar logo. Hiqe tikun për vetëm gjysmëhënën.' },
+                },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'brandName',
+                  type: 'text',
+                  label: 'Emri pranë logos',
+                  admin: { description: 'Standard: "Fillers"' },
+                },
+                {
+                  name: 'tagline',
+                  type: 'text',
+                  localized: true,
+                  label: 'Slogani nën logo',
+                  admin: { description: 'Standard: "Ndriço me ne!"' },
+                },
+              ],
             },
             {
               name: 'topBarNotice',

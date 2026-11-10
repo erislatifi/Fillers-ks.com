@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Brand, Category, SiteSetting } from "@/payload-types";
-import { BrandMark } from "@/components/BrandMark";
+import { SiteLogo } from "@/components/SiteLogo";
 import { InstagramIcon, FacebookIcon, LinkedinIcon, ShieldCheckIcon } from "@/components/icons";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { logoUrl } from "@/components/media";
@@ -34,22 +34,16 @@ export async function Footer({ brands, categories, siteSettings, footerPages, co
         <div className="grid gap-12 lg:grid-cols-[1.3fr_0.9fr_0.9fr_0.9fr_1.1fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              {logoUrl(siteSettings.logo) ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoUrl(siteSettings.logo)!} alt="Fillers Kosovo" className="h-10 w-auto max-w-[180px] object-contain" />
-              ) : (
-              <>
-              <BrandMark className="h-8 w-auto" />
-              <span className="flex flex-col leading-none">
-                <span className="font-display text-lg tracking-[0.01em] font-semibold text-paper">
-                  Fillers
-                </span>
-                <span className="text-[10px] tracking-wide text-paper/45 -mt-0.5">
-                  {siteSettings.tagline || "Ndriço me ne!"}
-                </span>
-              </span>
-              </>
-              )}
+              <SiteLogo
+                variant="footer"
+                settings={{
+                  logoUrl: logoUrl(siteSettings.logo),
+                  logoSize: siteSettings.logoSize,
+                  logoText: siteSettings.logoText,
+                  brandName: siteSettings.brandName,
+                  tagline: siteSettings.tagline,
+                }}
+              />
             </div>
             <p className="mt-5 max-w-xs text-[13.5px] leading-relaxed">
               {siteSettings.footerDescription || t("tagline")}

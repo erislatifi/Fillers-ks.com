@@ -15159,6 +15159,27 @@
           "notNull": false,
           "default": true
         },
+        "logo_size": {
+          "name": "logo_size",
+          "type": "enum_site_settings_logo_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'medium'"
+        },
+        "logo_text": {
+          "name": "logo_text",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "brand_name": {
+          "name": "brand_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "bank_details_bank_name": {
           "name": "bank_details_bank_name",
           "type": "varchar",
@@ -15788,6 +15809,15 @@
         "facebook",
         "linkedin"
       ]
+    },
+    "public.enum_site_settings_logo_size": {
+      "name": "enum_site_settings_logo_size",
+      "schema": "public",
+      "values": [
+        "small",
+        "medium",
+        "large"
+      ]
     }
   },
   "schemas": {},
@@ -15800,6 +15830,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "890b879c-b41a-4089-b21a-fa7cba66bc1e",
+  "id": "cb8584a2-a3d0-4567-9ec5-b186861327bc",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

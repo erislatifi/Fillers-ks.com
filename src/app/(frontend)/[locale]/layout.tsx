@@ -83,7 +83,7 @@ export default async function RootLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
             <AnnouncementBar announcement={siteSettings.announcement} />
-            <Header brands={brands} categories={categories} menu={{ items: menus.header, showWishlist: menus.showWishlist }} contact={{ contactPhone, contactEmail, tagline, topBarNotice, englishEnabled, logoUrl }} />
+            <Header brands={brands} categories={categories} menu={{ items: menus.header, showWishlist: menus.showWishlist }} contact={{ contactPhone, contactEmail, tagline, topBarNotice, englishEnabled, logoUrl, logoSize: siteSettings.logoSize, logoText: siteSettings.logoText, brandName: siteSettings.brandName }} />
             <main className="flex-1 flex flex-col">{children}</main>
             <Footer brands={brands} categories={categories} siteSettings={siteSettings} footerPages={footerPages} companyLinks={menus.footer} />
           </CartProvider>

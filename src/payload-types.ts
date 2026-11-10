@@ -1768,6 +1768,18 @@ export interface SiteSetting {
    */
   englishEnabled?: boolean | null;
   /**
+   * Lart në header dhe poshtë në footer.
+   */
+  logoSize?: ('small' | 'medium' | 'large') | null;
+  /**
+   * Vlen kur s’ke ngarkuar logo. Hiqe tikun për vetëm gjysmëhënën.
+   */
+  logoText?: boolean | null;
+  /**
+   * Standard: "Fillers"
+   */
+  brandName?: string | null;
+  /**
    * Standard: "Ndriço me ne!"
    */
   tagline?: string | null;
@@ -2022,6 +2034,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   logo?: T;
   favicon?: T;
   englishEnabled?: T;
+  logoSize?: T;
+  logoText?: T;
+  brandName?: T;
   tagline?: T;
   topBarNotice?: T;
   footerDescription?: T;
