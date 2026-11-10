@@ -1,0 +1,14 @@
+{
+  "name": "Fillers Kosovo — Agjenti",
+  "short_name": "Fillers Agjenti",
+  "start_url": "/agjent",
+  "scope": "/agjent",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f5f8",
+  "theme_color": "#14121a",
+  "icons": [
+    { "src": "/brand/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

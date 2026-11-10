@@ -64,6 +64,12 @@ export function NavTopLinks({
         </Link>
       )}
 
+      {showCommissions && (
+        <a href="/agjent" target="_blank" rel="noreferrer" className="nav__link">
+          <span className="nav__link-label">Aplikacioni i tabletit (agjentët)</span>
+        </a>
+      )}
+
       {showImport && (
         <Link
           href="/admin/importo"

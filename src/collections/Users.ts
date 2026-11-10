@@ -24,7 +24,8 @@ export const Users: CollectionConfig = {
     defaultColumns: ['email', 'fullName', 'roles', 'agentCode', 'defaultCommissionRate'],
     description: 'Njerëzit që kanë qasje në këtë panel: administratorët, redaktorët dhe agjentët e shitjes.',
   },
-  auth: true,
+  // 7 days: agents work offline on tablets all day; a 2-hour session would stop their sync.
+  auth: { tokenExpiration: 60 * 60 * 24 * 7 },
   // Staff accounts — a logged-in customer must not list or edit these.
   access: {
     admin: ({ req }) => isPanelUser(req),

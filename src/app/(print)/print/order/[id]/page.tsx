@@ -37,6 +37,10 @@ export default async function PrintOrderPage({ params, searchParams }: Props) {
   if (!admin && !agent) notFound();
 
   const order = await payload.findByID({ collection: "orders", id, depth: 0 }).catch(() => null);
+  // Clinic signature from the agent's tablet (optional).
+  const signature = order?.signature
+    ? await payload.findByID({ collection: "media", id: Number(order.signature), depth: 0 }).catch(() => null)
+    : null;
   if (!order) notFound();
   if (!admin && Number(order.agent) !== Number(user.id)) notFound();
   const settings = await payload.findGlobal({ slug: "site-settings", locale: "sq" });
@@ -147,6 +151,12 @@ export default async function PrintOrderPage({ params, searchParams }: Props) {
             <span>Produktet</span>
             <span>{eur(order.subtotal)}</span>
           </div>
+          {order.discountAmount ? (
+            <div>
+              <span>Zbritja{order.discountPercent ? ` ${order.discountPercent}%` : ""}</span>
+              <span>−{eur(order.discountAmount)}</span>
+            </div>
+          ) : null}
           <div>
             <span>Transporti</span>
             <span>{shipping == null ? "Konfirmohet" : eur(shipping)}</span>
@@ -169,6 +179,14 @@ export default async function PrintOrderPage({ params, searchParams }: Props) {
             {settings.bankDetails.swift ? ` · SWIFT: ${settings.bankDetails.swift}` : ""}
           </div>
           <div className="muted">Përshkrimi i pagesës: {order.orderNumber}</div>
+        </section>
+      )}
+
+      {signature?.url && (
+        <section className="notes">
+          <div className="label">Nënshkrimi i klinikës{order.signedBy ? ` — ${order.signedBy}` : ""}</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={signature.url} alt="Nënshkrimi" style={{ height: 90, width: "auto" }} />
         </section>
       )}
 

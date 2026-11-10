@@ -56,7 +56,7 @@ export type AgentOrderSummary = {
 };
 
 export type AgentVisit = {
-  id: number | null;
+  id?: number | null;
   clientId: string;
   customerId: number | null;
   customerClientId?: string;
