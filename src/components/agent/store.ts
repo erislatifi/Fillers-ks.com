@@ -97,10 +97,19 @@ export const sameDay = (iso: string | null | undefined, day: Date) => {
   return d.getFullYear() === day.getFullYear() && d.getMonth() === day.getMonth() && d.getDate() === day.getDate();
 };
 
-export const fmtTime = (iso: string | null | undefined) =>
-  iso ? new Date(iso).toLocaleTimeString("sq-AL", { hour: "2-digit", minute: "2-digit", hour12: false }) : "—";
+export const fmtTime = (iso: string | null | undefined) => {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return `${two(d.getHours())}:${two(d.getMinutes())}`;
+};
 
-export const fmtDate = (iso: string | null | undefined) =>
-  iso ? new Date(iso).toLocaleDateString("sq-AL", { day: "2-digit", month: "2-digit", year: "numeric" }) : "—";
+const two = (n: number) => String(n).padStart(2, "0");
+
+/** 10.11.2026 — written by hand: tablets often lack Albanian locale data. */
+export const fmtDate = (iso: string | null | undefined) => {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return `${two(d.getDate())}.${two(d.getMonth() + 1)}.${d.getFullYear()}`;
+};
 
 export const eur = (n: number) => `€${n.toFixed(2)}`;

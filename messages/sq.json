@@ -424,7 +424,9 @@
       "done": "E kryer",
       "cancelled": "E anuluar",
       "cancel": "Anulo",
-      "noUpcoming": "S'ka vizita të planifikuara."
+      "noUpcoming": "S'ka vizita të planifikuara.",
+      "weekdays": "E diel,E hënë,E martë,E mërkurë,E enjte,E premte,E shtunë",
+      "months": "janar,shkurt,mars,prill,maj,qershor,korrik,gusht,shtator,tetor,nëntor,dhjetor"
     },
     "plan": {
       "title": "Planifiko vizitë",

@@ -66,6 +66,7 @@ export function AgentApp({ agentId, agentName }: { agentId: number; agentName: s
   const stateRef = useRef(state);
   stateRef.current = state;
   const reminded = useRef(new Set<string>());
+  const syncingRef = useRef(false);
 
   // ── Persisted state ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -93,71 +94,78 @@ export function AgentApp({ agentId, agentName }: { agentId: number; agentName: s
 
   // ── Sync: every 15 min, when the internet returns, and right after an order ──
   const sync = useCallback(async () => {
-    if (!navigator.onLine || syncing) return;
+    if (!navigator.onLine || syncingRef.current) return;
+    syncingRef.current = true;
     setSyncing(true);
     const ops = stateRef.current.queue;
+    // A single 401 can be a hiccup (e.g. the server restarting): try once more before
+    // asking the agent to sign in again.
+    const call = async (input: string, init?: RequestInit) => {
+      let res = await fetch(input, { credentials: "include", cache: "no-store", ...init });
+      if (res.status === 401) {
+        await new Promise((r) => setTimeout(r, 1500));
+        res = await fetch(input, { credentials: "include", cache: "no-store", ...init });
+      }
+      if (res.status === 401) setNeedLogin(true);
+      return res;
+    };
     try {
-      let results: SyncResult[] = [];
+      // 1) Send the queue — its results are applied right away, even if step 2 fails.
       if (ops.length) {
-        const res = await fetch("/agjent/api/sync", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ops }),
-        });
-        if (res.status === 401) {
-          setNeedLogin(true);
-          throw new Error("login");
-        }
+        const res = await call("/agjent/api/sync", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ops }) });
         if (!res.ok) throw new Error(String(res.status));
-        results = ((await res.json()) as { results: SyncResult[] }).results;
+        const results = ((await res.json()) as { results: SyncResult[] }).results;
+        setState((s) => {
+          const done = new Map(results.map((r) => [r.clientId, r]));
+          // Sent ops leave the queue; ops that failed for good (not a server hiccup) too —
+          // their error is shown in "Dërguar". Ops queued during the request stay.
+          const sentIds = new Set(ops.map((o) => o.clientId));
+          const clinicIds = new Map(results.filter((r) => r.ok && r.id).map((r) => [r.clientId, r.id!]));
+          let queue = s.queue.filter((o) => !(sentIds.has(o.clientId) && done.has(o.clientId) && done.get(o.clientId)!.error !== "server-error"));
+          // Later ops that pointed at a clinic created offline now use its real id.
+          queue = queue.map((o) =>
+            (o.type === "visit" || o.type === "order") && o.data.customerClientId && clinicIds.has(o.data.customerClientId)
+              ? ({ ...o, data: { ...o.data, customerId: clinicIds.get(o.data.customerClientId) } } as SyncOp)
+              : o,
+          );
+          const localClinics = s.localClinics.map((c) => (c.clientId && clinicIds.has(c.clientId) ? { ...c, id: clinicIds.get(c.clientId)! } : c));
+          const localVisits = Object.fromEntries(
+            Object.entries(s.localVisits).map(([id, v]) => [
+              id,
+              v.customerClientId && clinicIds.has(v.customerClientId) ? { ...v, customerId: clinicIds.get(v.customerClientId)! } : v,
+            ]),
+          );
+          return {
+            ...s,
+            queue,
+            localClinics,
+            localVisits,
+            sentOrders: s.sentOrders.map((o) => (done.has(o.clientId) ? { ...o, result: done.get(o.clientId) } : o)),
+          };
+        });
       }
-      const boot = await fetch("/agjent/api/bootstrap", { credentials: "include", cache: "no-store" });
-      if (boot.status === 401) {
-        setNeedLogin(true);
-        throw new Error("login");
-      }
-      const bootstrap = boot.ok ? await boot.json() : null;
-      setNeedLogin(false);
 
+      // 2) Fresh catalogue, clinics, history and visits.
+      const boot = await call("/agjent/api/bootstrap");
+      if (!boot.ok) throw new Error(String(boot.status));
+      const bootstrap = await boot.json();
+      setNeedLogin(false);
       setState((s) => {
-        const done = new Map(results.map((r) => [r.clientId, r]));
-        // Sent ops leave the queue; ops that failed for good (not a server hiccup) too —
-        // their error is shown in "Dërguar". New ops queued during the request stay.
-        const sentIds = new Set(ops.map((o) => o.clientId));
-        const clinicIds = new Map(results.filter((r) => r.ok && r.id).map((r) => [r.clientId, r.id!]));
-        let queue = s.queue.filter((o) => !(sentIds.has(o.clientId) && done.has(o.clientId) && done.get(o.clientId)!.error !== "server-error"));
-        // Later ops that pointed at a clinic created offline now use its real id.
-        queue = queue.map((o) =>
-          (o.type === "visit" || o.type === "order") && o.data.customerClientId && clinicIds.has(o.data.customerClientId)
-            ? ({ ...o, data: { ...o.data, customerId: clinicIds.get(o.data.customerClientId) } } as SyncOp)
-            : o,
-        );
-        const pending = new Set(queue.map((o) => o.clientId));
-        const serverVisits = new Set((bootstrap?.visits ?? []).map((v: AgentVisit) => v.clientId));
+        const pending = new Set(s.queue.map((o) => o.clientId));
+        const serverVisits = new Set((bootstrap.visits ?? []).map((v: AgentVisit) => v.clientId));
         const localVisits = Object.fromEntries(
           Object.entries(s.localVisits).filter(([id]) => pending.has(id) || !serverVisits.has(id) || id === s.activeVisitId),
         );
-        const localClinics = s.localClinics
-          .map((c) => (c.clientId && clinicIds.has(c.clientId) ? { ...c, id: clinicIds.get(c.clientId)! } : c))
-          .filter((c) => c.id === null || !(bootstrap?.clinics ?? []).some((b: AgentClinic) => b.id === c.id));
-        return {
-          ...s,
-          bootstrap: bootstrap ?? s.bootstrap,
-          queue,
-          localVisits,
-          localClinics,
-          lastSyncAt: new Date().toISOString(),
-          lastSyncError: null,
-          sentOrders: s.sentOrders.map((o) => (done.has(o.clientId) ? { ...o, result: done.get(o.clientId) } : o)),
-        };
+        const localClinics = s.localClinics.filter((c) => c.id === null || !(bootstrap.clinics ?? []).some((b: AgentClinic) => b.id === c.id));
+        return { ...s, bootstrap, localVisits, localClinics, lastSyncAt: new Date().toISOString(), lastSyncError: null };
       });
     } catch (e) {
       setState((s) => ({ ...s, lastSyncError: e instanceof Error ? e.message : "error" }));
     } finally {
+      syncingRef.current = false;
       setSyncing(false);
     }
-  }, [syncing]);
+  }, []);
 
   useEffect(() => {
     if (!loaded) return;
@@ -579,7 +587,7 @@ function DayView({
 
       <section>
         <h2 className="font-display text-2xl font-semibold text-ink">
-          {t("title")} · {today.toLocaleDateString("sq-AL", { weekday: "long", day: "numeric", month: "long" })}
+          {t("title")} · {t("weekdays").split(",")[today.getDay()]}, {today.getDate()} {t("months").split(",")[today.getMonth()]}
         </h2>
         {todays.length === 0 ? (
           <p className="mt-3 rounded-2xl border border-dashed border-line bg-paper p-6 text-[16px] text-ink-soft">{t("empty")}</p>

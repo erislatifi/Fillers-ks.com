@@ -424,7 +424,9 @@
       "done": "Done",
       "cancelled": "Cancelled",
       "cancel": "Cancel",
-      "noUpcoming": "No planned visits."
+      "noUpcoming": "No planned visits.",
+      "weekdays": "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",
+      "months": "January,February,March,April,May,June,July,August,September,October,November,December"
     },
     "plan": {
       "title": "Plan a visit",
