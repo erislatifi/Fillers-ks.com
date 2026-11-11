@@ -69,9 +69,9 @@ export interface Config {
   blocks: {};
   collections: {
     orders: Order;
+    customers: Customer;
     visits: Visit;
     'agent-locations': AgentLocation;
-    customers: Customer;
     'commission-payouts': CommissionPayout;
     'contact-messages': ContactMessage;
     subscribers: Subscriber;
@@ -96,9 +96,9 @@ export interface Config {
   };
   collectionsSelect: {
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
     visits: VisitsSelect<false> | VisitsSelect<true>;
     'agent-locations': AgentLocationsSelect<false> | AgentLocationsSelect<true>;
-    customers: CustomersSelect<false> | CustomersSelect<true>;
     'commission-payouts': CommissionPayoutsSelect<false> | CommissionPayoutsSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
@@ -919,16 +919,16 @@ export interface PayloadLockedDocument {
         value: number | Order;
       } | null)
     | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
         relationTo: 'visits';
         value: number | Visit;
       } | null)
     | ({
         relationTo: 'agent-locations';
         value: number | AgentLocation;
-      } | null)
-    | ({
-        relationTo: 'customers';
-        value: number | Customer;
       } | null)
     | ({
         relationTo: 'commission-payouts';
@@ -1101,6 +1101,35 @@ export interface OrdersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  clinicName?: T;
+  fullName?: T;
+  phone?: T;
+  city?: T;
+  address?: T;
+  licenseNumber?: T;
+  agent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "visits_select".
  */
 export interface VisitsSelect<T extends boolean = true> {
@@ -1136,35 +1165,6 @@ export interface AgentLocationsSelect<T extends boolean = true> {
   clientId?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers_select".
- */
-export interface CustomersSelect<T extends boolean = true> {
-  clinicName?: T;
-  fullName?: T;
-  phone?: T;
-  city?: T;
-  address?: T;
-  licenseNumber?: T;
-  agent?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
