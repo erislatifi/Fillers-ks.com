@@ -8,7 +8,7 @@ export const ContactMessages: CollectionConfig = {
   labels: { singular: 'Mesazh', plural: 'Mesazhet' },
   admin: {
     useAsTitle: 'name',
-    group: 'Shitjet',
+    group: 'Mesazhet',
     hidden: hiddenForEditors,
     defaultColumns: ['name', 'clinicName', 'email', 'status', 'createdAt'],
     description: 'Mesazhet nga forma e kontaktit në faqe. Ndrysho statusin kur t’i përgjigjesh.',

@@ -8,7 +8,7 @@ export const AgentLocations: CollectionConfig = {
   labels: { singular: 'Lokacion', plural: 'Lokacionet e agjentëve' },
   admin: {
     useAsTitle: 'recordedAt',
-    group: 'Shitjet',
+    group: 'Agjentët',
     hidden: hiddenForNonSales,
     defaultColumns: ['agent', 'recordedAt', 'kind', 'mapLink'],
     description: 'Ku kanë qenë agjentët (GPS nga tableti, çdo 15 minuta kur aplikacioni është i hapur).',

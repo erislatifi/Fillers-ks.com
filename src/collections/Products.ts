@@ -1,5 +1,5 @@
 import type { CollectionConfig, Where } from 'payload'
-import { isAdminUser, isStaffUser, publicReadAdminWrite } from '../access/isAdmin'
+import { hiddenForAgents, isAdminUser, isStaffUser, publicReadAdminWrite } from '../access/isAdmin'
 import { panelOnly } from '../lib/commission'
 
 export const Products: CollectionConfig = {
@@ -8,6 +8,7 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Katalogu',
+    hidden: hiddenForAgents,
     defaultColumns: ['name', 'brand', 'price', 'stockStatus', 'visible', 'bestSeller'],
     description: 'Çdo produkt që shfaqet në katalog, në faqen e brendit dhe në kërkim.',
   },

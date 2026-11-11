@@ -8,7 +8,7 @@ export const CommissionPayouts: CollectionConfig = {
   labels: { singular: 'Pagesë komisioni', plural: 'Pagesat e komisionit' },
   admin: {
     useAsTitle: 'month',
-    group: 'Shitjet',
+    group: 'Agjentët',
     hidden: hiddenForNonSales,
     defaultColumns: ['agent', 'month', 'amount', 'paidAt'],
     description: 'Kur ia paguan komisionin një agjenti për një muaj, shënoje këtu — raporti e tregon muajin si të paguar.',

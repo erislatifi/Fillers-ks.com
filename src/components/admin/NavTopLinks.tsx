@@ -4,8 +4,12 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mark } from "./Logo";
+import { NavGroupLinks } from "./NavGroupLinks";
 
-/** Pinned links above the collection groups: Dashboard, pending-orders and new-message alerts, view live site. */
+/**
+ * Pinned links above the collection groups (Dashboard, alerts, live site), plus links that
+ * are placed inside their sidebar group (Agjentët, Administrimi) via NavGroupLinks.
+ */
 export function NavTopLinks({
   pending,
   newMessages,
@@ -55,28 +59,30 @@ export function NavTopLinks({
         </Link>
       )}
 
+      {/* Agent pages live in the "Agjentët" group, next to Vizitat / Lokacionet / Pagesat. */}
       {showCommissions && (
-        <Link
-          href="/admin/komisionet"
-          className={`nav__link${pathname?.startsWith("/admin/komisionet") ? " nav__link--selected" : ""}`}
-        >
-          <span className="nav__link-label">Komisionet</span>
-        </Link>
-      )}
-
-      {showCommissions && (
-        <a href="/agjent" target="_blank" rel="noreferrer" className="nav__link">
-          <span className="nav__link-label">Aplikacioni i tabletit (agjentët)</span>
-        </a>
+        <NavGroupLinks group="Agjentët">
+          <Link
+            href="/admin/komisionet"
+            className={`nav__link${pathname?.startsWith("/admin/komisionet") ? " nav__link--selected" : ""}`}
+          >
+            <span className="nav__link-label">Raporti i komisioneve</span>
+          </Link>
+          <a href="/agjent" target="_blank" rel="noreferrer" className="nav__link">
+            <span className="nav__link-label">Aplikacioni i tabletit ↗</span>
+          </a>
+        </NavGroupLinks>
       )}
 
       {showImport && (
-        <Link
-          href="/admin/importo"
-          className={`nav__link${pathname?.startsWith("/admin/importo") ? " nav__link--selected" : ""}`}
-        >
-          <span className="nav__link-label">Importo nga WordPress</span>
-        </Link>
+        <NavGroupLinks group="Administrimi">
+          <Link
+            href="/admin/importo"
+            className={`nav__link${pathname?.startsWith("/admin/importo") ? " nav__link--selected" : ""}`}
+          >
+            <span className="nav__link-label">Importo nga WordPress</span>
+          </Link>
+        </NavGroupLinks>
       )}
 
       <a href="/sq" target="_blank" rel="noreferrer" id="nav-view-site" className="nav__link">

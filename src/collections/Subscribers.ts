@@ -7,7 +7,7 @@ export const Subscribers: CollectionConfig = {
   labels: { singular: 'Abonent', plural: 'Abonentët (newsletter)' },
   admin: {
     useAsTitle: 'email',
-    group: 'Shitjet',
+    group: 'Mesazhet',
     hidden: hiddenForEditors,
     defaultColumns: ['email', 'locale', 'createdAt'],
     description: 'Email-at që janë regjistruar për newsletter nga faqja.',

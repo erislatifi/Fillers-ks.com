@@ -8,7 +8,7 @@ export const Visits: CollectionConfig = {
   labels: { singular: 'Vizitë', plural: 'Vizitat' },
   admin: {
     useAsTitle: 'clinicName',
-    group: 'Shitjet',
+    group: 'Agjentët',
     hidden: hiddenForNonSales,
     defaultColumns: ['clinicName', 'agent', 'scheduledAt', 'status', 'interest', 'nextVisitAt'],
     description: 'Vizitat e agjentëve te klinikat — të planifikuara dhe të kryera nga tableti (/agjent).',

@@ -105,7 +105,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Orders, Visits, AgentLocations, Customers, CommissionPayouts, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
+  collections: [Orders, Customers, Visits, AgentLocations, CommissionPayouts, ContactMessages, Subscribers, Products, Brands, Categories, Media, Testimonials, Articles, Promotions, Pages, Users],
   globals: [Homepage, Navigation, SiteTexts, SiteSettings],
   localization: {
     locales: ['sq', 'en'],
